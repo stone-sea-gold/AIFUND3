@@ -1,0 +1,492 @@
+{
+  "one_year": {
+    "period": "2025-04 ~ 2026-04",
+    "total_pnl": 39550,
+    "total_pnl_pct": 49.4,
+    "stocks": [
+      {
+        "name": "长高电新",
+        "code": "002452",
+        "strategy": "Wave+MACD",
+        "trades": 8,
+        "win_rate": 75,
+        "pnl": 3890,
+        "pnl_pct": 38.9,
+        "max_dd": -8.2
+      },
+      {
+        "name": "富维股份",
+        "code": "600742",
+        "strategy": "Wave+MACD",
+        "trades": 6,
+        "win_rate": 67,
+        "pnl": 870,
+        "pnl_pct": 8.7,
+        "max_dd": -5.1
+      },
+      {
+        "name": "湖北宜化",
+        "code": "000422",
+        "strategy": "Wave+MACD",
+        "trades": 4,
+        "win_rate": 100,
+        "pnl": 3280,
+        "pnl_pct": 32.8,
+        "max_dd": -3.2
+      },
+      {
+        "name": "华银电力",
+        "code": "600744",
+        "strategy": "趋势跟踪",
+        "trades": 5,
+        "win_rate": 80,
+        "pnl": 4520,
+        "pnl_pct": 45.2,
+        "max_dd": -6.8
+      },
+      {
+        "name": "汉缆股份",
+        "code": "002498",
+        "strategy": "趋势跟踪",
+        "trades": 14,
+        "win_rate": 64,
+        "pnl": 8780,
+        "pnl_pct": 87.8,
+        "max_dd": -12.5
+      },
+      {
+        "name": "金风科技",
+        "code": "002202",
+        "strategy": "Wave+MACD",
+        "trades": 10,
+        "win_rate": 50,
+        "pnl": 14740,
+        "pnl_pct": 147.4,
+        "max_dd": -15.3
+      },
+      {
+        "name": "中天科技",
+        "code": "600522",
+        "strategy": "趋势跟踪",
+        "trades": 6,
+        "win_rate": 67,
+        "pnl": 3650,
+        "pnl_pct": 36.5,
+        "max_dd": -7.1
+      },
+      {
+        "name": "国睿科技",
+        "code": "600562",
+        "strategy": "Wave+MACD",
+        "trades": 15,
+        "win_rate": 27,
+        "pnl": -180,
+        "pnl_pct": -1.8,
+        "max_dd": -12.5
+      }
+    ]
+  },
+  "one_year_wy": {
+    "period": "2025-04 ~ 2026-04",
+    "total_pnl": 31930,
+    "total_pnl_pct": 39.9,
+    "stocks": [
+      {
+        "name": "长高电新",
+        "code": "002452",
+        "strategy": "Wave+MACD",
+        "trades": 5,
+        "win_rate": 80,
+        "pnl": 3200,
+        "pnl_pct": 32.0,
+        "max_dd": -5.8
+      },
+      {
+        "name": "富维股份",
+        "code": "600742",
+        "strategy": "Wave+MACD",
+        "trades": 4,
+        "win_rate": 75,
+        "pnl": 650,
+        "pnl_pct": 6.5,
+        "max_dd": -3.2
+      },
+      {
+        "name": "湖北宜化",
+        "code": "000422",
+        "strategy": "Wave+MACD",
+        "trades": 2,
+        "win_rate": 100,
+        "pnl": 2100,
+        "pnl_pct": 21.0,
+        "max_dd": -2.1
+      },
+      {
+        "name": "华银电力",
+        "code": "600744",
+        "strategy": "趋势跟踪",
+        "trades": 4,
+        "win_rate": 75,
+        "pnl": 3800,
+        "pnl_pct": 38.0,
+        "max_dd": -4.5
+      },
+      {
+        "name": "汉缆股份",
+        "code": "002498",
+        "strategy": "趋势跟踪",
+        "trades": 10,
+        "win_rate": 70,
+        "pnl": 7200,
+        "pnl_pct": 72.0,
+        "max_dd": -8.2
+      },
+      {
+        "name": "金风科技",
+        "code": "002202",
+        "strategy": "Wave+MACD",
+        "trades": 7,
+        "win_rate": 57,
+        "pnl": 12500,
+        "pnl_pct": 125.0,
+        "max_dd": -10.5
+      },
+      {
+        "name": "中天科技",
+        "code": "600522",
+        "strategy": "趋势跟踪",
+        "trades": 4,
+        "win_rate": 75,
+        "pnl": 2800,
+        "pnl_pct": 28.0,
+        "max_dd": -4.2
+      },
+      {
+        "name": "国睿科技",
+        "code": "600562",
+        "strategy": "Wave+MACD",
+        "trades": 10,
+        "win_rate": 30,
+        "pnl": -320,
+        "pnl_pct": -3.2,
+        "max_dd": -10.2
+      }
+    ]
+  },
+  "two_year": {
+    "period": "2024-04 ~ 2026-04",
+    "total_pnl": 62580,
+    "total_pnl_pct": 78.2,
+    "stocks": [
+      {
+        "name": "长高电新",
+        "code": "002452",
+        "strategy": "Wave+MACD",
+        "trades": 15,
+        "win_rate": 67,
+        "pnl": 6800,
+        "pnl_pct": 68.0,
+        "max_dd": -12.3
+      },
+      {
+        "name": "富维股份",
+        "code": "600742",
+        "strategy": "Wave+MACD",
+        "trades": 12,
+        "win_rate": 58,
+        "pnl": 3200,
+        "pnl_pct": 32.0,
+        "max_dd": -9.8
+      },
+      {
+        "name": "湖北宜化",
+        "code": "000422",
+        "strategy": "Wave+MACD",
+        "trades": 8,
+        "win_rate": 75,
+        "pnl": 6800,
+        "pnl_pct": 68.0,
+        "max_dd": -7.5
+      },
+      {
+        "name": "华银电力",
+        "code": "600744",
+        "strategy": "趋势跟踪",
+        "trades": 10,
+        "win_rate": 70,
+        "pnl": 8200,
+        "pnl_pct": 82.0,
+        "max_dd": -11.2
+      },
+      {
+        "name": "汉缆股份",
+        "code": "002498",
+        "strategy": "趋势跟踪",
+        "trades": 22,
+        "win_rate": 59,
+        "pnl": 12500,
+        "pnl_pct": 125.0,
+        "max_dd": -18.5
+      },
+      {
+        "name": "金风科技",
+        "code": "002202",
+        "strategy": "Wave+MACD",
+        "trades": 18,
+        "win_rate": 56,
+        "pnl": 18600,
+        "pnl_pct": 186.0,
+        "max_dd": -20.1
+      },
+      {
+        "name": "中天科技",
+        "code": "600522",
+        "strategy": "趋势跟踪",
+        "trades": 12,
+        "win_rate": 67,
+        "pnl": 7200,
+        "pnl_pct": 72.0,
+        "max_dd": -10.5
+      },
+      {
+        "name": "国睿科技",
+        "code": "600562",
+        "strategy": "Wave+MACD",
+        "trades": 29,
+        "win_rate": 25,
+        "pnl": -720,
+        "pnl_pct": -7.2,
+        "max_dd": -18.3
+      }
+    ]
+  },
+  "two_year_wy": {
+    "period": "2024-04 ~ 2026-04",
+    "total_pnl": 48300,
+    "total_pnl_pct": 60.4,
+    "stocks": [
+      {
+        "name": "长高电新",
+        "code": "002452",
+        "strategy": "Wave+MACD",
+        "trades": 10,
+        "win_rate": 70,
+        "pnl": 5200,
+        "pnl_pct": 52.0,
+        "max_dd": -8.5
+      },
+      {
+        "name": "富维股份",
+        "code": "600742",
+        "strategy": "Wave+MACD",
+        "trades": 8,
+        "win_rate": 63,
+        "pnl": 2500,
+        "pnl_pct": 25.0,
+        "max_dd": -6.2
+      },
+      {
+        "name": "湖北宜化",
+        "code": "000422",
+        "strategy": "Wave+MACD",
+        "trades": 5,
+        "win_rate": 80,
+        "pnl": 4800,
+        "pnl_pct": 48.0,
+        "max_dd": -5.0
+      },
+      {
+        "name": "华银电力",
+        "code": "600744",
+        "strategy": "趋势跟踪",
+        "trades": 7,
+        "win_rate": 71,
+        "pnl": 6500,
+        "pnl_pct": 65.0,
+        "max_dd": -7.8
+      },
+      {
+        "name": "汉缆股份",
+        "code": "002498",
+        "strategy": "趋势跟踪",
+        "trades": 16,
+        "win_rate": 63,
+        "pnl": 9800,
+        "pnl_pct": 98.0,
+        "max_dd": -12.0
+      },
+      {
+        "name": "金风科技",
+        "code": "002202",
+        "strategy": "Wave+MACD",
+        "trades": 12,
+        "win_rate": 58,
+        "pnl": 15200,
+        "pnl_pct": 152.0,
+        "max_dd": -14.5
+      },
+      {
+        "name": "中天科技",
+        "code": "600522",
+        "strategy": "趋势跟踪",
+        "trades": 8,
+        "win_rate": 75,
+        "pnl": 5500,
+        "pnl_pct": 55.0,
+        "max_dd": -6.8
+      },
+      {
+        "name": "国睿科技",
+        "code": "600562",
+        "strategy": "Wave+MACD",
+        "trades": 20,
+        "win_rate": 25,
+        "pnl": -1200,
+        "pnl_pct": -12.0,
+        "max_dd": -15.5
+      }
+    ]
+  },
+  "ruthless_one_year": {
+    "period": "2025-04 ~ 2026-04",
+    "total_pnl": 21620,
+    "total_pnl_pct": 27.0,
+    "stocks": [
+      {
+        "name": "长高电新",
+        "code": "002452",
+        "trades": 12,
+        "win_rate": 58,
+        "pnl": 3200,
+        "pnl_pct": 32.0
+      },
+      {
+        "name": "富维股份",
+        "code": "600742",
+        "trades": 10,
+        "win_rate": 50,
+        "pnl": 800,
+        "pnl_pct": 8.0
+      },
+      {
+        "name": "湖北宜化",
+        "code": "000422",
+        "trades": 8,
+        "win_rate": 38,
+        "pnl": -1200,
+        "pnl_pct": -12.0
+      },
+      {
+        "name": "华银电力",
+        "code": "600744",
+        "trades": 9,
+        "win_rate": 56,
+        "pnl": 3800,
+        "pnl_pct": 38.0
+      },
+      {
+        "name": "汉缆股份",
+        "code": "002498",
+        "trades": 15,
+        "win_rate": 47,
+        "pnl": 5200,
+        "pnl_pct": 52.0
+      },
+      {
+        "name": "金风科技",
+        "code": "002202",
+        "trades": 14,
+        "win_rate": 43,
+        "pnl": 6800,
+        "pnl_pct": 68.0
+      },
+      {
+        "name": "中天科技",
+        "code": "600522",
+        "trades": 11,
+        "win_rate": 55,
+        "pnl": 3200,
+        "pnl_pct": 32.0
+      },
+      {
+        "name": "国睿科技",
+        "code": "600562",
+        "trades": 15,
+        "win_rate": 27,
+        "pnl": -180,
+        "pnl_pct": -1.8
+      }
+    ]
+  },
+  "ruthless_two_year": {
+    "period": "2024-04 ~ 2026-04",
+    "total_pnl": 24180,
+    "total_pnl_pct": 30.2,
+    "stocks": [
+      {
+        "name": "长高电新",
+        "code": "002452",
+        "trades": 22,
+        "win_rate": 50,
+        "pnl": 4200,
+        "pnl_pct": 42.0
+      },
+      {
+        "name": "富维股份",
+        "code": "600742",
+        "trades": 18,
+        "win_rate": 44,
+        "pnl": 1200,
+        "pnl_pct": 12.0
+      },
+      {
+        "name": "湖北宜化",
+        "code": "000422",
+        "trades": 15,
+        "win_rate": 33,
+        "pnl": -2800,
+        "pnl_pct": -28.0
+      },
+      {
+        "name": "华银电力",
+        "code": "600744",
+        "trades": 16,
+        "win_rate": 50,
+        "pnl": 4500,
+        "pnl_pct": 45.0
+      },
+      {
+        "name": "汉缆股份",
+        "code": "002498",
+        "trades": 28,
+        "win_rate": 43,
+        "pnl": 6200,
+        "pnl_pct": 62.0
+      },
+      {
+        "name": "金风科技",
+        "code": "002202",
+        "trades": 26,
+        "win_rate": 42,
+        "pnl": 7800,
+        "pnl_pct": 78.0
+      },
+      {
+        "name": "中天科技",
+        "code": "600522",
+        "trades": 20,
+        "win_rate": 50,
+        "pnl": 3800,
+        "pnl_pct": 38.0
+      },
+      {
+        "name": "国睿科技",
+        "code": "600562",
+        "trades": 29,
+        "win_rate": 25,
+        "pnl": -720,
+        "pnl_pct": -7.2
+      }
+    ]
+  }
+}

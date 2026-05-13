@@ -1,0 +1,11 @@
+{
+  "showLineNumber": true,
+  "strictLineBreaks": false,
+  "readableLineLength": true,
+  "showFrontmatter": false,
+  "foldHeading": true,
+  "foldIndent": true,
+  "defaultViewMode": "source",
+  "livePreview": true,
+  "attachmentFolderPath": "数据"
+}

@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>📈 股票交易看板</title>
+<style>
+:root {
+  --bg: #0f1117; --surface: #1a1d28; --surface2: #242736;
+  --border: #2d3148; --text: #e0e2ec; --text2: #8b8fa7;
+  --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
+  --blue: #3b82f6; --purple: #a78bfa;
+  --green-bg: rgba(34,197,94,.1); --red-bg: rgba(239,68,68,.1);
+  --amber-bg: rgba(245,158,11,.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif; line-height:1.6; padding:12px; max-width:960px; margin:0 auto; }
+h1 { font-size:1.4em; margin-bottom:4px; }
+h2 { font-size:1.1em; color:var(--blue); margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+h3 { font-size:.95em; color:var(--text2); margin:12px 0 6px; }
+.meta { color:var(--text2); font-size:.8em; margin-bottom:16px; }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:.75em; font-weight:600; }
+.badge-green { background:var(--green-bg); color:var(--green); }
+.badge-red { background:var(--red-bg); color:var(--red); }
+.badge-amber { background:var(--amber-bg); color:var(--amber); }
+
+/* ── 持仓卡片 ── */
+.cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; margin:10px 0; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; transition:.15s; }
+.card:hover { border-color:var(--blue); }
+.card .name { font-weight:700; font-size:.95em; }
+.card .code { font-size:.72em; color:var(--text2); }
+.card .pnl { font-size:1.2em; font-weight:700; margin:6px 0 2px; }
+.card .pos { font-size:.8em; color:var(--text2); }
+.card .macd { margin-top:6px; }
+.card.golden { border-left:3px solid var(--green); }
+.card.death { border-left:3px solid var(--red); }
+.card.cash { border-left:3px solid var(--amber); background:var(--surface2); }
+.pnl-up { color:var(--green); }
+.pnl-down { color:var(--red); }
+.pnl-flat { color:var(--text2); }
+
+/* ── 警告条 ── */
+.alert { background:var(--red-bg); border:1px solid rgba(239,68,68,.3); border-radius:6px; padding:8px 12px; margin:10px 0; font-size:.85em; }
+.alert-amber { background:var(--amber-bg); border-color:rgba(245,158,11,.3); }
+
+/* ── 操作要点 ── */
+.action-group { background:var(--surface); border-radius:8px; padding:10px 12px; margin:8px 0; border:1px solid var(--border); }
+.action-group summary { cursor:pointer; font-weight:600; font-size:.9em; list-style:none; }
+.action-group summary::before { content:'▸ '; color:var(--blue); }
+.action-group[open] summary::before { content:'▾ '; }
+table { width:100%; border-collapse:collapse; font-size:.82em; margin:6px 0; }
+th { text-align:left; color:var(--text2); font-weight:500; padding:4px 6px; border-bottom:1px solid var(--border); }
+td { padding:4px 6px; border-bottom:1px solid rgba(45,49,72,.5); vertical-align:top; }
+.note-list { font-size:.82em; color:var(--text2); padding-left:16px; }
+.note-list li { margin:2px 0; }
+
+/* ── 日志 ── */
+.log-entry { background:var(--surface); border-radius:8px; padding:10px 12px; margin:8px 0; border:1px solid var(--border); }
+.log-date { font-weight:700; color:var(--blue); font-size:.9em; }
+.log-summary { font-size:.85em; margin-top:6px; color:var(--text); }
+.log-ops { margin-top:6px; }
+.op-row { display:flex; gap:6px; align-items:center; font-size:.82em; padding:3px 0; border-bottom:1px solid rgba(45,49,72,.3); flex-wrap:wrap; }
+.op-dir { font-weight:700; min-width:30px; }
+.op-buy { color:var(--red); }
+.op-sell { color:var(--green); }
+.op-hold { color:var(--text2); }
+.risk-item { font-size:.82em; color:var(--red); padding:2px 0; }
+.good-item { font-size:.82em; color:var(--green); padding:2px 0; }
+
+/* ── 回测 ── */
+.bt-table { overflow-x:auto; }
+.bt-table table { min-width:580px; }
+.bt-pnl-up { color:var(--green); font-weight:600; }
+.bt-pnl-down { color:var(--red); font-weight:600; }
+tr.bt-total { font-weight:700; border-top:2px solid var(--border); }
+.bt-note { font-size:.8em; color:var(--text2); margin-top:8px; }
+.bt-tabs { display:flex; gap:6px; margin-bottom:10px; }
+.bt-tab { background:var(--surface); color:var(--text2); border:1px solid var(--border); border-radius:6px; padding:5px 16px; font-size:.85em; cursor:pointer; transition:.15s; }
+.bt-tab:hover { border-color:var(--blue); color:var(--text); }
+.bt-tab.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+.bt-subhead th { font-size:.72em; color:var(--text2); font-weight:400; padding:2px 6px; }
+
+/* ── 收起/展开 ── */
+.section { margin-bottom:16px; }
+.toggle-btn { background:var(--surface2); color:var(--text2); border:1px solid var(--border); border-radius:4px; padding:2px 10px; font-size:.75em; cursor:pointer; float:right; }
+.toggle-btn:hover { color:var(--text); border-color:var(--blue); }
+
+@media(max-width:480px) {
+  .cards { grid-template-columns:repeat(2,1fr); }
+  body { padding:8px; }
+}
+</style>
+</head>
+<body>
+
+<h1>📈 股票交易看板</h1>
+<div class="meta">数据更新: 2026-04-23 ｜ MACD(5,34,5) ｜ Fib 回撤</div>
+
+<!-- ════════ 持仓概览 ════════ -->
+<h2>📊 持仓概览</h2>
+<div class="cards">
+
+  <div class="card golden">
+    <div class="name">中天科技</div>
+    <div class="code">600522</div>
+    
+      <div class="pnl pnl-up">**+36.4%**</div>
+      <div class="pos">仓位 11% ｜ 成本 24.98</div>
+      <div class="macd">
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card golden">
+    <div class="name">长高电新</div>
+    <div class="code">002452</div>
+    
+      <div class="pnl pnl-up">**+2.9%**</div>
+      <div class="pos">仓位 23.2% ｜ 成本 10.89</div>
+      <div class="macd">
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card golden">
+    <div class="name">金风科技</div>
+    <div class="code">002202</div>
+    
+      <div class="pnl pnl-up">**+2.8%**</div>
+      <div class="pos">仓位 16.9% ｜ 成本 25.01</div>
+      <div class="macd">
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card golden">
+    <div class="name">华银电力</div>
+    <div class="code">600744</div>
+    
+      <div class="pnl pnl-up">**+21.7%**</div>
+      <div class="pos">仓位 6.2% ｜ 成本 6.96</div>
+      <div class="macd">
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card death">
+    <div class="name">盐湖股份</div>
+    <div class="code">000792</div>
+    
+      <div class="pnl pnl-down">-1.7%</div>
+      <div class="pos">仓位 8.3% ｜ 成本 36.30</div>
+      <div class="macd">
+        
+          <span class="badge badge-red">死叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card death">
+    <div class="name">大位科技</div>
+    <div class="code">600589</div>
+    
+      <div class="pnl pnl-up">+1.2%</div>
+      <div class="pos">仓位 3.4% ｜ 成本 10.36</div>
+      <div class="macd">
+        
+          <span class="badge badge-red">死叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card golden">
+    <div class="name">汉缆股份</div>
+    <div class="code">002498</div>
+    
+      <div class="pnl pnl-up">**+17.4%**</div>
+      <div class="pos">仓位 8.9% ｜ 成本 7.74</div>
+      <div class="macd">
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </div>
+    
+  </div>
+
+  <div class="card ">
+    <div class="name">三维股份</div>
+    <div class="code">603033</div>
+    
+      <div class="pnl pnl-flat">—</div>
+      <div class="pos">仓位 6.2% ｜ 成本 11.29</div>
+      <div class="macd">
+        
+      </div>
+    
+  </div>
+
+  <div class="card cash">
+    <div class="name">现金</div>
+    <div class="code">—</div>
+    
+      <div class="pnl pnl-flat" style="font-size:1em">~16%</div>
+    
+  </div>
+
+</div>
+
+
+<div class="alert alert-amber">
+  ⚠️ 现金 ~16% 处于趋势仓位区间（15%-30%）— 仅顺势持有或回踩补仓，避免追高
+</div>
+
+
+
+<div class="alert">
+  🚨 死叉持仓: 盐湖股份、大位科技 — 严格执行止损，不加仓
+</div>
+
+
+<!-- ════════ 策略与回测摘要 ════════ -->
+<h2>🎯 策略与回测摘要</h2>
+<div class="bt-table">
+<table>
+  <thead>
+    <tr>
+      <th>股票</th>
+      <th>当前策略</th>
+      <th>历史回测</th>
+      <th>胜率</th>
+      <th>止损</th>
+      <th>状态</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td>中天科技</td>
+      <td>趋势跟踪</td>
+      <td class="bt-pnl-up">
+        ++36.5%
+      </td>
+      <td>67%</td>
+      <td>
+        
+          26.67 / 24.60
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>长高电新</td>
+      <td>Wave+MACD</td>
+      <td class="bt-pnl-up">
+        ++38.9%
+      </td>
+      <td>75%</td>
+      <td>
+        
+          9.38 / 8.15
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>金风科技</td>
+      <td>Wave+MACD</td>
+      <td class="bt-pnl-up">
+        ++147.4%
+      </td>
+      <td>50%</td>
+      <td>
+        
+          22.50 / 18.50
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>华银电力</td>
+      <td>趋势跟踪</td>
+      <td class="bt-pnl-up">
+        ++45.2%
+      </td>
+      <td>70%</td>
+      <td>
+        
+          6.50 / 6.20
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>盐湖股份</td>
+      <td>无情操盘手标准战法</td>
+      <td class="bt-pnl-up">
+        ++50.5%
+      </td>
+      <td>60%</td>
+      <td>
+        
+          黄线纪律 / 34.00
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-red">死叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>大位科技</td>
+      <td>观望</td>
+      <td class="">
+        —
+      </td>
+      <td>—</td>
+      <td>
+        
+          9.50 / 8.50
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-red">死叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>汉缆股份</td>
+      <td>趋势跟踪</td>
+      <td class="bt-pnl-up">
+        ++87.8%
+      </td>
+      <td>64%</td>
+      <td>
+        
+          7.20 / 6.53
+        
+      </td>
+      <td>
+        
+          <span class="badge badge-green">金叉</span>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <td>三维股份</td>
+      <td>观望</td>
+      <td class="">
+        —
+      </td>
+      <td>—</td>
+      <td>
+        
+          10.00 / 9.00
+        
+      </td>
+      <td>
+        
+          —
+        
+      </td>
+    </tr>
+  
+  </tbody>
+</table>
+</div>
+
+<!-- ════════ 操作要点 ════════ -->
+<h2>⚡ 操作要点</h2>
+
+<details class="action-group" open>
+  <summary>1. 中天科技 600522 ✅金叉红柱</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>34.07</td></tr><tr><td>MACD</td><td>DIF=3.69, DEA=2.64, 柱=2.11</td></tr><tr><td>MACD状态</td><td>金叉红柱扩张</td></tr><tr><td>策略</td><td>持有，趋势跟踪</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>金叉红柱扩张，趋势良好</li><li>止损：跌破26.67减仓，跌破24.60清仓</li></ul>
+  
+</details>
+
+<details class="action-group" >
+  <summary>2. 华银电力 600744 ✅金叉红柱</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>8.47</td></tr><tr><td>MACD</td><td>DIF=0.35, DEA=0.14, 柱=0.42</td></tr><tr><td>MACD状态</td><td>金叉红柱扩张</td></tr><tr><td>策略</td><td>持有，趋势型票靠拿久赚钱</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>金叉确认，红柱扩张中</li><li>趋势目标 9.77</li><li>跌破6.50减仓，跌破6.20清仓</li></ul>
+  
+</details>
+
+<details class="action-group" >
+  <summary>3. 汉缆股份 002498 ✅金叉红柱</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>9.09</td></tr><tr><td>MACD</td><td>DIF=0.65, DEA=0.55, 柱=0.21</td></tr><tr><td>MACD状态</td><td>金叉红柱</td></tr><tr><td>策略</td><td>趋势跟踪</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>金叉确认，突破8.67(38.2%回撤位)</li><li>浪5目标 10.13</li><li>跌破7.20减半，跌破6.53清仓</li></ul>
+  
+</details>
+
+<details class="action-group" >
+  <summary>4. 长高电新 002452 ✅金叉</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>11.21</td></tr><tr><td>MACD</td><td>DIF=0.30, DEA=0.19, 柱=0.23</td></tr><tr><td>MACD状态</td><td>金叉红柱</td></tr><tr><td>策略</td><td>Wave+MACD</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>子浪5展开中</li><li>目标 11.84-13.68</li><li>止损 9.38/8.15</li></ul>
+  
+</details>
+
+<details class="action-group" >
+  <summary>5. 金风科技 002202 ✅金叉</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>25.70</td></tr><tr><td>MACD</td><td>DIF=-0.28, DEA=-0.57, 柱=0.57</td></tr><tr><td>MACD状态</td><td>金叉(刚翻红)</td></tr><tr><td>策略</td><td>Wave+MACD</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>金叉刚确认，红柱第一天</li><li>浪5目标 31.86</li><li>跌破22.50减半，跌破18.50清仓</li></ul>
+  
+</details>
+
+<details class="action-group" >
+  <summary>6. 盐湖股份 000792 ⚠️死叉</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>35.69</td></tr><tr><td>MACD</td><td>DIF=0.04, DEA=0.59, 柱=-1.10</td></tr><tr><td>MACD状态</td><td>死叉绿柱</td></tr><tr><td>策略</td><td>无情操盘手B1低吸</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>死叉中，不加仓</li><li>B1试仓持有（J&lt;15时触发）</li><li>跌破黄线→无条件清仓</li></ul>
+  
+</details>
+
+<details class="action-group" >
+  <summary>7. 大位科技 600589 ⚠️死叉</summary>
+  
+  <table>
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody><tr><td>现价</td><td>10.48</td></tr><tr><td>MACD</td><td>DIF=0.06, DEA=0.18, 柱=-0.24</td></tr><tr><td>MACD状态</td><td>死叉绿柱</td></tr><tr><td>策略</td><td>观望</td></tr></tbody>
+  </table>
+  
+  
+  <ul class="note-list"><li>死叉恶化的在改善</li><li>轻仓持有，不加仓</li></ul>
+  
+</details>
+
+
+<!-- ════════ 操作日志 ════════ -->
+<h2>📋 最近操作</h2>
+
+<details class="log-entry" open>
+  <summary><span class="log-date">2026-04-24 周五</span></summary>
+
+  
+  <div class="log-ops">
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">汉缆股份</span>
+      <span style="color:var(--text2)">-8.9%</span>
+      <span style="color:var(--text2)">9.09</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">大位科技</span>
+      <span style="color:var(--text2)">+3.4%</span>
+      <span style="color:var(--text2)">10.36</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">三维股份</span>
+      <span style="color:var(--text2)">+6.2%</span>
+      <span style="color:var(--text2)">11.29</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">中天科技</span>
+      <span style="color:var(--text2)">11%</span>
+      <span style="color:var(--text2)">—</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">长高电新</span>
+      <span style="color:var(--text2)">23.2%</span>
+      <span style="color:var(--text2)">—</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">金风科技</span>
+      <span style="color:var(--text2)">16.9%</span>
+      <span style="color:var(--text2)">—</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">华银电力</span>
+      <span style="color:var(--text2)">6.2%</span>
+      <span style="color:var(--text2)">—</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">盐湖股份</span>
+      <span style="color:var(--text2)">8.3%</span>
+      <span style="color:var(--text2)">—</span>
+    </div>
+    
+  </div>
+  
+
+  
+  <h3 style="color:var(--red)">⚠ 风险</h3>
+  <div class="risk-item">· 新增两只持仓（大位科技、三维股份），需关注MACD状态</div><div class="risk-item">· 盐湖股份仍处死叉</div>
+  
+
+  
+  <h3 style="color:var(--green)">✓ 利好</h3>
+  <div class="good-item">· 中天科技、长高电新、金风科技、华银电力全部金叉</div>
+  
+
+  
+  <div class="log-summary"><strong>总结:</strong> 今日清仓汉缆股份，建仓大位科技和三维股份。整体仓位结构调整，中天科技和华银电力仍是核心持仓。</div>
+  
+</details>
+
+<details class="log-entry" >
+  <summary><span class="log-date">2026-04-23 周四</span></summary>
+
+  
+  <div class="log-ops">
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">中天科技</span>
+      <span style="color:var(--text2)">11%</span>
+      <span style="color:var(--text2)">34.07</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">长高电新</span>
+      <span style="color:var(--text2)">23.2%</span>
+      <span style="color:var(--text2)">11.21</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">金风科技</span>
+      <span style="color:var(--text2)">16.9%</span>
+      <span style="color:var(--text2)">25.70</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">华银电力</span>
+      <span style="color:var(--text2)">6.2%</span>
+      <span style="color:var(--text2)">8.47</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">汉缆股份</span>
+      <span style="color:var(--text2)">8.9%</span>
+      <span style="color:var(--text2)">9.09</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">盐湖股份</span>
+      <span style="color:var(--text2)">8.3%</span>
+      <span style="color:var(--text2)">35.69</span>
+    </div>
+    
+    <div class="op-row">
+      
+      <span class="op-dir op-hold">
+        
+      </span>
+      <span style="font-weight:600">大位科技</span>
+      <span style="color:var(--text2)">3.4%</span>
+      <span style="color:var(--text2)">10.48</span>
+    </div>
+    
+  </div>
+  
+
+  
+  <h3 style="color:var(--red)">⚠ 风险</h3>
+  <div class="risk-item">· 现金16%偏低，需警惕系统性风险</div><div class="risk-item">· 盐湖股份死叉继续，黄线支撑位34.00</div><div class="risk-item">· 大位科技仍需观察MACD能否翻红</div>
+  
+
+  
+  <h3 style="color:var(--green)">✓ 利好</h3>
+  <div class="good-item">· 5只持仓金叉（中天、长高、金风、华银、汉缆）</div><div class="good-item">· 华银电力放量突破，走势强劲</div><div class="good-item">· 汉缆股份突破8.67确认浪5启动</div>
+  
+
+  
+  <div class="log-summary"><strong>总结:</strong> 今日整体持仓表现良好，中天科技、华银电力趋势强劲。金风科技刚翻金叉，确认浪5预期。现金不足的问题持续存在，暂不加仓，等待机会。</div>
+  
+</details>
+
+
+<!-- ════════ 回测参考 ════════ -->
+
+<h2>📈 回测参考</h2>
+
+<!-- 回测 Tab 切换 -->
+<div class="bt-tabs">
+  <button class="bt-tab active" onclick="switchBT('1y')">1年回测</button>
+  <button class="bt-tab" onclick="switchBT('2y')">2年回测</button>
+</div>
+
+<!-- 1年回测 -->
+<div id="bt-1y" class="bt-panel">
+<h3>1年回测（2025-04 ~ 2026-04）各股指定策略 · ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th>策略</th><th colspan="3">无黄白线</th><th colspan="3">加黄白线</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
+  <tbody>
+  
+  
+  
+  
+  <tr>
+    <td>长高电新</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>8</td><td>75%</td>
+    <td class="bt-pnl-up">+3,890</td>
+    <td>5</td><td>80%</td>
+    <td class="bt-pnl-up">+3,200</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+690</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>富维股份</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>6</td><td>67%</td>
+    <td class="bt-pnl-up">+870</td>
+    <td>4</td><td>75%</td>
+    <td class="bt-pnl-up">+650</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+220</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>湖北宜化</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>4</td><td>100%</td>
+    <td class="bt-pnl-up">+3,280</td>
+    <td>2</td><td>100%</td>
+    <td class="bt-pnl-up">+2,100</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+1,180</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>华银电力</td><td style="font-size:.78em">趋势跟踪</td>
+    <td>5</td><td>80%</td>
+    <td class="bt-pnl-up">+4,520</td>
+    <td>4</td><td>75%</td>
+    <td class="bt-pnl-up">+3,800</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+720</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>汉缆股份</td><td style="font-size:.78em">趋势跟踪</td>
+    <td>14</td><td>64%</td>
+    <td class="bt-pnl-up">+8,780</td>
+    <td>10</td><td>70%</td>
+    <td class="bt-pnl-up">+7,200</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+1,580</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>金风科技</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>10</td><td>50%</td>
+    <td class="bt-pnl-up">+14,740</td>
+    <td>7</td><td>57%</td>
+    <td class="bt-pnl-up">+12,500</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+2,240</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>中天科技</td><td style="font-size:.78em">趋势跟踪</td>
+    <td>6</td><td>67%</td>
+    <td class="bt-pnl-up">+3,650</td>
+    <td>4</td><td>75%</td>
+    <td class="bt-pnl-up">+2,800</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+850</td>
+  </tr>
+  
+  <tr class="bt-total">
+    <td colspan="2">合计（¥60,000）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+22,180</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+17,640</td>
+    
+    <td class="bt-pnl-up">+4,540</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- 2年回测 -->
+<div id="bt-2y" class="bt-panel" style="display:none">
+<h3>2年回测（2024-04 ~ 2026-04）各股指定策略 · ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th>策略</th><th colspan="4">无黄白线</th><th colspan="4">加黄白线</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>回撤</th><th>笔</th><th>胜率</th><th>盈亏</th><th>回撤</th><th></th></tr></thead>
+  <tbody>
+  
+  
+  
+  
+  
+  <tr>
+    <td>长高电新</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>15</td><td>67%</td>
+    <td class="bt-pnl-up">+6,800</td>
+    <td>-12.3%</td>
+    <td>10</td><td>70%</td>
+    <td class="bt-pnl-up">+5,200</td>
+    <td>-8.5%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+1,600</td>
+  </tr>
+  
+  
+  
+  
+  
+  <tr>
+    <td>富维股份</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>12</td><td>58%</td>
+    <td class="bt-pnl-up">+3,200</td>
+    <td>-9.8%</td>
+    <td>8</td><td>63%</td>
+    <td class="bt-pnl-up">+2,500</td>
+    <td>-6.2%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+700</td>
+  </tr>
+  
+  
+  
+  
+  
+  <tr>
+    <td>湖北宜化</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>8</td><td>75%</td>
+    <td class="bt-pnl-up">+6,800</td>
+    <td>-7.5%</td>
+    <td>5</td><td>80%</td>
+    <td class="bt-pnl-up">+4,800</td>
+    <td>-5.0%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+2,000</td>
+  </tr>
+  
+  
+  
+  
+  
+  <tr>
+    <td>华银电力</td><td style="font-size:.78em">趋势跟踪</td>
+    <td>10</td><td>70%</td>
+    <td class="bt-pnl-up">+8,200</td>
+    <td>-11.2%</td>
+    <td>7</td><td>71%</td>
+    <td class="bt-pnl-up">+6,500</td>
+    <td>-7.8%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+1,700</td>
+  </tr>
+  
+  
+  
+  
+  
+  <tr>
+    <td>汉缆股份</td><td style="font-size:.78em">趋势跟踪</td>
+    <td>22</td><td>59%</td>
+    <td class="bt-pnl-up">+12,500</td>
+    <td>-18.5%</td>
+    <td>16</td><td>63%</td>
+    <td class="bt-pnl-up">+9,800</td>
+    <td>-12.0%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+2,700</td>
+  </tr>
+  
+  
+  
+  
+  
+  <tr>
+    <td>金风科技</td><td style="font-size:.78em">Wave+MACD</td>
+    <td>18</td><td>56%</td>
+    <td class="bt-pnl-up">+18,600</td>
+    <td>-20.1%</td>
+    <td>12</td><td>58%</td>
+    <td class="bt-pnl-up">+15,200</td>
+    <td>-14.5%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+3,400</td>
+  </tr>
+  
+  
+  
+  
+  
+  <tr>
+    <td>中天科技</td><td style="font-size:.78em">趋势跟踪</td>
+    <td>12</td><td>67%</td>
+    <td class="bt-pnl-up">+7,200</td>
+    <td>-10.5%</td>
+    <td>8</td><td>75%</td>
+    <td class="bt-pnl-up">+5,500</td>
+    <td>-6.8%</td>
+    <td class="bt-pnl-up" style="font-size:.78em">+1,700</td>
+  </tr>
+  
+  <tr class="bt-total">
+    <td colspan="2">合计（¥60,000）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+45,200</td>
+    <td></td><td></td><td></td>
+    <td class="bt-pnl-up">+36,500</td>
+    <td></td>
+    
+    <td class="bt-pnl-up">+8,700</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="alert-amber alert" style="margin-top:10px">
+  💡 <strong>黄白线结论:</strong> 无黄白线整体跑赢 — 1年多赚 ¥4,540，2年多赚 ¥8,700。白死叉提前止损 0 次，主要拦截了盈利入场。
+</div>
+
+<script>
+function switchBT(id){
+  document.querySelectorAll('.bt-panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.bt-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('bt-'+id).style.display='block';
+  event.target.classList.add('active');
+}
+</script>
+
+
+<!-- ════════ 无情操盘手回测 ════════ -->
+
+<h2>🔪 无情操盘手 vs 波浪理论</h2>
+<p style="font-size:.82em;color:var(--text2);margin-bottom:10px">
+  无情操盘手: B1超卖低吸 + B砖底部反转 ｜ 死叉/黄线清仓 + S1~S5出货 ｜ 止损=买入日低点
+</p>
+
+<div class="bt-tabs">
+  <button class="bt-tab active" onclick="switchRT('r1y')">1年对比</button>
+  <button class="bt-tab" onclick="switchRT('r2y')">2年对比</button>
+</div>
+
+<!-- 1年对比 -->
+<div id="rt-r1y" class="rt-panel">
+<h3>1年（2025-04 ~ 2026-04）各 ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th colspan="3">波浪理论(无黄白)</th><th colspan="3">无情操盘手</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
+  <tbody>
+  
+  
+  
+  
+  <tr>
+    <td>长高电新</td>
+    <td>8</td><td>75%</td>
+    <td class="bt-pnl-up">+3,890</td>
+    <td>12</td><td>58%</td>
+    <td class="bt-pnl-up">+3,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-690</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>富维股份</td>
+    <td>6</td><td>67%</td>
+    <td class="bt-pnl-up">+870</td>
+    <td>10</td><td>50%</td>
+    <td class="bt-pnl-up">+800</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-70</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>湖北宜化</td>
+    <td>4</td><td>100%</td>
+    <td class="bt-pnl-up">+3,280</td>
+    <td>8</td><td>38%</td>
+    <td class="bt-pnl-down">-1,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-4,480</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>华银电力</td>
+    <td>5</td><td>80%</td>
+    <td class="bt-pnl-up">+4,520</td>
+    <td>9</td><td>56%</td>
+    <td class="bt-pnl-up">+3,800</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-720</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>汉缆股份</td>
+    <td>14</td><td>64%</td>
+    <td class="bt-pnl-up">+8,780</td>
+    <td>15</td><td>47%</td>
+    <td class="bt-pnl-up">+5,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-3,580</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>金风科技</td>
+    <td>10</td><td>50%</td>
+    <td class="bt-pnl-up">+14,740</td>
+    <td>14</td><td>43%</td>
+    <td class="bt-pnl-up">+6,800</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-7,940</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>中天科技</td>
+    <td>6</td><td>67%</td>
+    <td class="bt-pnl-up">+3,650</td>
+    <td>11</td><td>55%</td>
+    <td class="bt-pnl-up">+3,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-450</td>
+  </tr>
+  
+  <tr class="bt-total">
+    <td>合计（¥70,000）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+22,180（31.7%）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+18,500（26.4%）</td>
+    
+    <td class="bt-pnl-down">-3,680</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- 2年对比 -->
+<div id="rt-r2y" class="rt-panel" style="display:none">
+<h3>2年（2024-04 ~ 2026-04）各 ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th colspan="3">波浪理论(无黄白)</th><th colspan="3">无情操盘手</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
+  <tbody>
+  
+  
+  
+  
+  <tr>
+    <td>长高电新</td>
+    <td>15</td><td>67%</td>
+    <td class="bt-pnl-up">+6,800</td>
+    <td>22</td><td>50%</td>
+    <td class="bt-pnl-up">+4,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-2,600</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>富维股份</td>
+    <td>12</td><td>58%</td>
+    <td class="bt-pnl-up">+3,200</td>
+    <td>18</td><td>44%</td>
+    <td class="bt-pnl-up">+1,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-2,000</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>湖北宜化</td>
+    <td>8</td><td>75%</td>
+    <td class="bt-pnl-up">+6,800</td>
+    <td>15</td><td>33%</td>
+    <td class="bt-pnl-down">-2,800</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-9,600</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>华银电力</td>
+    <td>10</td><td>70%</td>
+    <td class="bt-pnl-up">+8,200</td>
+    <td>16</td><td>50%</td>
+    <td class="bt-pnl-up">+4,500</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-3,700</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>汉缆股份</td>
+    <td>22</td><td>59%</td>
+    <td class="bt-pnl-up">+12,500</td>
+    <td>28</td><td>43%</td>
+    <td class="bt-pnl-up">+6,200</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-6,300</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>金风科技</td>
+    <td>18</td><td>56%</td>
+    <td class="bt-pnl-up">+18,600</td>
+    <td>26</td><td>42%</td>
+    <td class="bt-pnl-up">+7,800</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-10,800</td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>中天科技</td>
+    <td>12</td><td>67%</td>
+    <td class="bt-pnl-up">+7,200</td>
+    <td>20</td><td>50%</td>
+    <td class="bt-pnl-up">+3,800</td>
+    <td class="bt-pnl-down" style="font-size:.78em">-3,400</td>
+  </tr>
+  
+  <tr class="bt-total">
+    <td>合计（¥70,000）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+45,200（64.6%）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">+15,200（21.7%）</td>
+    
+    <td class="bt-pnl-down">-30,000</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="alert-amber alert" style="margin-top:10px">
+  💡 <strong>策略对比结论:</strong>
+  1年无情操盘手 +26.4% 跑赢波浪 +31.7%（趋势股抓得好）；
+  2年波浪 +64.6% 大幅跑赢无情 +21.7%（频繁止损磨损本金）。
+  震荡股（湖北宜化）不适合无情操盘手。
+</div>
+
+<script>
+function switchRT(id){
+  document.querySelectorAll('.rt-panel').forEach(p=>p.style.display='none');
+  event.target.parentElement.querySelectorAll('.bt-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('rt-'+id).style.display='block';
+  event.target.classList.add('active');
+}
+</script>
+
+
+<div style="margin-top:24px;text-align:center;color:var(--text2);font-size:.72em">
+  📈 Stock Dashboard · ranyue.cloud/stock_dashboard
+</div>
+
+</body>
+</html>

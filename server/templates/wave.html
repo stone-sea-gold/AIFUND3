@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>📈 股票交易看板</title>
+<style>
+:root {
+  --bg: #0f1117; --surface: #1a1d28; --surface2: #242736;
+  --border: #2d3148; --text: #e0e2ec; --text2: #8b8fa7;
+  --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
+  --blue: #3b82f6; --purple: #a78bfa;
+  --green-bg: rgba(34,197,94,.1); --red-bg: rgba(239,68,68,.1);
+  --amber-bg: rgba(245,158,11,.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif; line-height:1.6; padding:12px; max-width:960px; margin:0 auto; }
+h1 { font-size:1.4em; margin-bottom:4px; }
+h2 { font-size:1.1em; color:var(--blue); margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+h3 { font-size:.95em; color:var(--text2); margin:12px 0 6px; }
+.meta { color:var(--text2); font-size:.8em; margin-bottom:16px; }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:.75em; font-weight:600; }
+.badge-green { background:var(--green-bg); color:var(--green); }
+.badge-red { background:var(--red-bg); color:var(--red); }
+.badge-amber { background:var(--amber-bg); color:var(--amber); }
+.badge-blue { background:rgba(59,130,246,.15); color:var(--blue); }
+
+/* ── Tab 导航 ── */
+.tab-nav { display:flex; gap:4px; margin:12px 0 16px; border-bottom:1px solid var(--border); padding-bottom:0; }
+.tab-btn { background:transparent; color:var(--text2); border:none; border-bottom:2px solid transparent; padding:8px 16px; font-size:.9em; cursor:pointer; transition:.15s; font-family:inherit; }
+.tab-btn:hover { color:var(--text); border-bottom-color:var(--text2); }
+.tab-btn.active { color:var(--blue); border-bottom-color:var(--blue); font-weight:600; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* ── 选股面板 ── */
+.scan-panel { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.scan-params { display:flex; flex-wrap:wrap; gap:10px; align-items:end; }
+.scan-params label { font-size:.8em; color:var(--text2); display:flex; flex-direction:column; gap:3px; }
+.scan-params select, .scan-params input { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
+.scan-params select:focus, .scan-params input:focus { outline:none; border-color:var(--blue); }
+.scan-params input[type=number] { min-width:70px; width:80px; }
+.btn-scan { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 24px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:.15s; margin-top:12px; }
+.btn-scan:hover { opacity:.85; }
+.btn-scan:disabled { opacity:.4; cursor:not-allowed; }
+.btn-scan-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 16px; font-size:.85em; cursor:pointer; font-family:inherit; transition:.15s; }
+.btn-scan-secondary:hover { border-color:var(--blue); color:var(--text); }
+
+/* ── 进度条 ── */
+.progress-area { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.progress-bar { height:8px; background:var(--bg); border-radius:4px; overflow:hidden; margin-bottom:8px; }
+.progress-fill { height:100%; background:var(--blue); border-radius:4px; transition:width .5s; width:0%; }
+.progress-fill.done { background:var(--green); }
+.progress-fill.fail { background:var(--red); }
+.progress-text { font-size:.82em; color:var(--text2); }
+.progress-text strong { color:var(--text); }
+
+/* ── 结果表格 ── */
+.scan-results { margin-top:12px; overflow-x:auto; }
+.scan-results table { min-width:500px; }
+.scan-results .row-s { cursor:pointer; }
+.scan-results .row-s:hover td { background:var(--surface2); }
+.scan-results .row-detail td { background:var(--surface); padding:10px 14px; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px 16px; font-size:.82em; }
+.detail-grid .label { color:var(--text2); }
+.detail-grid .value { color:var(--text); }
+.score-high { color:var(--green); font-weight:600; }
+.score-mid { color:var(--amber); font-weight:600; }
+.score-low { color:var(--text2); }
+.cond-pass { color:var(--green); }
+.cond-fail { color:var(--text2); }
+
+/* ── 单票诊断 ── */
+.test-area { margin:10px 0; }
+.test-area input { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:.85em; font-family:inherit; width:120px; }
+.test-area input:focus { outline:none; border-color:var(--blue); }
+.test-result { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; margin:8px 0; white-space:pre-wrap; font-size:.82em; }
+
+/* ── 持仓卡片 ── */
+.cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; margin:10px 0; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; transition:.15s; }
+.card:hover { border-color:var(--blue); }
+.card .name { font-weight:700; font-size:.95em; }
+.card .code { font-size:.72em; color:var(--text2); }
+.card .pnl { font-size:1.2em; font-weight:700; margin:6px 0 2px; }
+.card .pos { font-size:.8em; color:var(--text2); }
+.card .macd { margin-top:6px; }
+.card.golden { border-left:3px solid var(--green); }
+.card.death { border-left:3px solid var(--red); }
+.card.cash { border-left:3px solid var(--amber); background:var(--surface2); }
+.pnl-up { color:var(--green); }
+.pnl-down { color:var(--red); }
+.pnl-flat { color:var(--text2); }
+
+/* ── 警告条 ── */
+.alert { background:var(--red-bg); border:1px solid rgba(239,68,68,.3); border-radius:6px; padding:8px 12px; margin:10px 0; font-size:.85em; }
+.alert-amber { background:var(--amber-bg); border-color:rgba(245,158,11,.3); }
+
+/* ── 操作要点 ── */
+.action-group { background:var(--surface); border-radius:8px; padding:10px 12px; margin:8px 0; border:1px solid var(--border); }
+.action-group summary { cursor:pointer; font-weight:600; font-size:.9em; list-style:none; }
+.action-group summary::before { content:'▸ '; color:var(--blue); }
+.action-group[open] summary::before { content:'▾ '; }
+table { width:100%; border-collapse:collapse; font-size:.82em; margin:6px 0; }
+th { text-align:left; color:var(--text2); font-weight:500; padding:4px 6px; border-bottom:1px solid var(--border); }
+td { padding:4px 6px; border-bottom:1px solid rgba(45,49,72,.5); vertical-align:top; }
+.note-list { font-size:.82em; color:var(--text2); padding-left:16px; }
+.note-list li { margin:2px 0; }
+
+/* ── 日志 ── */
+.log-entry { background:var(--surface); border-radius:8px; padding:10px 12px; margin:8px 0; border:1px solid var(--border); }
+.log-date { font-weight:700; color:var(--blue); font-size:.9em; }
+.log-summary { font-size:.85em; margin-top:6px; color:var(--text); }
+.log-ops { margin-top:6px; }
+.op-row { display:flex; gap:6px; align-items:center; font-size:.82em; padding:3px 0; border-bottom:1px solid rgba(45,49,72,.3); flex-wrap:wrap; }
+.op-dir { font-weight:700; min-width:30px; }
+.op-buy { color:var(--red); }
+.op-sell { color:var(--green); }
+.op-hold { color:var(--text2); }
+.risk-item { font-size:.82em; color:var(--red); padding:2px 0; }
+.good-item { font-size:.82em; color:var(--green); padding:2px 0; }
+
+/* ── 回测 ── */
+.bt-table { overflow-x:auto; }
+.bt-table table { min-width:580px; }
+.bt-pnl-up { color:var(--green); font-weight:600; }
+.bt-pnl-down { color:var(--red); font-weight:600; }
+tr.bt-total { font-weight:700; border-top:2px solid var(--border); }
+.bt-note { font-size:.8em; color:var(--text2); margin-top:8px; }
+.bt-tabs { display:flex; gap:6px; margin-bottom:10px; }
+.bt-tab { background:var(--surface); color:var(--text2); border:1px solid var(--border); border-radius:6px; padding:5px 16px; font-size:.85em; cursor:pointer; transition:.15s; }
+.bt-tab:hover { border-color:var(--blue); color:var(--text); }
+.bt-tab.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+.bt-subhead th { font-size:.72em; color:var(--text2); font-weight:400; padding:2px 6px; }
+
+/* ── 收起/展开 ── */
+.section { margin-bottom:16px; }
+.toggle-btn { background:var(--surface2); color:var(--text2); border:1px solid var(--border); border-radius:4px; padding:2px 10px; font-size:.75em; cursor:pointer; float:right; }
+.toggle-btn:hover { color:var(--text); border-color:var(--blue); }
+
+/* ── 加载旋转 ── */
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── 选股跟踪看板 ── */
+.tracker-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding:10px 14px; background:var(--surface); border-radius:8px; border:1px solid var(--border); }
+.tracker-toolbar .refresh-info { font-size:.8em; color:var(--text2); }
+.tracker-columns { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:12px; margin-top:10px; }
+.tracker-column { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; }
+.tracker-column h3 { font-size:.95em; color:var(--blue); margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.tracker-date-group { margin-bottom:12px; }
+.tracker-date-group:last-child { margin-bottom:0; }
+.tracker-date-title { font-size:.8em; color:var(--text2); margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px; }
+.tracker-date-title .pool-tag { font-weight:400; color:var(--purple); font-size:.9em; }
+.tracker-date-title .delete-btn { margin-left:auto; background:none; border:none; color:var(--text2); cursor:pointer; font-size:1em; padding:0 4px; opacity:.5; transition:.15s; }
+.tracker-date-title .delete-btn:hover { color:var(--red); opacity:1; }
+.tracker-table { font-size:.78em; }
+.tracker-table th { font-size:.85em; padding:3px 4px; }
+.tracker-table td { padding:3px 4px; }
+.tracker-no-data { color:var(--text2); font-size:.85em; text-align:center; padding:20px; }
+.tracker-pnl-up { color:var(--green); font-weight:600; }
+.tracker-pnl-down { color:var(--red); font-weight:600; }
+
+@media(max-width:480px) {
+  .cards { grid-template-columns:repeat(2,1fr); }
+  body { padding:8px; }
+  .scan-params { flex-direction:column; align-items:stretch; }
+  .scan-params select, .scan-params input { min-width:auto; }
+}
+</style>
+</head>
+<body>
+
+<h1>📈 股票交易看板</h1>
+<div class="meta">数据更新: {{ update_date }} ｜ MACD(5,34,5) ｜ Fib 回撤</div>
+
+<!-- ════════ Tab 导航 ════════ -->
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="dashboard">📊 持仓看板</button>
+  <button class="tab-btn" data-tab="stock-selection">🎯 选股扫描</button>
+  <button class="tab-btn" data-tab="tracker">📋 选股跟踪</button>
+</div>
+
+<!-- ════════ Tab: 持仓看板 ════════ -->
+<div id="tab-dashboard" class="tab-content active">
+
+<div class="cards">
+{% for h in holdings %}
+  <div class="card {{ 'golden' if h.is_golden else ('death' if h.is_death else ('cash' if h.is_cash else '')) }}">
+    <div class="name">{{ h.name }}</div>
+    <div class="code">{{ h.code }}</div>
+    {% if not h.is_cash %}
+      <div class="pnl {{ 'pnl-up' if h.pnl_val > 0 else ('pnl-down' if h.pnl_val < 0 else 'pnl-flat') }}">{{ h.pnl }}</div>
+      <div class="pos">仓位 {{ h.position }} ｜ 成本 {{ h.cost }}</div>
+      <div class="macd">
+        {% if h.is_golden %}
+          <span class="badge badge-green">金叉</span>
+        {% elif h.is_death %}
+          <span class="badge badge-red">死叉</span>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="pnl pnl-flat" style="font-size:1em">{{ h.position }}</div>
+    {% endif %}
+  </div>
+{% endfor %}
+</div>
+
+{% if cash_alert_level == 'danger' %}
+<div class="alert">
+  ⚠️ 现金 {{ cash_pct }} 低于趋势行情 15% 红线 — 立即收缩仓位，暂停加仓
+</div>
+{% elif cash_alert_level == 'warning' %}
+<div class="alert alert-amber">
+  ⚠️ 现金 {{ cash_pct }} 处于趋势仓位区间（15%-30%）— 仅顺势持有或回踩补仓，避免追高
+</div>
+{% endif %}
+
+{% if death_stocks %}
+<div class="alert">
+  🚨 死叉持仓: {{ death_stocks | join('、') }} — 严格执行止损，不加仓
+</div>
+{% endif %}
+
+<!-- ════════ 策略与回测摘要 ════════ -->
+<h2>🎯 策略与回测摘要</h2>
+<div class="bt-table">
+<table>
+  <thead>
+    <tr>
+      <th>股票</th>
+      <th>当前策略</th>
+      <th>历史回测</th>
+      <th>胜率</th>
+      <th>止损</th>
+      <th>状态</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for h in holdings if not h.is_cash %}
+    <tr>
+      <td>{{ h.name }}</td>
+      <td>{{ h.strategy or '—' }}</td>
+      <td class="{{ 'bt-pnl-up' if h.backtest_return and ('-' not in h.backtest_return) else ('bt-pnl-down' if h.backtest_return else '') }}">
+        {{ ('+' ~ h.backtest_return ~ '%') if h.backtest_return and ('-' not in h.backtest_return) else ((h.backtest_return ~ '%') if h.backtest_return else '—') }}
+      </td>
+      <td>{{ (h.win_rate ~ '%') if h.win_rate else '—' }}</td>
+      <td>
+        {% if h.stop_loss_hard %}
+          {{ h.stop_loss }} / {{ h.stop_loss_hard }}
+        {% else %}
+          {{ h.stop_loss or '—' }}
+        {% endif %}
+      </td>
+      <td>
+        {% if h.is_death %}
+          <span class="badge badge-red">死叉</span>
+        {% elif h.is_golden %}
+          <span class="badge badge-green">金叉</span>
+        {% else %}
+          —
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<!-- ════════ 操作要点 ════════ -->
+<h2>⚡ 操作要点</h2>
+{% for a in actions %}
+<details class="action-group" {% if loop.first %}open{% endif %}>
+  <summary>{{ a.title }}</summary>
+  {% if a.table %}
+  <table>
+    <thead><tr>{% for k in a.table[0].keys() %}<th>{{ k }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for row in a.table %}<tr>{% for v in row.values() %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table>
+  {% endif %}
+  {% if a.notes %}
+  <ul class="note-list">{% for n in a.notes %}<li>{{ n }}</li>{% endfor %}</ul>
+  {% endif %}
+</details>
+{% endfor %}
+
+<!-- ════════ 操作日志 ════════ -->
+<h2>📋 最近操作</h2>
+{% for log in logs %}
+<details class="log-entry" {% if loop.first %}open{% endif %}>
+  <summary><span class="log-date">{{ log.date }} {{ log.weekday }}</span></summary>
+
+  {% if log.operations %}
+  <div class="log-ops">
+    {% for op in log.operations %}
+    <div class="op-row">
+      {% set dir_text = op.get('方向', op.get('direction', '')) %}
+      <span class="op-dir {{ 'op-buy' if '买' in dir_text else ('op-sell' if '卖' in dir_text else 'op-hold') }}">
+        {{ dir_text }}
+      </span>
+      <span style="font-weight:600">{{ op.get('股票', op.get('stock', '')) }}</span>
+      <span style="color:var(--text2)">{{ op.get('仓位变化', op.get('position_change', '')) }}</span>
+      <span style="color:var(--text2)">{{ op.get('价格区间', op.get('price', '')) }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if log.risks %}
+  <h3 style="color:var(--red)">⚠ 风险</h3>
+  {% for r in log.risks %}<div class="risk-item">· {{ r }}</div>{% endfor %}
+  {% endif %}
+
+  {% if log.positives %}
+  <h3 style="color:var(--green)">✓ 利好</h3>
+  {% for g in log.positives %}<div class="good-item">· {{ g }}</div>{% endfor %}
+  {% endif %}
+
+  {% if log.summary %}
+  <div class="log-summary"><strong>总结:</strong> {{ log.summary }}</div>
+  {% endif %}
+</details>
+{% endfor %}
+
+<!-- ════════ 回测参考 ════════ -->
+{% if backtest %}
+<h2>📈 回测参考</h2>
+
+<div class="bt-tabs">
+  <button class="bt-tab active" onclick="switchBT('1y')">1年回测</button>
+  <button class="bt-tab" onclick="switchBT('2y')">2年回测</button>
+</div>
+
+<div id="bt-1y" class="bt-panel">
+<h3>1年回测（{{ backtest.one_year.period }}）各股指定策略 · ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th>策略</th><th colspan="3">无黄白线</th><th colspan="3">加黄白线</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
+  <tbody>
+  {% for i in range(backtest.one_year.stocks|length) %}
+  {% set a = backtest.one_year.stocks[i] %}
+  {% set b = backtest.one_year_wy.stocks[i] %}
+  {% set diff = a.pnl - b.pnl %}
+  <tr>
+    <td>{{ a.name }}</td><td style="font-size:.78em">{{ a.strategy }}</td>
+    <td>{{ a.trades }}</td><td>{{ a.win_rate }}%</td>
+    <td class="{{ 'bt-pnl-up' if a.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(a.pnl) }}</td>
+    <td>{{ b.trades }}</td><td>{{ b.win_rate }}%</td>
+    <td class="{{ 'bt-pnl-up' if b.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(b.pnl) }}</td>
+    <td class="{{ 'bt-pnl-up' if diff > 0 else ('bt-pnl-down' if diff < 0 else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) }}</td>
+  </tr>
+  {% endfor %}
+  <tr class="bt-total">
+    <td colspan="2">合计（¥60,000）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">{{ '{:+,}'.format(backtest.one_year.total_pnl) }}</td>
+    <td></td><td></td>
+    <td class="{{ 'bt-pnl-up' if backtest.one_year_wy.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.one_year_wy.total_pnl) }}</td>
+    {% set d1 = backtest.one_year.total_pnl - backtest.one_year_wy.total_pnl %}
+    <td class="{{ 'bt-pnl-up' if d1 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(d1) }}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div id="bt-2y" class="bt-panel" style="display:none">
+<h3>2年回测（{{ backtest.two_year.period }}）各股指定策略 · ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th>策略</th><th colspan="4">无黄白线</th><th colspan="4">加黄白线</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>回撤</th><th>笔</th><th>胜率</th><th>盈亏</th><th>回撤</th><th></th></tr></thead>
+  <tbody>
+  {% for i in range(backtest.two_year.stocks|length) %}
+  {% set a = backtest.two_year.stocks[i] %}
+  {% set b = backtest.two_year_wy.stocks[i] %}
+  {% set diff = a.pnl - b.pnl %}
+  <tr>
+    <td>{{ a.name }}</td><td style="font-size:.78em">{{ a.strategy }}</td>
+    <td>{{ a.trades }}</td><td>{{ a.win_rate }}%</td>
+    <td class="{{ 'bt-pnl-up' if a.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(a.pnl) }}</td>
+    <td>{{ a.max_dd }}%</td>
+    <td>{{ b.trades }}</td><td>{{ b.win_rate }}%</td>
+    <td class="{{ 'bt-pnl-up' if b.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(b.pnl) }}</td>
+    <td>{{ b.max_dd }}%</td>
+    <td class="{{ 'bt-pnl-up' if diff > 0 else ('bt-pnl-down' if diff < 0 else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) }}</td>
+  </tr>
+  {% endfor %}
+  <tr class="bt-total">
+    <td colspan="2">合计（¥60,000）</td>
+    <td></td><td></td>
+    <td class="bt-pnl-up">{{ '{:+,}'.format(backtest.one_year.total_pnl) }}</td>
+    <td></td><td></td><td></td>
+    <td class="{{ 'bt-pnl-up' if backtest.one_year_wy.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.one_year_wy.total_pnl) }}</td>
+    <td></td>
+    {% set d2 = backtest.one_year.total_pnl - backtest.one_year_wy.total_pnl %}
+    <td class="{{ 'bt-pnl-up' if d2 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(d2) }}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="alert-amber alert" style="margin-top:10px">
+  💡 <strong>黄白线结论:</strong> 无黄白线整体跑赢 — 1年多赚 ¥{{ "{:,}".format(backtest.one_year.total_pnl - backtest.one_year_wy.total_pnl) }}，2年多赚 ¥{{ "{:,}".format(backtest.two_year.total_pnl - backtest.two_year_wy.total_pnl) }}。白死叉提前止损 0 次，主要拦截了盈利入场。
+</div>
+
+<script>
+function switchBT(id){
+  document.querySelectorAll('.bt-panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.bt-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('bt-'+id).style.display='block';
+  event.target.classList.add('active');
+}
+</script>
+{% endif %}
+
+{% if backtest and backtest.ruthless_one_year %}
+<h2>🔪 无情操盘手 vs 波浪理论</h2>
+<p style="font-size:.82em;color:var(--text2);margin-bottom:10px">
+  无情操盘手: B1超卖低吸 + B砖底部反转 ｜ 死叉/黄线清仓 + S1~S5出货 ｜ 止损=买入日低点
+</p>
+
+<div class="bt-tabs">
+  <button class="bt-tab active" onclick="switchRT('r1y')">1年对比</button>
+  <button class="bt-tab" onclick="switchRT('r2y')">2年对比</button>
+</div>
+
+<div id="rt-r1y" class="rt-panel">
+<h3>1年（{{ backtest.ruthless_one_year.period }}）各 ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th colspan="3">波浪理论(无黄白)</th><th colspan="3">无情操盘手</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
+  <tbody>
+  {% for r in backtest.ruthless_one_year.stocks %}
+  {% set w_list = backtest.one_year.stocks | selectattr('code', 'equalto', r.code) | list %}
+  {% set w = w_list[0] if w_list else none %}
+  {% set diff = (r.pnl - w.pnl) if w else none %}
+  <tr>
+    <td>{{ r.name }}</td>
+    <td>{{ w.trades if w else '—' }}</td><td>{{ (w.win_rate | string + '%') if w else '—' }}</td>
+    <td class="{{ 'bt-pnl-up' if (w and w.pnl >= 0) else ('bt-pnl-down' if (w and w.pnl < 0) else '') }}">{{ '{:+,}'.format(w.pnl) if w else '—' }}</td>
+    <td>{{ r.trades }}</td><td>{{ r.win_rate }}%</td>
+    <td class="{{ 'bt-pnl-up' if r.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(r.pnl) }}</td>
+    <td class="{{ 'bt-pnl-up' if (diff is not none and diff > 0) else ('bt-pnl-down' if (diff is not none and diff < 0) else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) if diff is not none else '—' }}</td>
+  </tr>
+  {% endfor %}
+  <tr class="bt-total">
+    <td>合计（¥70,000）</td>
+    <td></td><td></td>
+    <td class="{{ 'bt-pnl-up' if backtest.one_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.one_year.total_pnl) }}（{{ backtest.one_year.total_pnl_pct }}%）</td>
+    <td></td><td></td>
+    <td class="{{ 'bt-pnl-up' if backtest.ruthless_one_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.ruthless_one_year.total_pnl) }}（{{ backtest.ruthless_one_year.total_pnl_pct }}%）</td>
+    {% set rd1 = backtest.ruthless_one_year.total_pnl - backtest.one_year.total_pnl %}
+    <td class="{{ 'bt-pnl-up' if rd1 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(rd1) }}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div id="rt-r2y" class="rt-panel" style="display:none">
+<h3>2年（{{ backtest.ruthless_two_year.period }}）各 ¥10,000</h3>
+<div class="bt-table">
+<table>
+  <thead><tr><th>股票</th><th colspan="3">波浪理论(无黄白)</th><th colspan="3">无情操盘手</th><th>差异</th></tr>
+  <tr class="bt-subhead"><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
+  <tbody>
+  {% for r in backtest.ruthless_two_year.stocks %}
+  {% set w_list = backtest.two_year.stocks | selectattr('code', 'equalto', r.code) | list %}
+  {% set w = w_list[0] if w_list else none %}
+  {% set diff = (r.pnl - w.pnl) if w else none %}
+  <tr>
+    <td>{{ r.name }}</td>
+    <td>{{ w.trades if w else '—' }}</td><td>{{ (w.win_rate | string + '%') if w else '—' }}</td>
+    <td class="{{ 'bt-pnl-up' if (w and w.pnl >= 0) else ('bt-pnl-down' if (w and w.pnl < 0) else '') }}">{{ '{:+,}'.format(w.pnl) if w else '—' }}</td>
+    <td>{{ r.trades }}</td><td>{{ r.win_rate }}%</td>
+    <td class="{{ 'bt-pnl-up' if r.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(r.pnl) }}</td>
+    <td class="{{ 'bt-pnl-up' if (diff is not none and diff > 0) else ('bt-pnl-down' if (diff is not none and diff < 0) else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) if diff is not none else '—' }}</td>
+  </tr>
+  {% endfor %}
+  <tr class="bt-total">
+    <td>合计（¥70,000）</td>
+    <td></td><td></td>
+    <td class="{{ 'bt-pnl-up' if backtest.two_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.two_year.total_pnl) }}（{{ backtest.two_year.total_pnl_pct }}%）</td>
+    <td></td><td></td>
+    <td class="{{ 'bt-pnl-up' if backtest.ruthless_two_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.ruthless_two_year.total_pnl) }}（{{ backtest.ruthless_two_year.total_pnl_pct }}%）</td>
+    {% set rd2 = backtest.ruthless_two_year.total_pnl - backtest.two_year.total_pnl %}
+    <td class="{{ 'bt-pnl-up' if rd2 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(rd2) }}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="alert-amber alert" style="margin-top:10px">
+  💡 <strong>策略对比结论:</strong>
+  1年无情操盘手 +{{ backtest.ruthless_one_year.total_pnl_pct }}% 跑赢波浪 +{{ backtest.one_year.total_pnl_pct }}%（趋势股抓得好）；
+  2年波浪 +{{ backtest.two_year.total_pnl_pct }}% 大幅跑赢无情 +{{ backtest.ruthless_two_year.total_pnl_pct }}%（频繁止损磨损本金）。
+  震荡股（湖北宜化）不适合无情操盘手。
+</div>
+
+<script>
+function switchRT(id){
+  document.querySelectorAll('.rt-panel').forEach(p=>p.style.display='none');
+  event.target.parentElement.querySelectorAll('.bt-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('rt-'+id).style.display='block';
+  event.target.classList.add('active');
+}
+</script>
+{% endif %}
+
+<div style="margin-top:24px;text-align:center;color:var(--text2);font-size:.72em">
+  📈 Stock Dashboard · ranyue.cloud/stock_dashboard
+</div>
+
+</div><!-- /tab-dashboard -->
+
+<!-- ════════ Tab: 选股扫描 ════════ -->
+<div id="tab-stock-selection" class="tab-content">
+
+<h2>🎯 选股扫描</h2>
+
+<!-- 参数面板 -->
+<div class="scan-panel">
+  <div class="scan-params">
+    <label>选股策略
+      <select id="ss-strategy">
+        <option value="b1">B1量价共振</option>
+        <option value="brick">砖型图趋势拐点</option>
+        <option value="ruthless_wave">无情操盘手+波浪理论</option>
+      </select>
+    </label>
+    <label>股票池
+      <select id="ss-pool">
+        <option value="沪深300">沪深300 (~300只)</option>
+        <option value="中证500">中证500 (~500只)</option>
+        <option value="沪深主板">沪深主板 (~3300只)</option>
+        <option value="全A">全A (~5000只)</option>
+        <option value="自选">自选</option>
+      </select>
+    </label>
+    <label>Top N
+      <input type="number" id="ss-top" value="30" min="5" max="200">
+    </label>
+    <label>最低分
+      <input type="number" id="ss-min-score" value="25" min="0" max="100">
+    </label>
+    <label>间隔(秒)
+      <input type="number" id="ss-delay" value="0.15" min="0" max="2" step="0.05">
+    </label>
+  </div>
+  <button class="btn-scan" id="ss-btn" onclick="startScan()">🚀 开始扫描</button>
+  <button class="btn-scan" id="ss-stop-btn" onclick="stopScan()" style="display:none;background:var(--red)">⏹ 停止扫描</button>
+</div>
+
+<!-- 进度展示 -->
+<div id="ss-progress" class="progress-area" style="display:none">
+  <div class="progress-bar"><div class="progress-fill" id="ss-progress-fill"></div></div>
+  <div class="progress-text" id="ss-progress-text"></div>
+</div>
+
+<!-- 错误信息 -->
+<div id="ss-error" class="alert" style="display:none"></div>
+
+<!-- 结果 -->
+<div id="ss-results" class="scan-results" style="display:none">
+  <h3>扫描结果 <span id="ss-result-summary" style="font-weight:400;font-size:.85em;color:var(--text2)"></span></h3>
+  <div id="ss-result-table"></div>
+</div>
+
+<hr style="border-color:var(--border);margin:20px 0;">
+
+<!-- 单票诊断 -->
+<h3>🔍 单票诊断</h3>
+<div class="test-area">
+  <label style="font-size:.8em;color:var(--text2);margin-right:6px;">股票代码</label>
+  <input type="text" id="ss-test-code" placeholder="例如 600519" style="text-transform:uppercase;">
+  <label style="font-size:.8em;color:var(--text2);margin:0 6px 0 12px;">策略</label>
+  <select id="ss-test-strategy" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:.85em;">
+    <option value="b1">B1量价共振</option>
+    <option value="brick">砖型图趋势拐点</option>
+    <option value="ruthless_wave">无情操盘手+波浪理论</option>
+  </select>
+  <button class="btn-scan-secondary" onclick="testStock()" style="margin-left:8px;">诊断</button>
+</div>
+<div id="ss-test-result" class="test-result" style="display:none"></div>
+
+</div><!-- /tab-stock-selection -->
+
+<!-- ════════ Tab: 选股跟踪 ════════ -->
+<div id="tab-tracker" class="tab-content">
+
+<h2>📋 选股跟踪</h2>
+
+<div class="tracker-toolbar">
+  <span class="refresh-info" id="tracker-refresh-info">上次刷新: 从未</span>
+  <button class="btn-scan" id="tracker-refresh-btn" onclick="refreshTracker()" style="font-size:.8em;padding:6px 16px;">🔄 刷新全部价格</button>
+</div>
+
+<div id="tracker-content">
+  <div class="tracker-no-data" id="tracker-empty">暂无跟踪数据。完成选股扫描后，结果将自动保存到这里。</div>
+  <div id="tracker-columns" class="tracker-columns" style="display:none"></div>
+</div>
+
+</div><!-- /tab-tracker -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// Tab 切换
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+    // 切换到选股 tab 时自动加载选项
+    if (this.dataset.tab === 'stock-selection') {
+      loadPoolsAndStrategies();
+    }
+    // 切换到跟踪 tab 时自动加载数据
+    if (this.dataset.tab === 'tracker') {
+      loadTracker();
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// API 基础路径
+// ═══════════════════════════════════════════════════════════
+
+// 全局状态：当前轮询 timer
+let _pollTimer = null;
+
+// ═══════════════════════════════════════════════════════════
+// 加载股票池和策略列表
+// ═══════════════════════════════════════════════════════════
+async function loadPoolsAndStrategies() {
+  try {
+    const [poolsRes, stratsRes] = await Promise.all([
+      fetch('/api/pools').then(r => r.json()),
+      fetch('/api/strategies').then(r => r.json())
+    ]);
+    // 更新 stock pool select — pools are static in HTML, just validate
+    const poolSel = document.getElementById('ss-pool');
+    if (poolsRes.pools) {
+      // already hardcoded, but could update descriptions
+    }
+    // 更新 strategy select
+    const stratSel = document.getElementById('ss-strategy');
+    if (stratsRes.strategies && stratsRes.strategies.length > 0) {
+      stratSel.innerHTML = stratsRes.strategies.map(s =>
+        `<option value="${s.name}">${s.display_name}</option>`
+      ).join('');
+    }
+  } catch(e) {
+    console.warn('加载选项失败', e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 开始扫描
+// ═══════════════════════════════════════════════════════════
+async function startScan() {
+  const btn = document.getElementById('ss-btn');
+  const progress = document.getElementById('ss-progress');
+  const progressFill = document.getElementById('ss-progress-fill');
+  const progressText = document.getElementById('ss-progress-text');
+  const errorDiv = document.getElementById('ss-error');
+  const resultsDiv = document.getElementById('ss-results');
+
+  // 清除之前状态
+  if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
+  errorDiv.style.display = 'none';
+  resultsDiv.style.display = 'none';
+
+  const params = new URLSearchParams({
+    pool: document.getElementById('ss-pool').value,
+    strategy: document.getElementById('ss-strategy').value,
+    top_n: document.getElementById('ss-top').value,
+    min_score: document.getElementById('ss-min-score').value,
+    delay: document.getElementById('ss-delay').value,
+  });
+
+  btn.style.display = 'none';
+  const stopBtn = document.getElementById('ss-stop-btn');
+  stopBtn.style.display = 'inline-block';
+  stopBtn.disabled = false;
+  stopBtn.textContent = '⏹ 停止扫描';
+  progress.style.display = 'block';
+  progressFill.style.width = '0%';
+  progressFill.className = 'progress-fill';
+  progressText.innerHTML = '提交扫描任务...';
+
+  try {
+    const resp = await fetch('/api/scan?' + params.toString(), { method: 'POST' });
+    const data = await resp.json();
+    if (!data.task_id) { throw new Error(data.error || '提交失败'); }
+
+    // 开始轮询进度
+    pollTask(data.task_id);
+  } catch(e) {
+    resetScanButtons();
+    progress.style.display = 'none';
+    showError('提交失败: ' + e.message);
+  }
+}
+
+function resetScanButtons() {
+  const btn = document.getElementById('ss-btn');
+  const stopBtn = document.getElementById('ss-stop-btn');
+  btn.style.display = 'inline-block';
+  btn.disabled = false;
+  btn.textContent = '🚀 开始扫描';
+  stopBtn.style.display = 'none';
+  stopBtn.disabled = true;
+}
+
+async function stopScan() {
+  const stopBtn = document.getElementById('ss-stop-btn');
+  stopBtn.disabled = true;
+  stopBtn.textContent = '⏳ 停止中...';
+
+  try {
+    // 找到当前运行的任务 ID
+    const resp = await fetch('/api/scan/tasks');
+    const data = await resp.json();
+    const running = (data.tasks || []).find(t => t.status === 'running');
+    if (!running) {
+      stopBtn.textContent = '无运行中的任务';
+      resetScanButtons();
+      return;
+    }
+
+    const stopResp = await fetch('/api/scan/' + running.task_id + '/stop', { method: 'POST' });
+    const stopData = await stopResp.json();
+    if (stopData.status === 'cancelling') {
+      stopBtn.textContent = '⏹ 停止中...';
+    } else {
+      resetScanButtons();
+    }
+  } catch (e) {
+    showError('停止失败: ' + e.message);
+    resetScanButtons();
+  }
+}
+
+function pollTask(taskId) {
+  const progressFill = document.getElementById('ss-progress-fill');
+  const progressText = document.getElementById('ss-progress-text');
+
+  _pollTimer = setInterval(async () => {
+    try {
+      const resp = await fetch('/api/scan/' + taskId);
+      const data = await resp.json();
+      if (!data || data.error) {
+        clearInterval(_pollTimer); _pollTimer = null;
+        resetScanButtons();
+        showError(data.error || '任务查询失败');
+        return;
+      }
+
+      const p = data.progress;
+      const pct = p.total > 0 ? Math.min(100, Math.round(p.scanned / p.total * 100)) : 0;
+      progressFill.style.width = pct + '%';
+
+      if (data.status === 'running') {
+        progressText.innerHTML =
+          `<strong>${pct}%</strong> 已扫描 ${p.scanned}/${p.total} · ` +
+          `合格 <strong>${p.passed}</strong> 只 · ` +
+          (p.current_stock ? `当前 ${p.current_stock} · ` : '') +
+          `耗时 ${p.elapsed}s` +
+          (p.eta > 0 ? ` · 预计剩余 ${p.eta}s` : '');
+      } else if (data.status === 'completed') {
+        clearInterval(_pollTimer); _pollTimer = null;
+        progressFill.className = 'progress-fill done';
+        progressText.innerHTML =
+          `<strong>扫描完成</strong> 共扫描 ${p.scanned} 只 · 合格 <strong>${p.passed}</strong> 只 · 耗时 ${p.elapsed}s`;
+        resetScanButtons();
+        fetchResult(taskId);
+      } else if (data.status === 'cancelled') {
+        clearInterval(_pollTimer); _pollTimer = null;
+        progressFill.className = 'progress-fill';
+        progressText.innerHTML =
+          `<strong>扫描已停止</strong> 已扫描 ${p.scanned}/${p.total} · 合格 ${p.passed} 只 · 耗时 ${p.elapsed}s`;
+        resetScanButtons();
+      } else if (data.status === 'failed') {
+        clearInterval(_pollTimer); _pollTimer = null;
+        progressFill.className = 'progress-fill fail';
+        progressText.innerHTML = `<strong>扫描失败</strong>: ${data.error || '未知错误'}`;
+        resetScanButtons();
+      }
+    } catch(e) {
+      clearInterval(_pollTimer); _pollTimer = null;
+      resetScanButtons();
+      showError('轮询异常: ' + e.message);
+    }
+  }, 1500);
+}
+
+async function fetchResult(taskId) {
+  const resultsDiv = document.getElementById('ss-results');
+  const summary = document.getElementById('ss-result-summary');
+  const tableDiv = document.getElementById('ss-result-table');
+
+  try {
+    const resp = await fetch('/api/scan/' + taskId + '/result');
+    const data = await resp.json();
+    if (!data.results || data.results.length === 0) {
+      resultsDiv.style.display = 'block';
+      summary.textContent = '— 无符合条件的标的';
+      tableDiv.innerHTML = '<p style="color:var(--text2);font-size:.85em;">当前市场条件下，暂无触发买入信号的标的。</p>';
+      return;
+    }
+
+    resultsDiv.style.display = 'block';
+    summary.textContent = `— 共 ${data.count} 只`;
+
+    let html = '<table><thead><tr><th>#</th><th>股票</th><th>代码</th><th>得分</th><th>现价</th><th>涨跌</th><th>核心信号</th></tr></thead><tbody>';
+    data.results.forEach((r, i) => {
+      const info = r.latest_info;
+      const sign = info.pct_chg >= 0 ? '+' : '';
+      const topSignals = [...r.details].sort((a,b) => b.score - a.score).slice(0, 2);
+      const signalDesc = topSignals.map(d => d.desc.replace(/[（(].*[）)]/g,'')).join(' + ');
+      const scoreClass = r.score >= 50 ? 'score-high' : (r.score >= 30 ? 'score-mid' : 'score-low');
+      const pnlClass = info.pct_chg >= 0 ? 'pnl-up' : 'pnl-down';
+      html += `<tr class="row-s" onclick="toggleDetail(this)">
+        <td>${i+1}</td>
+        <td><strong>${r.name}</strong></td>
+        <td style="color:var(--text2)">${r.code}</td>
+        <td class="${scoreClass}">${r.score}</td>
+        <td>${info.close.toFixed(2)}</td>
+        <td class="${pnlClass}">${sign}${info.pct_chg.toFixed(2)}%</td>
+        <td style="font-size:.78em">${signalDesc}</td>
+      </tr>`;
+      // detail row (hidden)
+      html += `<tr class="row-detail" style="display:none"><td colspan="7">`;
+      html += `<div class="detail-grid">`;
+      html += `<span class="label">日期</span><span class="value">${info.date}</span>`;
+      html += `<span class="label">成交量</span><span class="value">${(info.volume/10000).toFixed(0)}万</span>`;
+      // 策略指标
+      if (r.indicators) {
+        Object.entries(r.indicators).forEach(([k,v]) => {
+          if (v !== null && v !== undefined) {
+            html += `<span class="label">${k}</span><span class="value">${typeof v === 'number' ? v.toFixed(2) : v}</span>`;
+          }
+        });
+      }
+      html += `</div>`;
+      html += `<div style="margin-top:8px;font-size:.8em;"><strong>匹配条件:</strong></div>`;
+      r.details.sort((a,b) => b.score - a.score).forEach(d => {
+        html += `<div style="font-size:.78em;padding:2px 0;"><span class="cond-pass">✓ ${d.desc}</span> <span style="color:var(--text2)">${d.score}/${d.weight}</span> · ${d.detail.reason || ''}</div>`;
+      });
+      html += `</td></tr>`;
+    });
+    html += '</tbody></table>';
+    tableDiv.innerHTML = html;
+  } catch(e) {
+    showError('获取结果失败: ' + e.message);
+  }
+}
+
+function toggleDetail(row) {
+  const detailRow = row.nextElementSibling;
+  if (detailRow && detailRow.classList.contains('row-detail')) {
+    detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 单票诊断
+// ═══════════════════════════════════════════════════════════
+async function testStock() {
+  const code = document.getElementById('ss-test-code').value.trim();
+  const strategy = document.getElementById('ss-test-strategy').value;
+  const resultDiv = document.getElementById('ss-test-result');
+
+  if (!code) { showError('请输入股票代码'); return; }
+
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '<span class="spinner"></span> 正在分析...';
+
+  try {
+    const resp = await fetch(`/api/scan/test/${code}?strategy=${strategy}`, { method: 'POST' });
+    const data = await resp.json();
+    if (data.error) {
+      resultDiv.innerHTML = `<span style="color:var(--red)">❌ 诊断失败:</span> ${data.error}`;
+      return;
+    }
+    if (!data.passed) {
+      resultDiv.innerHTML = `<span style="color:var(--amber)">⏭️ ${data.name}(${data.code}) 被排除</span>\n原因: ${data.reason || '不满足基础条件'}`;
+      return;
+    }
+    let html = `<span style="color:var(--green);font-weight:600;">✅ ${data.name}(${data.code})</span>  得分: <strong>${data.score}</strong>\n\n`;
+    const info = data.latest_info;
+    html += `现价: ${info.close.toFixed(2)}  ${info.pct_chg >= 0 ? '+' : ''}${info.pct_chg.toFixed(2)}%  日期: ${info.date}\n`;
+    if (data.indicators) {
+      Object.entries(data.indicators).forEach(([k,v]) => {
+        if (v !== null) html += `${k}: ${typeof v === 'number' ? v.toFixed(2) : v}  `;
+      });
+    }
+    html += '\n\n匹配条件:\n';
+    data.details.sort((a,b) => b.score - a.score).forEach(d => {
+      html += `  ✓ ${d.desc}  (${d.score}/${d.weight})  ${d.detail.reason || ''}\n`;
+    });
+    resultDiv.innerHTML = html;
+  } catch(e) {
+    resultDiv.innerHTML = `<span style="color:var(--red)">❌ 请求异常:</span> ${e.message}`;
+  }
+}
+
+function showError(msg) {
+  const errorDiv = document.getElementById('ss-error');
+  errorDiv.textContent = msg;
+  errorDiv.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════
+// 选股跟踪看板
+// ═══════════════════════════════════════════════════════════
+
+async function loadTracker() {
+  const emptyDiv = document.getElementById('tracker-empty');
+  const columnsDiv = document.getElementById('tracker-columns');
+  const refreshInfo = document.getElementById('tracker-refresh-info');
+
+  try {
+    const resp = await fetch('/api/tracker');
+    const data = await resp.json();
+    const grouped = data.grouped || {};
+    const entries = Object.values(grouped);
+    const allEntries = entries.reduce((a, g) => a.concat(g.entries || []), []);
+
+    if (allEntries.length === 0) {
+      emptyDiv.style.display = 'block';
+      columnsDiv.style.display = 'none';
+      refreshInfo.textContent = '上次刷新: —';
+      return;
+    }
+
+    emptyDiv.style.display = 'none';
+    columnsDiv.style.display = 'grid';
+
+    // 找出最近一次刷新时间
+    let lastRefresh = null;
+    allEntries.forEach(e => {
+      (e.stocks || []).forEach(s => {
+        if (s.latest_date && (!lastRefresh || s.latest_date > lastRefresh)) {
+          lastRefresh = s.latest_date;
+        }
+      });
+    });
+    refreshInfo.textContent = lastRefresh ? '上次刷新: ' + lastRefresh : '上次刷新: 从未';
+
+    renderTracker(grouped, allEntries);
+  } catch (e) {
+    emptyDiv.style.display = 'block';
+    columnsDiv.style.display = 'none';
+    emptyDiv.innerHTML = '<span style="color:var(--red)">加载失败: ' + e.message + '</span>';
+  }
+}
+
+function renderTracker(grouped, allEntries) {
+  const columnsDiv = document.getElementById('tracker-columns');
+  let html = '';
+
+  // 按策略分组渲染为列
+  for (const [stratKey, stratGroup] of Object.entries(grouped)) {
+    html += `<div class="tracker-column">`;
+    html += `<h3>${stratGroup.strategy_name}</h3>`;
+
+    const entries = stratGroup.entries || [];
+    entries.sort((a, b) => b.scan_date.localeCompare(a.scan_date)); // 日期降序
+
+    entries.forEach(entry => {
+      html += `<div class="tracker-date-group">`;
+      html += `<div class="tracker-date-title">`;
+      html += `<span>${entry.scan_date}</span>`;
+      html += `<span class="pool-tag">${entry.pool_name || ''} Top${entry.top_n || '?'}</span>`;
+      html += `<button class="delete-btn" title="删除" onclick="deleteTrackerEntry('${entry.id}', this)">✕</button>`;
+      html += `</div>`;
+
+      const stocks = entry.stocks || [];
+      if (stocks.length === 0) {
+        html += `<div class="tracker-no-data" style="padding:8px">该次扫描无结果</div>`;
+      } else {
+        html += `<div class="scan-results"><table class="tracker-table">`;
+        html += `<thead><tr>`;
+        html += `<th>#</th><th>代码</th><th>名称</th><th>被选价</th><th>最新价</th><th>涨跌</th>`;
+        html += `</tr></thead><tbody>`;
+        stocks.forEach((s, i) => {
+          const pnlClass = s.pct_change === null ? '' : (s.pct_change >= 0 ? 'tracker-pnl-up' : 'tracker-pnl-down');
+          const pnlText = s.pct_change === null ? '—' : (s.pct_change >= 0 ? '+' : '') + s.pct_change.toFixed(2) + '%';
+          html += `<tr>`;
+          html += `<td style="color:var(--text2)">${i + 1}</td>`;
+          html += `<td style="color:var(--text2)">${s.code}</td>`;
+          html += `<td><strong>${s.name}</strong></td>`;
+          html += `<td>${s.scan_price ? s.scan_price.toFixed(2) : '—'}</td>`;
+          html += `<td>${s.latest_price ? s.latest_price.toFixed(2) : '—'}</td>`;
+          html += `<td class="${pnlClass}">${pnlText}</td>`;
+          html += `</tr>`;
+        });
+        html += `</tbody></table></div>`;
+      }
+
+      html += `</div>`;  // end tracker-date-group
+    });
+
+    html += `</div>`;  // end tracker-column
+  }
+
+  columnsDiv.innerHTML = html;
+}
+
+async function refreshTracker() {
+  const btn = document.getElementById('tracker-refresh-btn');
+  const refreshInfo = document.getElementById('tracker-refresh-info');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 刷新中...';
+  refreshInfo.textContent = '正在获取最新价格...';
+
+  try {
+    const resp = await fetch('/api/tracker/refresh', { method: 'POST' });
+    const data = await resp.json();
+    refreshInfo.textContent = '上次刷新: ' + (data.refresh_time || '刚完成');
+
+    // 重新渲染
+    const grouped = data.grouped || {};
+    const entries = Object.values(grouped);
+    const allEntries = entries.reduce((a, g) => a.concat(g.entries || []), []);
+    renderTracker(grouped, allEntries);
+
+    const emptyDiv = document.getElementById('tracker-empty');
+    const columnsDiv = document.getElementById('tracker-columns');
+    if (allEntries.length === 0) {
+      emptyDiv.style.display = 'block';
+      columnsDiv.style.display = 'none';
+    } else {
+      emptyDiv.style.display = 'none';
+      columnsDiv.style.display = 'grid';
+    }
+  } catch (e) {
+    refreshInfo.textContent = '刷新失败: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔄 刷新全部价格';
+  }
+}
+
+async function deleteTrackerEntry(entryId, btn) {
+  if (!confirm('确认删除该条跟踪记录？')) return;
+  try {
+    const resp = await fetch('/api/tracker/' + entryId, { method: 'DELETE' });
+    const data = await resp.json();
+    if (data.status === 'deleted') {
+      // 重新加载
+      loadTracker();
+    }
+  } catch (e) {
+    alert('删除失败: ' + e.message);
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+import pandas as pd
+import numpy as np
+import sys
+from pathlib import Path
+
+# 引入项目的 fetch_kline（东方财富 API）
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS_DIR = PROJECT_ROOT / "脚本"
+sys.path.insert(0, str(SCRIPTS_DIR))
+from fetch_wave_data import fetch_kline
+
+
+def tongdaxin_sma(series: pd.Series, n: int, m: int) -> pd.Series:
+    """
+    还原通达信的 SMA(X, N, M) 算法
+    通达信 SMA 算法本质上是 alpha = M / N 的 EMA 指数加权平均
+    """
+    return series.ewm(alpha=m/n, adjust=False).mean()
+
+
+def calculate_brick_inflection_signals(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    将通达信"砖型图"趋势拐点选股公式转化为 Pandas 计算逻辑
+    输入: df 包含 ['date', 'open', 'close', 'high', 'low']
+          (与 fetch_kline 返回的字段命名一致)
+    输出: 带有 'XG_Signal' (选股信号) 的原 DataFrame
+    """
+    df = df.copy()
+    df = df.sort_values(by='date').reset_index(drop=True)
+
+    close = df['close']
+    high = df['high']
+    low = df['low']
+
+    # ================ 1. 核心动量指标构建 ================
+    # 4日最高价和最低价
+    hhv_h_4 = high.rolling(window=4).max()
+    llv_l_4 = low.rolling(window=4).min()
+
+    # 防止除以 0 的情况发生
+    den_4 = hhv_h_4 - llv_l_4
+
+    # VAR1A:=(HHV(HIGH,4)-CLOSE)/(HHV(HIGH,4)-LLV(LOW,4))*100-90;
+    var1a = np.where(den_4 == 0, 0, (hhv_h_4 - close) / den_4 * 100) - 90
+    var1a_series = pd.Series(var1a, index=df.index)
+
+    # VAR2A:=SMA(VAR1A,4,1)+100;
+    var2a = tongdaxin_sma(var1a_series, 4, 1) + 100
+
+    # VAR3A:=(CLOSE-LLV(LOW,4))/(HHV(HIGH,4)-LLV(LOW,4))*100;
+    var3a = np.where(den_4 == 0, 0, (close - llv_l_4) / den_4 * 100)
+    var3a_series = pd.Series(var3a, index=df.index)
+
+    # VAR4A:=SMA(VAR3A,6,1);
+    var4a = tongdaxin_sma(var3a_series, 6, 1)
+
+    # VAR5A:=SMA(VAR4A,6,1)+100;
+    var5a = tongdaxin_sma(var4a, 6, 1) + 100
+
+    # VAR6A:=VAR5A-VAR2A;
+    var6a = var5a - var2a
+
+    # ================ 2. 趋势过滤与抗噪 ================
+    # 砖型图:=IF(VAR6A>4,VAR6A-4,0);
+    brick = np.where(var6a > 4, var6a - 4, 0)
+    brick_series = pd.Series(brick, index=df.index)
+
+    # ================ 3. V型拐点与反弹力度判定 ================
+    # AA:=砖型图>REF(砖型图,1);
+    # CC:=REF(砖型图,1)<REF(砖型图,2);
+    aa = brick_series > brick_series.shift(1)
+    cc = brick_series.shift(1) < brick_series.shift(2)
+
+    # 红柱长度:=砖型图-REF(砖型图,1);
+    red_bar = brick_series - brick_series.shift(1)
+
+    # 前绿柱长度:=REF(砖型图,2)-REF(砖型图,1);
+    prev_green_bar = brick_series.shift(2) - brick_series.shift(1)
+
+    # 反弹力度条件：红柱长度 > 前绿柱长度 * 2/3
+    rebound_cond = red_bar > (prev_green_bar * 2 / 3)
+
+    # ================ 4. 趋势护航 ================
+    # 短期线:=EMA(EMA(CLOSE,10),10);
+    # 通达信的 EMA 等同于 pandas 里的 span 参数
+    short_line = close.ewm(span=10, adjust=False).mean().ewm(span=10, adjust=False).mean()
+
+    # 多空线:=(MA(CLOSE,14)+MA(CLOSE,28)+MA(CLOSE,57)+MA(CLOSE,114))/4;
+    ma14 = close.rolling(window=14).mean()
+    ma28 = close.rolling(window=28).mean()
+    ma57 = close.rolling(window=57).mean()
+    ma114 = close.rolling(window=114).mean()
+    long_line = (ma14 + ma28 + ma57 + ma114) / 4
+
+    # 趋势条件:=短期线>多空线 AND CLOSE>多空线;
+    trend_cond = (short_line > long_line) & (close > long_line)
+
+    # ================ 5. 最终选股 ================
+    # XG: AA AND CC AND 红柱长度>前绿柱长度*2/3 AND 趋势条件;
+    xg = aa & cc & rebound_cond & trend_cond
+
+    df['XG_Signal'] = xg
+
+    # 保留部分核心中间变量以便观测
+    df['short_line'] = short_line
+    df['long_line'] = long_line
+    df['brick_value'] = brick_series
+
+    return df
+
+
+def fetch_and_test_brick(symbol="600519"):
+    """
+    测试运行：从东方财富 API 获取日K线后应用"砖型图拐点"公式
+    """
+    print(f"正在从东方财富 API 拉取 {symbol} 的历史数据...")
+    # 由于需要计算114日均线，拉取足够长的历史数据
+    name, klines = fetch_kline(symbol, count=500, period="day")
+
+    # 将 list[dict] 转为 DataFrame（与 fetch_kline 返回字段一致）
+    df = pd.DataFrame(klines)
+
+    print("开始计算砖型图拐点选股指标...")
+    result_df = calculate_brick_inflection_signals(df)
+
+    # 筛选出触发了最终买入信号的日期
+    buy_signals = result_df[result_df['XG_Signal'] == True].copy()
+
+    # 将日期格式化便于阅读
+    if not buy_signals.empty and 'date' in buy_signals.columns:
+        buy_signals['date'] = pd.to_datetime(buy_signals['date']).dt.strftime('%Y-%m-%d')
+
+    print(f"\n计算完成！历史共触发选股信号 {len(buy_signals)} 次。")
+    if not buy_signals.empty:
+        print("近期触发信号的日期和数据表现 (展示最近5次):")
+        # 仅展示最后5次信号，并提取关键列
+        display_cols = ['date', 'open', 'close', 'short_line', 'long_line', 'brick_value', 'XG_Signal']
+        print(buy_signals[display_cols].tail(5).to_string(index=False))
+
+
+if __name__ == "__main__":
+    # 以贵州茅台（600519）为例跑通流程测试
+    fetch_and_test_brick("600519")
