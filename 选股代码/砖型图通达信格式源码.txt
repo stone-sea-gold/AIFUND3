@@ -1,0 +1,28 @@
+VAR1A:=(HHV(HIGH,4)-CLOSE)/(HHV(HIGH,4)-LLV(LOW,4))*100-90;
+VAR2A:=SMA(VAR1A,4,1)+100;
+VAR3A:=(CLOSE-LLV(LOW,4))/(HHV(HIGH,4)-LLV(LOW,4))*100;
+VAR4A:=SMA(VAR3A,6,1);
+VAR5A:=SMA(VAR4A,6,1)+100;
+VAR6A:=VAR5A-VAR2A;
+
+砖型图:=IF(VAR6A>4,VAR6A-4,0);
+
+AA:=砖型图>REF(砖型图,1);
+CC:=REF(砖型图,1)<REF(砖型图,2);
+
+红柱长度:=砖型图-REF(砖型图,1);
+前绿柱长度:=REF(砖型图,2)-REF(砖型图,1);
+
+{ ===== 趋势线部分 ===== }
+
+短期线:=EMA(EMA(CLOSE,10),10);
+多空线:=(MA(CLOSE,14)+MA(CLOSE,28)+MA(CLOSE,57)+MA(CLOSE,114))/4;
+
+趋势条件:=短期线>多空线 AND CLOSE>多空线;
+
+{ ===== 最终选股 ===== }
+
+XG:
+AA AND CC
+AND 红柱长度>前绿柱长度*2/3
+AND 趋势条件;

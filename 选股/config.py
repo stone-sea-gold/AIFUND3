@@ -34,5 +34,11 @@ EXCLUDE_BELOW_YELLOW = True
 # 输出控制
 TOP_N = 30                   # 输出前N只
 MIN_SCORE = 25               # 最低入围总分
+# 通达信本地数据源（K线读取加速）
+TDX_DATA_DIR = "D:/BaiduNetdiskDownload"     # 通达信安装目录（vipdoc 的父级，TDX直接更新此目录）
+TDX_STALE_DAYS = 2            # 本地数据滞后超过N个交易日时，用API增量补充
+# 设为 False 可完全回退到东方财富 API
+USE_TDX_DATA = True
+
 OUTPUT_DIR = "选股/选股结果"  # 报告输出目录（相对项目根）
-SAVE_CACHE = True            # 是否缓存单票分析结果以加速
+SAVE_CACHE = True            # K线数据源优先使用通达信本地文件（由 kline_source.py 处理）

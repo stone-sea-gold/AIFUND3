@@ -1,4 +1,1960 @@
 {
   "max_entries": 7,
-  "entries": []
+  "entries": [
+    {
+      "id": "6a994000",
+      "scan_date": "2026-05-14",
+      "strategy": "brick",
+      "strategy_name": "砖型图趋势拐点",
+      "pool_name": "沪深主板",
+      "top_n": 30,
+      "created_at": "2026-05-14 23:25:01",
+      "stocks": [
+        {
+          "code": "002443",
+          "name": "金洲管道",
+          "score": 100,
+          "scan_price": 12.24,
+          "scan_date": "2026-05-14",
+          "latest_price": 12.33,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.74
+        },
+        {
+          "code": "002833",
+          "name": "弘亚数控",
+          "score": 100,
+          "scan_price": 22.31,
+          "scan_date": "2026-05-14",
+          "latest_price": 21.61,
+          "latest_date": "2026-05-15",
+          "pct_change": -3.14
+        },
+        {
+          "code": "002943",
+          "name": "宇晶股份",
+          "score": 100,
+          "scan_price": 86.5,
+          "scan_date": "2026-05-14",
+          "latest_price": 78.75,
+          "latest_date": "2026-05-15",
+          "pct_change": -8.96
+        },
+        {
+          "code": "002976",
+          "name": "瑞玛精密",
+          "score": 100,
+          "scan_price": 36.37,
+          "scan_date": "2026-05-14",
+          "latest_price": 34.5,
+          "latest_date": "2026-05-15",
+          "pct_change": -5.14
+        },
+        {
+          "code": "002990",
+          "name": "盛视科技",
+          "score": 100,
+          "scan_price": 69.41,
+          "scan_date": "2026-05-14",
+          "latest_price": 69.49,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.12
+        },
+        {
+          "code": "600353",
+          "name": "旭光电子",
+          "score": 100,
+          "scan_price": 21.1,
+          "scan_date": "2026-05-14",
+          "latest_price": 21.09,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.05
+        },
+        {
+          "code": "603217",
+          "name": "元利科技",
+          "score": 100,
+          "scan_price": 30.49,
+          "scan_date": "2026-05-14",
+          "latest_price": 32.47,
+          "latest_date": "2026-05-15",
+          "pct_change": 6.49
+        },
+        {
+          "code": "002723",
+          "name": "小崧股份",
+          "score": 94,
+          "scan_price": 9.94,
+          "scan_date": "2026-05-14",
+          "latest_price": 9.23,
+          "latest_date": "2026-05-15",
+          "pct_change": -7.14
+        },
+        {
+          "code": "601939",
+          "name": "建设银行",
+          "score": 94,
+          "scan_price": 9.74,
+          "scan_date": "2026-05-14",
+          "latest_price": 9.82,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.82
+        },
+        {
+          "code": "603033",
+          "name": "三维股份",
+          "score": 94,
+          "scan_price": 11.66,
+          "scan_date": "2026-05-14",
+          "latest_price": 11.6,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.51
+        },
+        {
+          "code": "002458",
+          "name": "益生股份",
+          "score": 93,
+          "scan_price": 11.72,
+          "scan_date": "2026-05-14",
+          "latest_price": 9.16,
+          "latest_date": "2026-05-15",
+          "pct_change": -21.84
+        },
+        {
+          "code": "003022",
+          "name": "联泓新科",
+          "score": 93,
+          "scan_price": 27.49,
+          "scan_date": "2026-05-14",
+          "latest_price": 25.13,
+          "latest_date": "2026-05-15",
+          "pct_change": -8.58
+        },
+        {
+          "code": "600847",
+          "name": "万里股份",
+          "score": 93,
+          "scan_price": 15.29,
+          "scan_date": "2026-05-14",
+          "latest_price": 15.36,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.46
+        },
+        {
+          "code": "603016",
+          "name": "新宏泰",
+          "score": 93,
+          "scan_price": 56.25,
+          "scan_date": "2026-05-14",
+          "latest_price": 51.9,
+          "latest_date": "2026-05-15",
+          "pct_change": -7.73
+        },
+        {
+          "code": "603057",
+          "name": "紫燕食品",
+          "score": 88,
+          "scan_price": 28.21,
+          "scan_date": "2026-05-14",
+          "latest_price": 28.07,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.5
+        },
+        {
+          "code": "600382",
+          "name": "广东明珠",
+          "score": 82,
+          "scan_price": 8.79,
+          "scan_date": "2026-05-14",
+          "latest_price": 9.06,
+          "latest_date": "2026-05-15",
+          "pct_change": 3.07
+        },
+        {
+          "code": "603163",
+          "name": "圣晖集成",
+          "score": 82,
+          "scan_price": 106.79,
+          "scan_date": "2026-05-14",
+          "latest_price": 110.75,
+          "latest_date": "2026-05-15",
+          "pct_change": 3.71
+        },
+        {
+          "code": "001366",
+          "name": "播恩集团",
+          "score": 79,
+          "scan_price": 15.91,
+          "scan_date": "2026-05-14",
+          "latest_price": 15.56,
+          "latest_date": "2026-05-15",
+          "pct_change": -2.2
+        },
+        {
+          "code": "002975",
+          "name": "博杰股份",
+          "score": 79,
+          "scan_price": 114.5,
+          "scan_date": "2026-05-14",
+          "latest_price": 114.99,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.43
+        },
+        {
+          "code": "600400",
+          "name": "红豆股份",
+          "score": 79,
+          "scan_price": 2.87,
+          "scan_date": "2026-05-14",
+          "latest_price": 3.01,
+          "latest_date": "2026-05-15",
+          "pct_change": 4.88
+        },
+        {
+          "code": "603317",
+          "name": "天味食品",
+          "score": 79,
+          "scan_price": 16.13,
+          "scan_date": "2026-05-14",
+          "latest_price": 15.98,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.93
+        },
+        {
+          "code": "000404",
+          "name": "长虹华意",
+          "score": 76,
+          "scan_price": 8.41,
+          "scan_date": "2026-05-14",
+          "latest_price": 8.52,
+          "latest_date": "2026-05-15",
+          "pct_change": 1.31
+        },
+        {
+          "code": "002009",
+          "name": "天奇股份",
+          "score": 76,
+          "scan_price": 27.56,
+          "scan_date": "2026-05-14",
+          "latest_price": 28.2,
+          "latest_date": "2026-05-15",
+          "pct_change": 2.32
+        },
+        {
+          "code": "002023",
+          "name": "海特高新",
+          "score": 76,
+          "scan_price": 13.85,
+          "scan_date": "2026-05-14",
+          "latest_price": 13.6,
+          "latest_date": "2026-05-15",
+          "pct_change": -1.81
+        },
+        {
+          "code": "002952",
+          "name": "亚世光电",
+          "score": 76,
+          "scan_price": 28.54,
+          "scan_date": "2026-05-14",
+          "latest_price": 29.89,
+          "latest_date": "2026-05-15",
+          "pct_change": 4.73
+        },
+        {
+          "code": "003036",
+          "name": "泰坦股份",
+          "score": 76,
+          "scan_price": 45.16,
+          "scan_date": "2026-05-14",
+          "latest_price": 42.85,
+          "latest_date": "2026-05-15",
+          "pct_change": -5.12
+        },
+        {
+          "code": "600026",
+          "name": "中远海能",
+          "score": 76,
+          "scan_price": 22.81,
+          "scan_date": "2026-05-14",
+          "latest_price": 21.87,
+          "latest_date": "2026-05-15",
+          "pct_change": -4.12
+        },
+        {
+          "code": "000333",
+          "name": "美的集团",
+          "score": 74,
+          "scan_price": 81.81,
+          "scan_date": "2026-05-14",
+          "latest_price": 82.57,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.93
+        },
+        {
+          "code": "000819",
+          "name": "岳阳兴长",
+          "score": 74,
+          "scan_price": 17.08,
+          "scan_date": "2026-05-14",
+          "latest_price": 16.16,
+          "latest_date": "2026-05-15",
+          "pct_change": -5.39
+        },
+        {
+          "code": "600323",
+          "name": "瀚蓝环境",
+          "score": 73,
+          "scan_price": 31.15,
+          "scan_date": "2026-05-14",
+          "latest_price": 30.46,
+          "latest_date": "2026-05-15",
+          "pct_change": -2.22
+        }
+      ]
+    },
+    {
+      "id": "ddcd2ead",
+      "scan_date": "2026-05-15",
+      "strategy": "b1",
+      "strategy_name": "B1量价共振",
+      "pool_name": "沪深主板",
+      "top_n": 30,
+      "created_at": "2026-05-15 16:25:25",
+      "stocks": [
+        {
+          "code": "002752",
+          "name": "昇兴股份",
+          "score": 100,
+          "scan_price": 7.33,
+          "scan_date": "2026-05-14",
+          "latest_price": 7.29,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.55
+        },
+        {
+          "code": "603327",
+          "name": "福蓉科技",
+          "score": 100,
+          "scan_price": 10.64,
+          "scan_date": "2026-05-14",
+          "latest_price": 10.61,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.28
+        },
+        {
+          "code": "000049",
+          "name": "德赛电池",
+          "score": 84,
+          "scan_price": 27.490000000000002,
+          "scan_date": "2026-05-14",
+          "latest_price": 27.03,
+          "latest_date": "2026-05-15",
+          "pct_change": -1.67
+        },
+        {
+          "code": "600562",
+          "name": "国睿科技",
+          "score": 84,
+          "scan_price": 25.810000000000002,
+          "scan_date": "2026-05-14",
+          "latest_price": 25.65,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.62
+        },
+        {
+          "code": "605305",
+          "name": "中际联合",
+          "score": 84,
+          "scan_price": 43.63,
+          "scan_date": "2026-05-15",
+          "latest_price": 43.63,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.0
+        },
+        {
+          "code": "000957",
+          "name": "中通客车",
+          "score": 82,
+          "scan_price": 11.77,
+          "scan_date": "2026-05-14",
+          "latest_price": 11.65,
+          "latest_date": "2026-05-15",
+          "pct_change": -1.02
+        },
+        {
+          "code": "600955",
+          "name": "维远股份",
+          "score": 82,
+          "scan_price": 18.55,
+          "scan_date": "2026-05-14",
+          "latest_price": 18.45,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.54
+        },
+        {
+          "code": "000550",
+          "name": "江铃汽车",
+          "score": 77,
+          "scan_price": 18.73,
+          "scan_date": "2026-05-14",
+          "latest_price": 18.44,
+          "latest_date": "2026-05-15",
+          "pct_change": -1.55
+        },
+        {
+          "code": "000776",
+          "name": "广发证券",
+          "score": 77,
+          "scan_price": 20.35,
+          "scan_date": "2026-05-14",
+          "latest_price": 19.94,
+          "latest_date": "2026-05-15",
+          "pct_change": -2.01
+        },
+        {
+          "code": "000819",
+          "name": "岳阳兴长",
+          "score": 77,
+          "scan_price": 17.080000000000002,
+          "scan_date": "2026-05-14",
+          "latest_price": 16.16,
+          "latest_date": "2026-05-15",
+          "pct_change": -5.39
+        },
+        {
+          "code": "001368",
+          "name": "通达创智",
+          "score": 77,
+          "scan_price": 28.580000000000002,
+          "scan_date": "2026-05-14",
+          "latest_price": 28.76,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.63
+        },
+        {
+          "code": "002176",
+          "name": "江特电机",
+          "score": 77,
+          "scan_price": 13.85,
+          "scan_date": "2026-05-14",
+          "latest_price": 13.45,
+          "latest_date": "2026-05-15",
+          "pct_change": -2.89
+        },
+        {
+          "code": "002563",
+          "name": "森马服饰",
+          "score": 77,
+          "scan_price": 5.83,
+          "scan_date": "2026-05-14",
+          "latest_price": 5.83,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.0
+        },
+        {
+          "code": "002971",
+          "name": "和远气体",
+          "score": 77,
+          "scan_price": 37.46,
+          "scan_date": "2026-05-14",
+          "latest_price": 41.21,
+          "latest_date": "2026-05-15",
+          "pct_change": 10.01
+        },
+        {
+          "code": "003019",
+          "name": "宸展光电",
+          "score": 77,
+          "scan_price": 33.74,
+          "scan_date": "2026-05-14",
+          "latest_price": 36.55,
+          "latest_date": "2026-05-15",
+          "pct_change": 8.33
+        },
+        {
+          "code": "600150",
+          "name": "中国船舶",
+          "score": 77,
+          "scan_price": 40.22,
+          "scan_date": "2026-05-14",
+          "latest_price": 40.55,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.82
+        },
+        {
+          "code": "600694",
+          "name": "大商股份",
+          "score": 77,
+          "scan_price": 17.85,
+          "scan_date": "2026-05-14",
+          "latest_price": 17.97,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.67
+        },
+        {
+          "code": "601002",
+          "name": "晋亿实业",
+          "score": 77,
+          "scan_price": 5.62,
+          "scan_date": "2026-05-14",
+          "latest_price": 5.5,
+          "latest_date": "2026-05-15",
+          "pct_change": -2.14
+        },
+        {
+          "code": "601698",
+          "name": "中国卫通",
+          "score": 77,
+          "scan_price": 35.7,
+          "scan_date": "2026-05-14",
+          "latest_price": 35.09,
+          "latest_date": "2026-05-15",
+          "pct_change": -1.71
+        },
+        {
+          "code": "603587",
+          "name": "地素时尚",
+          "score": 77,
+          "scan_price": 12.950000000000001,
+          "scan_date": "2026-05-14",
+          "latest_price": 13.13,
+          "latest_date": "2026-05-15",
+          "pct_change": 1.39
+        },
+        {
+          "code": "603698",
+          "name": "航天工程",
+          "score": 77,
+          "scan_price": 38.74,
+          "scan_date": "2026-05-15",
+          "latest_price": 38.74,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.0
+        },
+        {
+          "code": "605166",
+          "name": "聚合顺",
+          "score": 77,
+          "scan_price": 11.6,
+          "scan_date": "2026-05-15",
+          "latest_price": 11.6,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.0
+        },
+        {
+          "code": "000885",
+          "name": "城发环境",
+          "score": 75,
+          "scan_price": 14.01,
+          "scan_date": "2026-05-14",
+          "latest_price": 13.78,
+          "latest_date": "2026-05-15",
+          "pct_change": -1.64
+        },
+        {
+          "code": "000990",
+          "name": "诚志股份",
+          "score": 75,
+          "scan_price": 11.21,
+          "scan_date": "2026-05-14",
+          "latest_price": 11.2,
+          "latest_date": "2026-05-15",
+          "pct_change": -0.09
+        },
+        {
+          "code": "001283",
+          "name": "豪鹏科技",
+          "score": 75,
+          "scan_price": 71.11,
+          "scan_date": "2026-05-14",
+          "latest_price": 72.49,
+          "latest_date": "2026-05-15",
+          "pct_change": 1.94
+        },
+        {
+          "code": "002039",
+          "name": "黔源电力",
+          "score": 75,
+          "scan_price": 20.94,
+          "scan_date": "2026-05-14",
+          "latest_price": 20.25,
+          "latest_date": "2026-05-15",
+          "pct_change": -3.3
+        },
+        {
+          "code": "002100",
+          "name": "天康生物",
+          "score": 75,
+          "scan_price": 7.63,
+          "scan_date": "2026-05-14",
+          "latest_price": 7.36,
+          "latest_date": "2026-05-15",
+          "pct_change": -3.54
+        },
+        {
+          "code": "002406",
+          "name": "远东传动",
+          "score": 75,
+          "scan_price": 8.08,
+          "scan_date": "2026-05-14",
+          "latest_price": 8.43,
+          "latest_date": "2026-05-15",
+          "pct_change": 4.33
+        },
+        {
+          "code": "002466",
+          "name": "天齐锂业",
+          "score": 75,
+          "scan_price": 70.69,
+          "scan_date": "2026-05-14",
+          "latest_price": 69.11,
+          "latest_date": "2026-05-15",
+          "pct_change": -2.24
+        },
+        {
+          "code": "002722",
+          "name": "物产金轮",
+          "score": 75,
+          "scan_price": 15.290000000000001,
+          "scan_date": "2026-05-14",
+          "latest_price": 15.31,
+          "latest_date": "2026-05-15",
+          "pct_change": 0.13
+        }
+      ]
+    },
+    {
+      "id": "fab8bcc8",
+      "scan_date": "2026-05-15",
+      "strategy": "brick",
+      "strategy_name": "砖型图趋势拐点",
+      "pool_name": "沪深主板",
+      "top_n": 50,
+      "created_at": "2026-05-15 17:23:44",
+      "stocks": [
+        {
+          "code": "000628",
+          "name": "高新发展",
+          "score": 100,
+          "scan_price": 63.480000000000004,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000697",
+          "name": "炼石航空",
+          "score": 100,
+          "scan_price": 12.950000000000001,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001268",
+          "name": "联合精密",
+          "score": 100,
+          "scan_price": 43.36,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "003030",
+          "name": "祖名股份",
+          "score": 100,
+          "scan_price": 25.3,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "601330",
+          "name": "绿色动力",
+          "score": 100,
+          "scan_price": 9.35,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603400",
+          "name": "华之杰",
+          "score": 100,
+          "scan_price": 87.12,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603978",
+          "name": "深圳新星",
+          "score": 100,
+          "scan_price": 33.9,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600699",
+          "name": "均胜电子",
+          "score": 94,
+          "scan_price": 30.37,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000833",
+          "name": "粤桂股份",
+          "score": 93,
+          "scan_price": 28.89,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002979",
+          "name": "雷赛智能",
+          "score": 93,
+          "scan_price": 59.800000000000004,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603876",
+          "name": "鼎胜新材",
+          "score": 93,
+          "scan_price": 30.0,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002406",
+          "name": "远东传动",
+          "score": 88,
+          "scan_price": 8.43,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600256",
+          "name": "广汇能源",
+          "score": 88,
+          "scan_price": 6.4,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603333",
+          "name": "尚纬股份",
+          "score": 88,
+          "scan_price": 9.65,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002886",
+          "name": "沃特股份",
+          "score": 87,
+          "scan_price": 27.35,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603041",
+          "name": "美思德",
+          "score": 87,
+          "scan_price": 14.36,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603278",
+          "name": "大业股份",
+          "score": 86,
+          "scan_price": 16.96,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001301",
+          "name": "尚太科技",
+          "score": 82,
+          "scan_price": 79.95,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002643",
+          "name": "万润股份",
+          "score": 81,
+          "scan_price": 18.080000000000002,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002395",
+          "name": "双象股份",
+          "score": 80,
+          "scan_price": 21.19,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000593",
+          "name": "德龙汇能",
+          "score": 79,
+          "scan_price": 23.54,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000695",
+          "name": "滨海能源",
+          "score": 79,
+          "scan_price": 15.49,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001256",
+          "name": "炜冈科技",
+          "score": 79,
+          "scan_price": 25.900000000000002,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002407",
+          "name": "多氟多",
+          "score": 79,
+          "scan_price": 36.47,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002795",
+          "name": "永和智控",
+          "score": 79,
+          "scan_price": 9.96,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "003019",
+          "name": "宸展光电",
+          "score": 79,
+          "scan_price": 36.550000000000004,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "601133",
+          "name": "柏诚股份",
+          "score": 79,
+          "scan_price": 28.18,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603078",
+          "name": "江化微",
+          "score": 79,
+          "scan_price": 30.25,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603226",
+          "name": "菲林格尔",
+          "score": 79,
+          "scan_price": 47.35,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603320",
+          "name": "迪贝电气",
+          "score": 79,
+          "scan_price": 26.18,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603390",
+          "name": "通达电气",
+          "score": 79,
+          "scan_price": 14.8,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002181",
+          "name": "粤 传 媒",
+          "score": 76,
+          "scan_price": 19.69,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002348",
+          "name": "高乐股份",
+          "score": 76,
+          "scan_price": 13.72,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002445",
+          "name": "中南文化",
+          "score": 76,
+          "scan_price": 4.25,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002484",
+          "name": "江海股份",
+          "score": 76,
+          "scan_price": 48.660000000000004,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600158",
+          "name": "中体产业",
+          "score": 76,
+          "scan_price": 14.58,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "601001",
+          "name": "晋控煤业",
+          "score": 76,
+          "scan_price": 17.72,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603270",
+          "name": "金帝股份",
+          "score": 76,
+          "scan_price": 29.14,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "605099",
+          "name": "共创草坪",
+          "score": 76,
+          "scan_price": 53.56,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600784",
+          "name": "鲁银投资",
+          "score": 74,
+          "scan_price": 7.8,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600075",
+          "name": "新疆天业",
+          "score": 73,
+          "scan_price": 6.3100000000000005,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600938",
+          "name": "中国海油",
+          "score": 73,
+          "scan_price": 36.51,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "605178",
+          "name": "时空科技",
+          "score": 73,
+          "scan_price": 76.45,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002031",
+          "name": "巨轮智能",
+          "score": 70,
+          "scan_price": 8.4,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002062",
+          "name": "宏润建设",
+          "score": 70,
+          "scan_price": 9.75,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002066",
+          "name": "瑞泰科技",
+          "score": 70,
+          "scan_price": 26.060000000000002,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002092",
+          "name": "中泰化学",
+          "score": 70,
+          "scan_price": 5.7,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002159",
+          "name": "三特索道",
+          "score": 70,
+          "scan_price": 15.97,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002243",
+          "name": "力合科创",
+          "score": 70,
+          "scan_price": 8.93,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002374",
+          "name": "中锐股份",
+          "score": 70,
+          "scan_price": 3.5500000000000003,
+          "scan_date": "2026-05-15",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        }
+      ]
+    },
+    {
+      "id": "1408c6a3",
+      "scan_date": "2026-05-18",
+      "strategy": "brick",
+      "strategy_name": "砖型图趋势拐点",
+      "pool_name": "沪深主板",
+      "top_n": 40,
+      "created_at": "2026-05-18 16:54:02",
+      "stocks": [
+        {
+          "code": "000962",
+          "name": "东方钽业",
+          "score": 100,
+          "scan_price": 56.36,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001309",
+          "name": "德明利",
+          "score": 100,
+          "scan_price": 735.04,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001336",
+          "name": "楚环科技",
+          "score": 100,
+          "scan_price": 30.45,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002245",
+          "name": "蔚蓝锂芯",
+          "score": 100,
+          "scan_price": 27.93,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002386",
+          "name": "天原股份",
+          "score": 100,
+          "scan_price": 6.58,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002850",
+          "name": "科达利",
+          "score": 100,
+          "scan_price": 203.1,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002937",
+          "name": "兴瑞科技",
+          "score": 100,
+          "scan_price": 36.01,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002980",
+          "name": "华盛昌",
+          "score": 100,
+          "scan_price": 105.9,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603125",
+          "name": "常青科技",
+          "score": 100,
+          "scan_price": 27.03,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603156",
+          "name": "养元饮品",
+          "score": 100,
+          "scan_price": 51.46,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603283",
+          "name": "赛腾股份",
+          "score": 100,
+          "scan_price": 64.03,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001330",
+          "name": "博纳影业",
+          "score": 94,
+          "scan_price": 9.46,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603190",
+          "name": "亚通精工",
+          "score": 94,
+          "scan_price": 28.75,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603725",
+          "name": "天安新材",
+          "score": 94,
+          "scan_price": 10.47,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000672",
+          "name": "上峰水泥",
+          "score": 93,
+          "scan_price": 18.900000000000002,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000811",
+          "name": "冰轮环境",
+          "score": 93,
+          "scan_price": 34.6,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002989",
+          "name": "中天精装",
+          "score": 93,
+          "scan_price": 34.660000000000004,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600023",
+          "name": "浙能电力",
+          "score": 93,
+          "scan_price": 6.15,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603316",
+          "name": "诚邦股份",
+          "score": 93,
+          "scan_price": 20.47,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603601",
+          "name": "再升科技",
+          "score": 93,
+          "scan_price": 18.56,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "605318",
+          "name": "法狮龙",
+          "score": 93,
+          "scan_price": 97.9,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000155",
+          "name": "川能动力",
+          "score": 88,
+          "scan_price": 16.12,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000573",
+          "name": "粤宏远Ａ",
+          "score": 88,
+          "scan_price": 4.64,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001331",
+          "name": "胜通能源",
+          "score": 88,
+          "scan_price": 56.97,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002012",
+          "name": "凯恩股份",
+          "score": 88,
+          "scan_price": 7.22,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002468",
+          "name": "申通快递",
+          "score": 88,
+          "scan_price": 15.77,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002600",
+          "name": "领益智造",
+          "score": 88,
+          "scan_price": 17.07,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002611",
+          "name": "东方精工",
+          "score": 88,
+          "scan_price": 19.38,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600232",
+          "name": "金鹰股份",
+          "score": 87,
+          "scan_price": 8.92,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600676",
+          "name": "交运股份",
+          "score": 87,
+          "scan_price": 8.09,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603650",
+          "name": "彤程新材",
+          "score": 87,
+          "scan_price": 60.02,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000551",
+          "name": "创元科技",
+          "score": 86,
+          "scan_price": 17.48,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002329",
+          "name": "皇氏集团",
+          "score": 86,
+          "scan_price": 4.84,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002452",
+          "name": "长高电新",
+          "score": 86,
+          "scan_price": 11.56,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002515",
+          "name": "金字火腿",
+          "score": 86,
+          "scan_price": 7.48,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002635",
+          "name": "安洁科技",
+          "score": 86,
+          "scan_price": 18.44,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002853",
+          "name": "皮阿诺",
+          "score": 86,
+          "scan_price": 29.3,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600546",
+          "name": "山煤国际",
+          "score": 86,
+          "scan_price": 13.82,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603626",
+          "name": "科森科技",
+          "score": 86,
+          "scan_price": 26.71,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002472",
+          "name": "双环传动",
+          "score": 82,
+          "scan_price": 44.11,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        }
+      ]
+    },
+    {
+      "id": "2d9f0aba",
+      "scan_date": "2026-05-18",
+      "strategy": "b1",
+      "strategy_name": "B1量价共振",
+      "pool_name": "沪深主板",
+      "top_n": 40,
+      "created_at": "2026-05-18 17:31:31",
+      "stocks": [
+        {
+          "code": "000567",
+          "name": "海德股份",
+          "score": 100,
+          "scan_price": 6.3100000000000005,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002563",
+          "name": "森马服饰",
+          "score": 100,
+          "scan_price": 5.75,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002752",
+          "name": "昇兴股份",
+          "score": 100,
+          "scan_price": 7.29,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600150",
+          "name": "中国船舶",
+          "score": 100,
+          "scan_price": 38.17,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600322",
+          "name": "津投城开",
+          "score": 100,
+          "scan_price": 2.65,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "601698",
+          "name": "中国卫通",
+          "score": 100,
+          "scan_price": 35.47,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603327",
+          "name": "福蓉科技",
+          "score": 100,
+          "scan_price": 10.73,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603338",
+          "name": "浙江鼎力",
+          "score": 100,
+          "scan_price": 54.88,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "603409",
+          "name": "汇通控股",
+          "score": 100,
+          "scan_price": 43.300000000000004,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600694",
+          "name": "大商股份",
+          "score": 92,
+          "scan_price": 17.490000000000002,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002266",
+          "name": "浙富控股",
+          "score": 85,
+          "scan_price": 5.37,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002695",
+          "name": "煌上煌",
+          "score": 85,
+          "scan_price": 12.68,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000049",
+          "name": "德赛电池",
+          "score": 82,
+          "scan_price": 27.12,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "605305",
+          "name": "中际联合",
+          "score": 82,
+          "scan_price": 42.88,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000776",
+          "name": "广发证券",
+          "score": 77,
+          "scan_price": 19.67,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600109",
+          "name": "国金证券",
+          "score": 77,
+          "scan_price": 8.81,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600550",
+          "name": "保变电气",
+          "score": 77,
+          "scan_price": 15.14,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000301",
+          "name": "东方盛虹",
+          "score": 75,
+          "scan_price": 12.56,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000651",
+          "name": "格力电器",
+          "score": 75,
+          "scan_price": 39.71,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000657",
+          "name": "中钨高新",
+          "score": 75,
+          "scan_price": 56.96,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000722",
+          "name": "湖南发展",
+          "score": 75,
+          "scan_price": 14.59,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000848",
+          "name": "承德露露",
+          "score": 75,
+          "scan_price": 8.870000000000001,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000899",
+          "name": "赣能股份",
+          "score": 75,
+          "scan_price": 13.0,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "000906",
+          "name": "浙商中拓",
+          "score": 75,
+          "scan_price": 6.48,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "001283",
+          "name": "豪鹏科技",
+          "score": 75,
+          "scan_price": 72.29,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002115",
+          "name": "三维通信",
+          "score": 75,
+          "scan_price": 14.200000000000001,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002135",
+          "name": "东南网架",
+          "score": 75,
+          "scan_price": 8.09,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002157",
+          "name": "正邦科技",
+          "score": 75,
+          "scan_price": 3.3200000000000003,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002248",
+          "name": "华东数控",
+          "score": 75,
+          "scan_price": 12.96,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002256",
+          "name": "兆新股份",
+          "score": 75,
+          "scan_price": 4.91,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002290",
+          "name": "禾盛新材",
+          "score": 75,
+          "scan_price": 89.7,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002444",
+          "name": "巨星科技",
+          "score": 75,
+          "scan_price": 33.660000000000004,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002466",
+          "name": "天齐锂业",
+          "score": 75,
+          "scan_price": 69.38,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002580",
+          "name": "圣阳股份",
+          "score": 75,
+          "scan_price": 26.45,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002715",
+          "name": "登云股份",
+          "score": 75,
+          "scan_price": 17.43,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "002862",
+          "name": "实丰文化",
+          "score": 75,
+          "scan_price": 18.85,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "003026",
+          "name": "中晶科技",
+          "score": 75,
+          "scan_price": 47.45,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600037",
+          "name": "歌华有线",
+          "score": 75,
+          "scan_price": 7.9,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600060",
+          "name": "海信视像",
+          "score": 75,
+          "scan_price": 24.6,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        },
+        {
+          "code": "600118",
+          "name": "中国卫星",
+          "score": 75,
+          "scan_price": 96.92,
+          "scan_date": "2026-05-18",
+          "latest_price": null,
+          "latest_date": null,
+          "pct_change": null
+        }
+      ]
+    }
+  ]
 }

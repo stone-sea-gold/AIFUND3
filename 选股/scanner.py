@@ -34,6 +34,7 @@ from 选股.config import (
     EXCLUDE_DEATH_CROSS, EXCLUDE_BELOW_YELLOW,
     MIN_LISTING_DAYS, MIN_VOLUME_RATIO,
     MIN_SCORE, TOP_N, SAVE_CACHE,
+    USE_TDX_DATA,
 )
 from 选股.strategy_loader import load_strategy
 from 选股.pool import get_stock_pool, filter_stocks
@@ -62,6 +63,9 @@ def scan_one(code: str, name: str, strategy=None) -> dict | None:
     if raw is None:
         return None
     stock_name, klines = raw
+    # 通达信数据源不含名称（返回 code），回退到调用方传入的 name
+    if stock_name == code:
+        stock_name = name
 
     # ── 2. 基础过滤（策略无关）──
     if len(klines) < MIN_LISTING_DAYS:
@@ -158,7 +162,16 @@ def scan_one(code: str, name: str, strategy=None) -> dict | None:
 
 
 def _fetch_with_retry(code: str, max_retries: int = 1) -> tuple[str, list] | None:
-    """带重试的数据抓取（静态列表模式下快速失败）"""
+    """带重试的数据抓取，优先使用通达信本地数据源"""
+    # 优先：通达信本地 .day 文件 + API 增量补充
+    if USE_TDX_DATA:
+        try:
+            from 选股.kline_source import get_klines
+            return get_klines(code, count=SCAN_COUNT + 200, period=SCAN_PERIOD)
+        except Exception:
+            pass  # 降级到全量 API
+
+    # 降级：东方财富 API 全量拉取
     for attempt in range(max_retries):
         try:
             return fetch_kline(code, SCAN_COUNT + 200, SCAN_PERIOD)

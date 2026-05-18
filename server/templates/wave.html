@@ -989,15 +989,17 @@ function renderTracker(grouped, allEntries) {
       } else {
         html += `<div class="scan-results"><table class="tracker-table">`;
         html += `<thead><tr>`;
-        html += `<th>#</th><th>代码</th><th>名称</th><th>被选价</th><th>最新价</th><th>涨跌</th>`;
+        html += `<th>#</th><th>代码</th><th>名称</th><th>得分</th><th>被选价</th><th>最新价</th><th>涨跌</th>`;
         html += `</tr></thead><tbody>`;
         stocks.forEach((s, i) => {
           const pnlClass = s.pct_change === null ? '' : (s.pct_change >= 0 ? 'tracker-pnl-up' : 'tracker-pnl-down');
           const pnlText = s.pct_change === null ? '—' : (s.pct_change >= 0 ? '+' : '') + s.pct_change.toFixed(2) + '%';
+          const scoreClass = s.score >= 50 ? 'score-high' : (s.score >= 30 ? 'score-mid' : 'score-low');
           html += `<tr>`;
           html += `<td style="color:var(--text2)">${i + 1}</td>`;
           html += `<td style="color:var(--text2)">${s.code}</td>`;
           html += `<td><strong>${s.name}</strong></td>`;
+          html += `<td class="${scoreClass}"><strong>${s.score || 0}</strong></td>`;
           html += `<td>${s.scan_price ? s.scan_price.toFixed(2) : '—'}</td>`;
           html += `<td>${s.latest_price ? s.latest_price.toFixed(2) : '—'}</td>`;
           html += `<td class="${pnlClass}">${pnlText}</td>`;

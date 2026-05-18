@@ -1,12 +1,10 @@
 """
 B1 量价共振选股策略（通达信公式移植）
 
-基于通达信量价共振公式的完整选股策略，包含：
-- KDJ 超卖识别 (J<=13)
-- 资金吸筹判定 (阳量/阴量比)
-- 异动触发引擎 (放量阳线)
-- 防雷过滤 (高位放量阴线)
-- 均线趋势共振 (DEMA10 / 四均线)
+基于通达信量价共振公式的完整选股策略：
+  硬门: KDJ 超卖 (J<=13) — 不满足直接排除
+  打分: 资金吸筹 + 异动触发 + 防雷过滤 + 基础流动性 + 均线趋势共振 + 综合信号
+  6项条件满分100
 
 指标字典结构:
   ind["_df"]         → 完整的 B1 结果 DataFrame（缓存，各条件函数复用）
@@ -35,7 +33,7 @@ _FALLBACK_CAP = 1_000_000_000_000.0
 # ═══════════════════════════════════════════════════════════════
 
 STRATEGY_NAME = "B1量价共振"
-STRATEGY_DESC = "通达信量价共振选股：KDJ超卖+资金吸筹+异动触发+防雷+趋势共振，7项条件满分100"
+STRATEGY_DESC = "通达信量价共振选股：KDJ超卖硬门+资金吸筹+异动触发+防雷+趋势共振，6项条件满分100"
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -84,11 +82,25 @@ def build_indicators(klines: list[dict], closes: list[float]) -> dict:
 # 排除过滤
 # ═══════════════════════════════════════════════════════════════
 
+def _exclude_no_kdj_oversold(ind: dict, klines: list[dict]) -> bool:
+    """KDJ 硬门：最新交易日 J 值 > 13 → 排除"""
+    result = ind.get("_df")
+    if result is None:
+        return True
+    j_val = result['J'].iloc[-1]
+    return not (pd.notna(j_val) and j_val <= 20)
+
+
 EXCLUSION_FILTERS = {
     "b1_data_error": {
         "desc": "B1指标计算失败",
         "enabled": True,
         "func": lambda ind, klines: ind.get("_error", False),
+    },
+    "b1_kdj_filter": {
+        "desc": "KDJ超卖硬门(当日J<=20)",
+        "enabled": True,
+        "func": _exclude_no_kdj_oversold,
     },
 }
 
@@ -106,20 +118,6 @@ def _get_df(ind: dict, klines: list[dict]) -> pd.DataFrame:
     if 'circulation_market_cap' not in df.columns:
         df['circulation_market_cap'] = _FALLBACK_CAP
     return calculate_tongdaxin_signals(df)
-
-
-def _check_b1_kdj(ind: dict, klines: list[dict], weight: int, params: dict) -> tuple[int, dict]:
-    """KDJ超卖：最近5日内J值<=13"""
-    result = _get_df(ind, klines)
-    j_series = result['J']
-    recent = j_series.iloc[-5:] if len(j_series) >= 5 else j_series
-    if (recent <= 13).any():
-        min_j = float(recent.min())
-        return weight, {"j": round(min_j, 1), "reason": f"J={min_j:.1f}<=13(超卖)"}
-    latest_j = float(j_series.iloc[-1]) if pd.notna(j_series.iloc[-1]) else 50
-    if latest_j < 30:
-        return weight // 2, {"j": round(latest_j, 1), "reason": f"J={latest_j:.1f}<30(接近超卖)"}
-    return 0, {"j": round(latest_j, 1), "reason": f"J={latest_j:.1f}>=30"}
 
 
 def _check_b1_fund_flow(ind: dict, klines: list[dict], weight: int, params: dict) -> tuple[int, dict]:
@@ -235,12 +233,8 @@ def _check_b1_composite(ind: dict, klines: list[dict], weight: int, params: dict
 
 
 CRITERIA = {
-    "b1_kdj_oversold": {
-        "weight": 15, "desc": "KDJ超卖(J<=13)",
-        "params": {}, "func": _check_b1_kdj,
-    },
     "b1_fund_flow": {
-        "weight": 15, "desc": "资金吸筹(阳量>1.5x阴量)",
+        "weight": 20, "desc": "资金吸筹(阳量>1.5x阴量)",
         "params": {}, "func": _check_b1_fund_flow,
     },
     "b1_trigger": {
@@ -248,7 +242,7 @@ CRITERIA = {
         "params": {}, "func": _check_b1_trigger,
     },
     "b1_defense": {
-        "weight": 10, "desc": "防雷通过(无高位放量阴线)",
+        "weight": 20, "desc": "防雷通过(无高位放量阴线)",
         "params": {}, "func": _check_b1_defense,
     },
     "b1_liquidity": {
@@ -286,7 +280,7 @@ REPORT_CATEGORIES = [
     {
         "name": "B1量价共振信号",
         "criteria_keys": [
-            "b1_kdj_oversold", "b1_fund_flow", "b1_trigger",
+            "b1_fund_flow", "b1_trigger",
             "b1_defense", "b1_liquidity", "b1_trend", "b1_composite",
         ],
     },

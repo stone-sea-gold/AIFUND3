@@ -241,6 +241,24 @@ def load_backtest() -> dict | None:
 
 # ── 更新日期 ──────────────────────────────────────────────────
 def get_update_date() -> str:
+    """获取本地K线数据的最新日期（优先TDX，降级到持仓笔记）"""
+    # 优先：读取通达信本地 .day 文件的最新日期
+    try:
+        from 选股.config import TDX_DATA_DIR
+        import os as _os
+        import struct as _struct
+        # 用平安银行(000001)作为样本，检测数据新鲜度
+        fpath = _os.path.join(TDX_DATA_DIR, "vipdoc", "sz", "lday", "sz000001.day")
+        if _os.path.exists(fpath):
+            with open(fpath, 'rb') as f:
+                f.seek(-32, 2)  # 最后一条 32 字节记录
+                data = f.read(32)
+                date_int = _struct.unpack('<I', data[0:4])[0]
+                return f"{date_int // 10000}-{(date_int % 10000) // 100:02d}-{date_int % 100:02d}"
+    except Exception:
+        pass
+
+    # 降级：读取持仓笔记中的手动日期
     content = _safe_read(VAULT / "持仓/仓位总览.md")
     if content is None:
         return "—"

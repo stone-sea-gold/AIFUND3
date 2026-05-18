@@ -32,7 +32,7 @@ def start():
 
     print(f"[启动] 启动看护模式服务器...")
     print(f"   地址: http://{HOST}:{PORT}")
-    print(f"   LAN: http://192.168.31.239:{PORT}")
+    print(f"   LAN: http://{_get_lan_ip()}:{PORT}")
     print(f"   日志: {LOG_FILE}")
     print(f"   看护: 服务器异常退出后自动重启")
 
@@ -118,7 +118,7 @@ def status():
     if uvicorn_ok:
         print(f"  [OK]  Web服务器: Running (PID: {uvicorn_pid})")
         print(f"     Local:   http://localhost:{PORT}")
-        print(f"     LAN: http://192.168.31.239:{PORT}")
+        print(f"     LAN: http://{_get_lan_ip()}:{PORT}")
     else:
         print(f"  [FAIL] Web服务器: Not running")
 
@@ -283,6 +283,19 @@ def is_running():
 
 
 # ── 系统级工具  ─────────────────────────────────────────────
+
+def _get_lan_ip() -> str:
+    """获取本机局域网 IP"""
+    import re
+    try:
+        result = subprocess.run(['ipconfig'], capture_output=True, text=True, timeout=5)
+        match = re.search(r'IPv4[^:]*:\s*(\d+\.\d+\.\d+\.\d+)', result.stdout)
+        if match:
+            return match.group(1)
+    except:
+        pass
+    return "127.0.0.1"
+
 
 def _pid_alive(pid: int) -> bool:
     """检查 PID 是否存在"""
