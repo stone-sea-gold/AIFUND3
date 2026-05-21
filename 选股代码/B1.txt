@@ -1,24 +1,20 @@
 import pandas as pd
 import numpy as np
-import requests
-import urllib3
 import sys
 from pathlib import Path
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# 引入项目的 fetch_kline 和 get_market（东方财富 API）
+# 引入项目的 fetch_kline（东方财富 API）
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = PROJECT_ROOT / "脚本"
 sys.path.insert(0, str(SCRIPTS_DIR))
-from fetch_wave_data import fetch_kline, get_market
+from fetch_wave_data import fetch_kline
 
 
 def calculate_tongdaxin_signals(df: pd.DataFrame) -> pd.DataFrame:
     """
     将通达信量价共振选股公式转化为 Pandas 计算逻辑
-    输入: df 包含 ['date', 'open', 'close', 'high', 'low', 'volume', 'amount', 'circulation_market_cap']
-          (与 fetch_kline 返回的字段命名一致，circulation_market_cap 需由调用方从外部数据源提供)
+    输入: df 包含 ['date', 'open', 'close', 'high', 'low', 'volume', 'amount']
+          (与 fetch_kline 返回的字段命名一致)
     输出: 带有 'XG_Signal' (选股信号) 的原 DataFrame
     """
     df = df.copy()
@@ -60,11 +56,6 @@ def calculate_tongdaxin_signals(df: pd.DataFrame) -> pd.DataFrame:
     a28 = df['amount'].rolling(window=28).mean() / 100_000_000
     lq = a28 >= 0.005
 
-    # MV:=流通市值/100000000; MVOK:=MV>=50; (流通市值>=50亿)
-    # 输入 df 需包含 'circulation_market_cap' 字段（单位：元）
-    mv = df['circulation_market_cap'] / 100_000_000
-    mvok = mv >= 50
-
     # ================ 4. 严格防雷 ================
     # O85:=LLV(O,28)+0.925*(HHV(O,28)-LLV(O,28));
     llv_o_28 = df['open'].rolling(window=28).min()
@@ -101,8 +92,8 @@ def calculate_tongdaxin_signals(df: pd.DataFrame) -> pd.DataFrame:
     trigger = plry_cnt | (bd & bigv & posok)
 
     # ================ 6. 最终综合与均线趋势共振 ================
-    # XG:=TRIGGER AND J_OK AND LQ AND MVOK AND GOOD28 AND MAX28_OK AND YANGYIN_OK;
-    xg = trigger & j_ok & lq & mvok & good28 & max28_ok & yangyin_ok
+    # XG:=TRIGGER AND J_OK AND LQ AND GOOD28 AND MAX28_OK AND YANGYIN_OK;
+    xg = trigger & j_ok & lq & good28 & max28_ok & yangyin_ok
 
     # WL:=EMA(EMA(C,10),10);
     wl = df['close'].ewm(span=10, adjust=False).mean().ewm(span=10, adjust=False).mean()
@@ -119,66 +110,15 @@ def calculate_tongdaxin_signals(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _fetch_circulation_market_cap_eastmoney(code: str) -> float:
-    """
-    从东方财富实时行情接口获取流通市值（单位：元）
-    与 fetch_kline 使用相同的 push2.eastmoney.com 基础架构，保证数据接口一致
-    """
-    market = get_market(code)
-    secid = f"{market}.{code}"
-    url = "http://push2.eastmoney.com/api/qt/stock/get"
-    params = {
-        "secid": secid,
-        "fields": "f20",  # f20 = 流通市值
-    }
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://finance.eastmoney.com/",
-    }
-    for scheme in ("http", "https"):
-        try:
-            u = url.replace("http://", f"{scheme}://", 1)
-            resp = requests.get(u, params=params, headers=headers, timeout=20, verify=False)
-            if resp.status_code == 200 and len(resp.text) > 50:
-                break
-        except Exception:
-            continue
-    else:
-        raise ConnectionError(f"无法连接东方财富行情接口，代码: {code}")
-
-    data = resp.json()
-    stock_data = data.get("data", {})
-    if not stock_data:
-        raise ValueError(f"东方财富未返回 {code} 的行情数据")
-
-    cap = stock_data.get("f20")
-    if cap is None or cap == "-" or cap == 0:
-        raise ValueError(f"{code} 的流通市值数据无效: {cap}")
-
-    return float(cap)
-
-
 def fetch_and_test(symbol="600519"):
     """
-    测试运行：从东方财富 API 拉取日K线 + 流通市值，应用 B1 策略公式
-    （所有数据接口统一使用东方财富 API，与项目其余模块一致）
+    测试运行：从东方财富 API 拉取日K线，应用 B1 策略公式
     """
     print(f"正在从东方财富 API 拉取 {symbol} 的历史数据...")
     name, klines = fetch_kline(symbol, count=500, period="day")
 
     # 将 list[dict] 转为 DataFrame（与 fetch_kline 返回字段一致）
     df = pd.DataFrame(klines)
-
-    # 获取流通市值（东方财富实时行情接口）
-    print(f"正在获取 {symbol} 的流通市值...")
-    try:
-        circulation_cap = _fetch_circulation_market_cap_eastmoney(symbol)
-        df['circulation_market_cap'] = circulation_cap
-        print(f"  流通市值: {circulation_cap / 100_000_000:.2f} 亿")
-    except Exception as e:
-        print(f"  [警告] {e}")
-        print(f"  将跳过流通市值过滤（设为足够大的占位值仅用于演示）")
-        df['circulation_market_cap'] = 1_000_000_000_000  # 1万亿占位
 
     print("开始计算量价共振选股指标...")
     result_df = calculate_tongdaxin_signals(df)

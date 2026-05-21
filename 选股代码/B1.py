@@ -1,7 +1,7 @@
 """
 通达信量价共振选股策略 (B1)
-输入: DataFrame 包含 ['date', 'open', 'close', 'high', 'low', 'volume', 'amount', 'circulation_market_cap']
-      (与 fetch_kline 返回的字段命名一致，circulation_market_cap 需由调用方从外部数据源提供)
+输入: DataFrame 包含 ['date', 'open', 'close', 'high', 'low', 'volume', 'amount']
+      (与 fetch_kline 返回的字段命名一致)
 输出: 带有 'XG_Signal' (选股信号) 的 DataFrame
 """
 import pandas as pd
@@ -44,9 +44,6 @@ def calculate_tongdaxin_signals(df: pd.DataFrame) -> pd.DataFrame:
     a28 = df['amount'].rolling(window=28).mean() / 100_000_000
     lq = a28 >= 0.005
 
-    mv = df['circulation_market_cap'] / 100_000_000
-    mvok = mv >= 50
-
     # ================ 4. 严格防雷 ================
     llv_o_28 = df['open'].rolling(window=28).min()
     hhv_o_28 = df['open'].rolling(window=28).max()
@@ -76,7 +73,7 @@ def calculate_tongdaxin_signals(df: pd.DataFrame) -> pd.DataFrame:
     trigger = plry_cnt | (bd & bigv & posok)
 
     # ================ 6. 最终综合与均线趋势共振 ================
-    xg = trigger & j_ok & lq & mvok & good28 & max28_ok & yangyin_ok
+    xg = trigger & j_ok & lq & good28 & max28_ok & yangyin_ok
 
     wl = df['close'].ewm(span=10, adjust=False).mean().ewm(span=10, adjust=False).mean()
     yl = (df['close'].rolling(window=14).mean() +

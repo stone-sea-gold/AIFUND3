@@ -17,7 +17,8 @@ import sys
 import json
 import time
 import threading
-from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, date
 from pathlib import Path
 
 # ── 路径处理 ──
@@ -162,51 +163,84 @@ class Tracker:
 
     def refresh_prices(self) -> dict:
         """
-        刷新所有跟踪标的最新收盘价（使用历史K线接口）。
+        刷新所有跟踪标的最新收盘价。
+
+        数据源优先级: 通达信本地 .day → TDX TCP 补缺 → 东方财富 HTTP
+        同日缓存 + 并发拉取，大幅减少等待时间。
 
         Returns:
-            {"refreshed": N, "failed": M, "refresh_time": "..."}
+            {"refreshed": N, "failed": M, "skipped": K, "refresh_time": "..."}
         """
+        from 选股.kline_source import get_klines
+
         entries = self.get_entries()
         if not entries:
-            return {"refreshed": 0, "failed": 0, "refresh_time": datetime.now().strftime("%m-%d %H:%M")}
+            return {
+                "refreshed": 0, "failed": 0, "skipped": 0,
+                "refresh_time": datetime.now().strftime("%m-%d %H:%M"),
+            }
 
-        # 收集所有唯一代码
-        codes_set = set()
+        today_str = date.today().strftime("%Y-%m-%d")
+
+        # 收集唯一代码，跳过当日已刷新的
+        all_codes = set()
+        skip_count = 0
         for e in entries:
             for s in e.get("stocks", []):
-                codes_set.add(s["code"])
+                all_codes.add(s["code"])
+                if s.get("latest_date") == today_str:
+                    skip_count += 1
 
-        codes = list(codes_set)
+        # 只拉取需要更新的代码
+        codes_to_fetch = list({
+            c for e in entries for s in e.get("stocks", [])
+            if (c := s["code"]) and s.get("latest_date") != today_str
+        })
+
+        if not codes_to_fetch:
+            return {
+                "refreshed": 0, "failed": 0, "skipped": skip_count,
+                "refresh_time": datetime.now().strftime("%m-%d %H:%M"),
+            }
+
+        # 并发拉取价格
+        price_map: dict[str, dict] = {}
         refreshed = 0
         failed = 0
-        price_map = {}
 
-        import urllib3
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-        from fetch_wave_data import fetch_kline, get_market
-
-        for code in codes:
+        def _fetch_one(code: str) -> tuple[str, dict | None]:
             try:
-                raw = fetch_kline(code, 5, "day")  # 取最近5根日K
-                if raw and len(raw[1]) > 0:
-                    # 最近一个交易日
-                    last_k = raw[1][-1]
-                    price_map[code] = {
+                _, klines = get_klines(code, count=5, period="day")
+                if klines:
+                    last_k = klines[-1]
+                    return code, {
                         "price": round(float(last_k.get("close", 0)), 2),
                         "date": last_k.get("date", ""),
                     }
-                    refreshed += 1
-                else:
-                    failed += 1
             except Exception:
-                failed += 1
+                pass
+            return code, None
+
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            futures = {pool.submit(_fetch_one, c): c for c in codes_to_fetch}
+            for future in as_completed(futures):
+                try:
+                    code, result = future.result()
+                    if result:
+                        price_map[code] = result
+                        refreshed += 1
+                    else:
+                        failed += 1
+                except Exception:
+                    failed += 1
 
         if not price_map:
-            return {"refreshed": 0, "failed": failed, "refresh_time": datetime.now().strftime("%m-%d %H:%M")}
+            return {
+                "refreshed": 0, "failed": failed, "skipped": skip_count,
+                "refresh_time": datetime.now().strftime("%m-%d %H:%M"),
+            }
 
-        # 更新到文件
+        # 写回文件
         with self._lock:
             data = self._load()
             for e in data.get("entries", []):
@@ -219,12 +253,12 @@ class Tracker:
                     scan_p = s.get("scan_price")
                     if scan_p and scan_p > 0 and p["price"] > 0:
                         s["pct_change"] = round((p["price"] - scan_p) / scan_p * 100, 2)
-
             self._save(data)
 
         return {
             "refreshed": refreshed,
             "failed": failed,
+            "skipped": skip_count,
             "refresh_time": datetime.now().strftime("%m-%d %H:%M"),
         }
 

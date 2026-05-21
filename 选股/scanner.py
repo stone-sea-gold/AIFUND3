@@ -26,7 +26,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = PROJECT_ROOT / "脚本"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-from fetch_wave_data import fetch_kline, get_market
+from fetch_wave_data import fetch_kline
 
 from 选股.config import (
     STRATEGY,
@@ -72,14 +72,6 @@ def scan_one(code: str, name: str, strategy=None) -> dict | None:
         return None
     if not _check_volume_valid(klines):
         return None
-
-    # ── 2.5. 补充流通市值（策略可能用到）──
-    try:
-        cap = _fetch_circulation_market_cap(code)
-    except Exception:
-        cap = None
-    for k in klines:
-        k["circulation_market_cap"] = cap if cap is not None else 1_000_000_000_000.0
 
     closes = [b["close"] for b in klines]
 
@@ -179,38 +171,6 @@ def _fetch_with_retry(code: str, max_retries: int = 1) -> tuple[str, list] | Non
             if attempt < max_retries - 1:
                 time.sleep(0.5)
     return None
-
-
-def _fetch_circulation_market_cap(code: str) -> float:
-    """从东方财富实时行情接口获取流通市值（单位：元），使用 push2his（K线同域）"""
-    market = get_market(code)
-    secid = f"{market}.{code}"
-    url = "http://push2his.eastmoney.com/api/qt/stock/get"
-    params = {"secid": secid, "fields": "f116"}
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://finance.eastmoney.com/",
-    }
-    for scheme in ("http", "https"):
-        try:
-            u = url.replace("http://", f"{scheme}://", 1)
-            resp = requests.get(u, params=params, headers=headers, timeout=10, verify=False)
-            if resp.status_code == 200 and len(resp.text) > 50:
-                break
-        except Exception:
-            continue
-    else:
-        raise ConnectionError(f"流通市值接口不可达，代码: {code}")
-
-    stock_data = resp.json().get("data", {})
-    if not stock_data:
-        raise ValueError(f"东方财富未返回 {code} 的行情数据")
-
-    cap = stock_data.get("f116")
-    if cap is None or cap == "-" or cap == 0:
-        raise ValueError(f"{code} 的流通市值数据无效: {cap}")
-
-    return float(cap)
 
 
 def _check_volume_valid(klines: list[dict]) -> bool:

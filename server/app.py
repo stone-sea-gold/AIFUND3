@@ -365,6 +365,7 @@ def api_refresh_tracker():
         "status": "ok",
         "refreshed": result["refreshed"],
         "failed": result.get("failed", 0),
+        "skipped": result.get("skipped", 0),
         "refresh_time": result.get("refresh_time", ""),
         "grouped": grouped,
     }

@@ -23,6 +23,7 @@ import pandas as pd
 _CODE_DIR = Path(__file__).resolve().parent.parent.parent / "选股代码"
 sys.path.insert(0, str(_CODE_DIR))
 from 砖型图 import calculate_brick_inflection_signals
+from 选股.strategies._indicators import check_waterfall_divergence
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -30,7 +31,7 @@ from 砖型图 import calculate_brick_inflection_signals
 # ═══════════════════════════════════════════════════════════════
 
 STRATEGY_NAME = "砖型图趋势拐点"
-STRATEGY_DESC = "通达信砖型图趋势拐点选股：当日V型拐点+反弹力度+趋势护航，3项条件满分100"
+STRATEGY_DESC = "通达信砖型图趋势拐点选股：当日V型拐点+反弹力度+趋势护航+瀑布线，4项条件满分100"
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -299,16 +300,20 @@ def _check_brick_trend(ind: dict, klines: list[dict], weight: int, params: dict)
 
 CRITERIA = {
     "brick_v_reversal": {
-        "weight": 35, "desc": "当日V型拐点(AA且CC)",
+        "weight": 30, "desc": "当日V型拐点(AA且CC)",
         "params": {}, "func": _check_brick_v_reversal,
     },
     "brick_rebound": {
-        "weight": 35, "desc": "反弹力度(红柱/前绿柱倍率)",
+        "weight": 30, "desc": "反弹力度(红柱/前绿柱倍率)",
         "params": {}, "func": _check_brick_rebound,
     },
     "brick_trend": {
-        "weight": 30, "desc": "趋势护航(短期/收盘超多空幅度)",
+        "weight": 15, "desc": "趋势护航(短期/收盘超多空幅度)",
         "params": {}, "func": _check_brick_trend,
+    },
+    "waterfall": {
+        "weight": 25, "desc": "瀑布线向上发散(MA30>MA60>MA120>MA240)",
+        "params": {}, "func": check_waterfall_divergence,
     },
 }
 
@@ -333,7 +338,7 @@ REPORT_CATEGORIES = [
     {
         "name": "砖型图趋势拐点信号",
         "criteria_keys": [
-            "brick_v_reversal", "brick_rebound", "brick_trend",
+            "brick_v_reversal", "brick_rebound", "brick_trend", "waterfall",
         ],
     },
 ]

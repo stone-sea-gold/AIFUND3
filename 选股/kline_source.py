@@ -330,13 +330,17 @@ def _save_cache(code: str, name: str, klines: list[dict]):
 # 主入口
 # ═══════════════════════════════════════════════════════════════
 
+def _is_market_closed_now() -> bool:
+    """A 股是否已收盘（15:00 之后视为已收盘）"""
+    from datetime import datetime as _dt
+    now = _dt.now()
+    return (now.hour > 15) or (now.hour == 15 and now.minute >= 0)
+
+
 def _strip_today_incomplete(klines: list[dict]) -> list[dict]:
     """若今日未收盘，移除今日的不完整日K bar"""
-    from datetime import datetime as _dt
     today_str = date.today().strftime("%Y-%m-%d")
-    now = _dt.now()
-    market_closed = (now.hour > 15) or (now.hour == 15 and now.minute >= 30)
-    if not market_closed and _is_weekday(date.today()):
+    if not _is_market_closed_now() and _is_weekday(date.today()):
         return [k for k in klines if k["date"] != today_str]
     return klines
 
@@ -362,13 +366,19 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
 
     today_str = date.today().strftime("%Y-%m-%d")
 
-    # ── 检查当日缓存（同日重复扫描直接命中）──
+    # ── 检查当日缓存 ──
     cached = _load_cache(code, today_str)
     if cached is not None:
         name, klines = cached
-        if len(klines) > count:
-            klines = klines[-count:]
-        return (name, klines)
+        # 缓存防污染：收盘后若缓存最新日期不是今日，说明 TDX 已更新，
+        # 缓存在更新前被写入，需绕过缓存重新从 TDX 读取
+        last_k_date = klines[-1]["date"] if klines else ""
+        if _is_market_closed_now() and last_k_date != today_str:
+            cached = None  # 标记缓存失效，走下方的 TDX 重读逻辑
+        else:
+            if len(klines) > count:
+                klines = klines[-count:]
+            return (name, klines)
 
     tdx_dir, stale_days = _get_config()
     result = None  # (name, klines) or None
