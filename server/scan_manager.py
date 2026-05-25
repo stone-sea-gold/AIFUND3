@@ -184,29 +184,16 @@ class ScanManager:
                         eta=round(eta, 0),
                     )
 
-            # 临时覆盖 config 参数（需同时覆盖 scanner 模块的导入副本）
-            from 选股 import config as cfg
-            from 选股 import scanner as scanner_mod
-            orig_delay = cfg.REQUEST_DELAY
-            orig_min_score = cfg.MIN_SCORE
-            cfg.REQUEST_DELAY = task.delay
-            cfg.MIN_SCORE = task.min_score
-            scanner_mod.REQUEST_DELAY = task.delay
-            scanner_mod.MIN_SCORE = task.min_score
-
-            try:
-                results = scan_all(
-                    pool_name=task.pool_name,
-                    top_n=task.top_n,
-                    verbose=False,
-                    strategy=strategy,
-                    progress_callback=_on_progress,
-                )
-            finally:
-                cfg.REQUEST_DELAY = orig_delay
-                cfg.MIN_SCORE = orig_min_score
-                scanner_mod.REQUEST_DELAY = orig_delay
-                scanner_mod.MIN_SCORE = orig_min_score
+            results = scan_all(
+                pool_name=task.pool_name,
+                top_n=task.top_n,
+                min_score=task.min_score,
+                delay=task.delay,
+                workers=task.workers,
+                verbose=False,
+                strategy=strategy,
+                progress_callback=_on_progress,
+            )
 
             # 修剪结果（移除 klines 大数据）
             trimmed = []

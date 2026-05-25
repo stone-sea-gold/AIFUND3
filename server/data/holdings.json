@@ -1,0 +1,90 @@
+{
+  "trades": [
+    {
+      "id": "t_20260522_201620_3b18",
+      "stock_name": "大连电瓷",
+      "stock_code": "002606",
+      "buy_date": "2026-05-22",
+      "cost_price": 15.871,
+      "shares": 100,
+      "buy_strategy": "b1_volume",
+      "sell_date": null,
+      "sell_price": null,
+      "sell_strategy": null,
+      "status": "open",
+      "pnl": null,
+      "pnl_pct": null,
+      "created_at": "2026-05-22T20:16:20"
+    },
+    {
+      "id": "t_20260522_201924_aede",
+      "stock_name": "大业股份",
+      "stock_code": "603278",
+      "buy_date": "2026-05-22",
+      "cost_price": 14.191,
+      "shares": 100,
+      "buy_strategy": "b1_volume",
+      "sell_date": null,
+      "sell_price": null,
+      "sell_strategy": null,
+      "status": "open",
+      "pnl": null,
+      "pnl_pct": null,
+      "created_at": "2026-05-22T20:19:24"
+    }
+  ],
+  "strategies": {
+    "buy": [
+      {
+        "id": "wave_macd",
+        "label": "Wave+MACD"
+      },
+      {
+        "id": "b1_volume",
+        "label": "B1量价共振"
+      },
+      {
+        "id": "brick_trend",
+        "label": "砖型图趋势拐点"
+      },
+      {
+        "id": "ruthless_wave",
+        "label": "无情操盘手+波浪理论"
+      },
+      {
+        "id": "fib_pullback",
+        "label": "Fib回撤低吸"
+      },
+      {
+        "id": "other",
+        "label": "其他"
+      }
+    ],
+    "sell": [
+      {
+        "id": "death_cross",
+        "label": "MACD死叉"
+      },
+      {
+        "id": "stop_loss",
+        "label": "止损"
+      },
+      {
+        "id": "take_profit",
+        "label": "止盈"
+      },
+      {
+        "id": "fib_resistance",
+        "label": "Fib压力位"
+      },
+      {
+        "id": "position_reduce",
+        "label": "仓位管理减仓"
+      },
+      {
+        "id": "other",
+        "label": "其他"
+      }
+    ]
+  }
+}

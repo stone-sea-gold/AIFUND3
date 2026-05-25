@@ -141,66 +141,10 @@ def _read_tdx_daily(code: str, count: int) -> tuple[str, list[dict]] | None:
 
 
 # ═══════════════════════════════════════════════════════════════
-# TCP 补缺（mootdx 连接 TDX 服务器）
+# TCP 补缺（走 tdx_pool 持久连接）
 # ═══════════════════════════════════════════════════════════════
 
-# TDX 服务器池，来自 mootdx config，启动时加载一次
-_tcp_servers = None
-_tcp_server_lock = threading.Lock()
-
-
-def _get_tcp_servers() -> list[tuple[str, int]]:
-    """读取 mootdx config 中的 HQ 服务器列表"""
-    global _tcp_servers
-    if _tcp_servers is not None:
-        return _tcp_servers
-    with _tcp_server_lock:
-        if _tcp_servers is not None:
-            return _tcp_servers
-        servers = []
-        try:
-            import json
-            config_path = Path.home() / ".mootdx" / "config.json"
-            if config_path.exists():
-                data = json.loads(config_path.read_text(encoding="utf-8"))
-                for s in data.get("SERVER", {}).get("HQ", []):
-                    servers.append((s[1], int(s[2])))
-        except Exception:
-            pass
-        if not servers:
-            servers = [("110.41.147.114", 7709)]
-        _tcp_servers = servers
-        return _tcp_servers
-
-
-def _normalize_tcp_bar(bar: dict, prev_close: float) -> dict:
-    """
-    将 mootdx TCP 返回的 K 线记录转为标准 dict 格式。
-
-    TCP 字段: open, close, high, low, vol(手), amount, year, month, day
-    标准格式: date, open, close, high, low, volume, amount, amplitude, pct_chg, change, turnover
-    """
-    d = f"{bar['year']}-{bar['month']:02d}-{bar['day']:02d}"
-    c = float(bar['close'])
-    h = float(bar['high'])
-    l = float(bar['low'])
-    o = float(bar['open'])
-    v = float(bar['vol'])
-    a = float(bar.get('amount', 0))
-
-    pct = ((c - prev_close) / prev_close * 100) if prev_close and prev_close > 0 else 0.0
-    chg = (c - prev_close) if prev_close else 0.0
-    amp = ((h - l) / prev_close * 100) if prev_close and prev_close > 0 else 0.0
-
-    return {
-        "date": d,
-        "open": o, "close": c, "high": h, "low": l,
-        "volume": v, "amount": a,
-        "amplitude": round(amp, 2),
-        "pct_chg": round(pct, 2),
-        "change": round(chg, 2),
-        "turnover": 0.0,
-    }
+from 选股.tdx_pool import get_pool, normalize_tcp_bars
 
 
 def _fetch_recent_bars(code: str, since_date: str, max_bars: int = 20) -> list[dict] | None:
@@ -236,42 +180,15 @@ def _fetch_recent_bars(code: str, since_date: str, max_bars: int = 20) -> list[d
 
 
 def _fetch_via_tcp(code: str, count: int) -> list[dict] | None:
-    """通过 mootdx TCP 协议拉取 K 线，失败返回 None"""
-    from mootdx.quotes import TdxHq_API
-
-    servers = _get_tcp_servers()
-    for host, port in servers:
-        api = None
-        try:
-            api = TdxHq_API()
-            api.connect(host, port)
-
-            # market: 0=深圳, 1=上海
-            mkt = 1 if code.startswith("6") else 0
-            raw = api.get_security_bars(9, mkt, code, 0, count)
-            api.disconnect()
-
-            if not raw:
-                continue
-
-            # 逐条归一化（需要前一日的 close 来计算 pct_chg）
-            klines = []
-            prev_close = None
-            for bar in raw:
-                k = _normalize_tcp_bar(bar, prev_close or float(bar.get('close', 0)))
-                klines.append(k)
-                prev_close = k["close"]
-
-            return klines
-        except Exception:
-            if api:
-                try:
-                    api.disconnect()
-                except Exception:
-                    pass
-            continue
-
-    return None
+    """通过 tdx_pool 持久连接拉取 K 线，失败返回 None"""
+    try:
+        pool = get_pool()
+        raw = pool.get_security_bars(code, start=0, count=count)
+        if not raw:
+            return None
+        return normalize_tcp_bars(raw)
+    except Exception:
+        return None
 
 
 def _fetch_via_http(code: str, count: int) -> list[dict] | None:
@@ -281,6 +198,33 @@ def _fetch_via_http(code: str, count: int) -> list[dict] | None:
         return api_klines
     except Exception:
         return None
+
+
+def _supplement_today_from_tcp(klines: list[dict], code: str):
+    """盘中：用 TDX TCP 实时行情刷新今日 bar 的价格字段"""
+    try:
+        from 选股.tdx_pool import get_pool
+        pool = get_pool()
+        quotes = pool.get_quotes_batch([code])
+        if quotes and len(quotes) > 0:
+            q = quotes[0]
+            today_bar = klines[-1]
+            prev_close = klines[-2]["close"] if len(klines) >= 2 else today_bar.get("close", 0)
+
+            tcp_price = float(q.get("price", today_bar["close"]))
+            today_bar["close"] = tcp_price
+            today_bar["high"] = max(float(today_bar["high"]), float(q.get("high", today_bar["high"])))
+            today_bar["low"] = min(float(today_bar["low"]), float(q.get("low", today_bar["low"])))
+            today_bar["volume"] = max(float(today_bar["volume"]), float(q.get("volume", today_bar["volume"])))
+
+            if prev_close > 0:
+                today_bar["pct_chg"] = round((tcp_price - prev_close) / prev_close * 100, 2)
+                today_bar["change"] = round(tcp_price - prev_close, 2)
+                today_bar["amplitude"] = round(
+                    (today_bar["high"] - today_bar["low"]) / prev_close * 100, 2
+                )
+    except Exception:
+        pass
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -366,15 +310,14 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
 
     today_str = date.today().strftime("%Y-%m-%d")
 
-    # ── 检查当日缓存 ──
+    # ── 检查当日缓存（盘中跳过，确保实时补充生效）──
+    is_open = not _is_market_closed_now() and _is_weekday(date.today())
     cached = _load_cache(code, today_str)
-    if cached is not None:
+    if cached is not None and not is_open:
         name, klines = cached
-        # 缓存防污染：收盘后若缓存最新日期不是今日，说明 TDX 已更新，
-        # 缓存在更新前被写入，需绕过缓存重新从 TDX 读取
         last_k_date = klines[-1]["date"] if klines else ""
         if _is_market_closed_now() and last_k_date != today_str:
-            cached = None  # 标记缓存失效，走下方的 TDX 重读逻辑
+            cached = None
         else:
             if len(klines) > count:
                 klines = klines[-count:]
@@ -389,31 +332,47 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
         name, klines = tdx_result
 
         if klines:
-            klines = _strip_today_incomplete(klines)
-            if not klines:
-                return (name, [])
+            is_open = not _is_market_closed_now() and _is_weekday(date.today())
+            has_today = klines[-1]["date"] == today_str
 
-            last_date_str = klines[-1]["date"]
-            last_date = date.fromisoformat(last_date_str)
-            today = date.today()
-
-            gap = _count_trading_gaps(last_date, today)
-
-            if gap <= stale_days:
+            if is_open:
+                # ── 盘中模式：保留今日 bar + TCP 实时补充 ──
+                if has_today:
+                    _supplement_today_from_tcp(klines, code)
+                else:
+                    today_bars = _fetch_via_tcp(code, 5)
+                    if today_bars:
+                        tb = [b for b in today_bars if b["date"] == today_str]
+                        if tb:
+                            klines.append(tb[-1])
+                            if len(klines) > count:
+                                klines = klines[-count:]
                 result = (name, klines)
             else:
-                fresh = _fetch_recent_bars(code, last_date_str, max_bars=max(10, gap + 5))
-                if fresh:
-                    existing_dates = {k["date"] for k in klines}
-                    for bar in fresh:
-                        if bar["date"] not in existing_dates:
-                            klines.append(bar)
-                            existing_dates.add(bar["date"])
-                    klines.sort(key=lambda x: x["date"])
-                    klines = klines[-count:]
+                # ── 盘后模式 ──
+                klines = _strip_today_incomplete(klines)
+                if not klines:
+                    return (name, [])
+
+                last_date_str = klines[-1]["date"]
+                last_date = date.fromisoformat(last_date_str)
+                gap = _count_trading_gaps(last_date, date.today())
+
+                if gap <= stale_days:
                     result = (name, klines)
                 else:
-                    return (name, klines)
+                    fresh = _fetch_recent_bars(code, last_date_str, max_bars=max(10, gap + 5))
+                    if fresh:
+                        existing_dates = {k["date"] for k in klines}
+                        for bar in fresh:
+                            if bar["date"] not in existing_dates:
+                                klines.append(bar)
+                                existing_dates.add(bar["date"])
+                        klines.sort(key=lambda x: x["date"])
+                        klines = klines[-count:]
+                        result = (name, klines)
+                    else:
+                        return (name, klines)
 
     # ── 降级：全量 API ──
     if result is None:
@@ -423,10 +382,10 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
             klines = _strip_today_incomplete(klines)
             result = (name, klines)
 
-    # ── 写入缓存（仅当数据已足够新鲜）──
+    # ── 写入缓存（仅盘后写入，盘中不污染）──
     if result is not None:
         k = result[1]
-        if k:
+        if k and not is_open:
             last_str = k[-1]["date"]
             g = _count_trading_gaps(date.fromisoformat(last_str), date.today())
             if g <= stale_days:

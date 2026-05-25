@@ -19,3 +19,11 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .env
+
+# 运行时文件（不纳入版本控制）
+.server.pid
+.watchdog.pid
+server.log
+
+# 二进制/压缩包
+*.zip

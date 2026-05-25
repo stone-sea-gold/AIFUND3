@@ -6,7 +6,6 @@
 API 端点:
     GET  /                        看板页面
     GET  /stock_dashboard         看板页面
-    GET  /stock_selection         选股页面（同模板，JS 切换 Tab）
 
     GET  /api/pools               可用股票池列表
     GET  /api/strategies          可用选股策略列表
@@ -22,9 +21,8 @@ API 端点:
 import os
 import sys
 from pathlib import Path
-from typing import Optional
 
-from fastapi import FastAPI, Query
+from fastapi import Body, FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from jinja2 import Environment, FileSystemLoader
 
@@ -36,12 +34,9 @@ if str(_PROJECT_ROOT) not in sys.path:
 os.environ["no_proxy"] = "*"
 os.environ["NO_PROXY"] = "*"
 
-from server.wave_parser import (
-    parse_holdings, parse_action_items, parse_daily_logs,
-    load_backtest, get_update_date,
-)
 from server.scan_manager import get_manager
 from server.tracker import get_tracker
+from server.holdings_manager import get_holdings_manager
 
 app = FastAPI(title="波浪交易看板")
 
@@ -55,50 +50,8 @@ _jinja_env = Environment(loader=FileSystemLoader(_template_dir), autoescape=True
 @app.get("/stock_dashboard", response_class=HTMLResponse)
 def stock_dashboard():
     """波浪交易看板"""
-    holdings = parse_holdings()
-    actions = parse_action_items()
-    logs = parse_daily_logs(days=7)
-    backtest = load_backtest()
-    update_date = get_update_date()
-
-    cash_h = [h for h in holdings if h["is_cash"]]
-    cash_pct = cash_h[0]["position"] if cash_h else "?"
-    cash_value = _parse_pct(cash_pct)
-    cash_alert_level = None
-    if cash_value < 15:
-        cash_alert_level = "danger"
-    elif cash_value < 30:
-        cash_alert_level = "warning"
-
-    death_stocks = [h["name"] for h in holdings if h["is_death"]]
-
     template = _jinja_env.get_template("wave.html")
-    return HTMLResponse(template.render(
-        holdings=holdings,
-        actions=actions,
-        logs=logs,
-        backtest=backtest,
-        update_date=update_date,
-        cash_pct=cash_pct,
-        cash_alert_level=cash_alert_level,
-        death_stocks=death_stocks,
-    ))
-
-
-@app.get("/stock_selection", response_class=HTMLResponse)
-def stock_selection_page():
-    """选股页面（复 use 看板模板，JS 控制 Tab 切换）"""
-    template = _jinja_env.get_template("wave.html")
-    return HTMLResponse(template.render(
-        holdings=[],
-        actions=[],
-        logs=[],
-        backtest=None,
-        update_date="",
-        cash_pct="?",
-        cash_alert_level=None,
-        death_stocks=[],
-    ))
+    return HTMLResponse(template.render())
 
 
 # ── API：股票池 ───────────────────────────────────────────────
@@ -296,6 +249,70 @@ def api_test_stock(code: str, strategy: str = Query("b1", description="策略名
         return JSONResponse({"error": str(e)}, status_code=500)
 
 
+# ── API：实时行情 ────────────────────────────────────────────────
+
+@app.get("/api/quotes")
+def api_get_quotes(
+    codes: str = Query("", description="逗号分隔的股票代码"),
+):
+    """
+    获取实时行情快照（TDX TCP 主源，东方财富降级）。
+
+    GET /api/quotes?codes=000021,600519,000001
+    """
+    if not codes:
+        return JSONResponse({"error": "请提供股票代码，如 ?codes=000021,600519"}, status_code=400)
+
+    code_list = [c.strip() for c in codes.split(",") if c.strip()]
+    if not code_list:
+        return JSONResponse({"error": "无效代码"}, status_code=400)
+
+    try:
+        from 选股.tdx_pool import get_pool
+        pool = get_pool()
+        quotes = pool.get_quotes_batch(code_list)
+        if quotes:
+            return {"quotes": quotes, "source": "tdx_tcp", "count": len(quotes)}
+    except Exception:
+        pass
+
+    # 降级：东方财富 HTTP 批量行情
+    try:
+        import requests
+        markets = []
+        for c in code_list:
+            markets.append("1" if c.startswith("6") else "0")
+        secids = [f"{m}.{c}" for m, c in zip(markets, code_list)]
+        url = "http://push2.eastmoney.com/api/qt/ulist.np/get"
+        params = {
+            "secids": ",".join(secids[:50]),
+            "fields": "f2,f3,f12,f14,f15,f16,f17,f18",
+            "fltt": "2",
+        }
+        headers = {"User-Agent": "Mozilla/5.0", "Referer": "https://finance.eastmoney.com/"}
+        resp = requests.get(url, params=params, headers=headers, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json().get("data", {})
+            items = data.get("diff", [])
+            quotes = []
+            for item in (items or []):
+                quotes.append({
+                    "code": item.get("f12", ""),
+                    "name": item.get("f14", ""),
+                    "price": item.get("f2", 0),
+                    "pct_chg": item.get("f3", 0),
+                    "high": item.get("f15", 0),
+                    "low": item.get("f16", 0),
+                    "open": item.get("f17", 0),
+                    "volume": item.get("f18", 0),
+                })
+            return {"quotes": quotes, "source": "eastmoney", "count": len(quotes)}
+    except Exception:
+        pass
+
+    return JSONResponse({"error": "行情数据不可用"}, status_code=503)
+
+
 # ── API：历史报告 ─────────────────────────────────────────────
 
 REPORTS_DIR = _PROJECT_ROOT / "选股" / "选股结果"
@@ -379,8 +396,150 @@ def api_delete_tracker_entry(entry_id: str):
     return JSONResponse({"error": "条目不存在"}, status_code=404)
 
 
-# ── 辅助 ──────────────────────────────────────────────────────
+# ── API：持仓管理 ────────────────────────────────────────────────
 
-def _parse_pct(text: str) -> float:
-    digits = "".join(ch for ch in text if ch.isdigit() or ch == ".")
-    return float(digits) if digits else 0.0
+_holdings_mgr = get_holdings_manager()
+
+
+@app.get("/api/holdings")
+def api_get_holdings(status: str = Query("all", description="过滤状态: open/closed/all")):
+    """获取持仓交易列表"""
+    trades = _holdings_mgr.get_trades(status_filter=status)
+    return {"trades": trades}
+
+
+@app.post("/api/holdings")
+def api_add_trade(body: dict = Body(...)):
+    """新增持仓交易"""
+    required = {"stock_name", "stock_code", "buy_date", "cost_price", "shares", "buy_strategy"}
+    missing = required - set(body.keys())
+    if missing:
+        return JSONResponse({"error": f"缺少字段: {', '.join(missing)}"}, status_code=422)
+    trade = _holdings_mgr.add_trade(
+        stock_name=body["stock_name"],
+        stock_code=body["stock_code"],
+        buy_date=body["buy_date"],
+        cost_price=float(body["cost_price"]),
+        shares=int(body["shares"]),
+        buy_strategy=body["buy_strategy"],
+    )
+    return {"trade": trade}
+
+
+@app.put("/api/holdings/{trade_id}")
+def api_edit_trade(trade_id: str, body: dict = Body(...)):
+    """编辑持仓交易"""
+    if _holdings_mgr.edit_trade(trade_id, body):
+        return {"status": "ok"}
+    return JSONResponse({"error": "交易不存在或已关闭"}, status_code=400)
+
+
+@app.post("/api/holdings/{trade_id}/close")
+def api_close_trade(trade_id: str, body: dict = Body(...)):
+    """清仓"""
+    required = {"sell_date", "sell_price", "sell_strategy"}
+    missing = required - set(body.keys())
+    if missing:
+        return JSONResponse({"error": f"缺少字段: {', '.join(missing)}"}, status_code=422)
+    trade = _holdings_mgr.close_trade(
+        trade_id=trade_id,
+        sell_date=body["sell_date"],
+        sell_price=float(body["sell_price"]),
+        sell_strategy=body["sell_strategy"],
+    )
+    if trade is None:
+        return JSONResponse({"error": "交易不存在或已关闭"}, status_code=400)
+    return {"trade": trade}
+
+
+@app.delete("/api/holdings/{trade_id}")
+def api_delete_trade(trade_id: str):
+    """删除交易记录"""
+    if _holdings_mgr.delete_trade(trade_id):
+        return {"status": "deleted"}
+    return JSONResponse({"error": "交易不存在"}, status_code=404)
+
+
+@app.get("/api/holdings/strategies")
+def api_get_strategies():
+    """获取买入/卖出策略下拉选项"""
+    return _holdings_mgr.get_strategies()
+
+
+# ── API：账户净值 ────────────────────────────────────────────────
+
+@app.get("/api/nav")
+def api_get_nav():
+    """获取净值历史"""
+    return _holdings_mgr.get_nav()
+
+
+@app.post("/api/nav/init")
+def api_init_nav(body: dict = Body(...)):
+    """设置初始净值"""
+    if "initial_nav" not in body or "initial_date" not in body:
+        return JSONResponse({"error": "缺少 initial_nav 或 initial_date"}, status_code=422)
+    nav = _holdings_mgr.init_nav(
+        initial_nav=float(body["initial_nav"]),
+        initial_date=body["initial_date"],
+    )
+    return nav
+
+
+@app.post("/api/nav/adjust")
+def api_adjust_nav(body: dict = Body(...)):
+    """出入金调整"""
+    required = {"amount", "direction", "date"}
+    missing = required - set(body.keys())
+    if missing:
+        return JSONResponse({"error": f"缺少字段: {', '.join(missing)}"}, status_code=422)
+    if body["direction"] not in ("deposit", "withdraw"):
+        return JSONResponse({"error": "direction 必须为 deposit 或 withdraw"}, status_code=422)
+    nav = _holdings_mgr.adjust_nav(
+        amount=float(body["amount"]),
+        direction=body["direction"],
+        date=body["date"],
+        note=body.get("note", ""),
+    )
+    return nav
+
+
+# ── API：数据源诊断 ────────────────────────────────────────────
+
+@app.get("/api/sources")
+def api_data_sources():
+    """数据源状态诊断"""
+    from pathlib import Path
+    from 选股.config import TDX_DATA_DIR
+
+    tdx_local = Path(TDX_DATA_DIR).exists() if TDX_DATA_DIR else False
+    vipdoc = Path(TDX_DATA_DIR) / "vipdoc" if TDX_DATA_DIR else None
+    lday_sh = (vipdoc / "sh" / "lday").exists() if vipdoc else False
+    lday_sz = (vipdoc / "sz" / "lday").exists() if vipdoc else False
+
+    tdx_tcp = {"connected": False, "server": None, "healthy_servers": 0}
+    try:
+        from 选股.tdx_pool import get_pool
+        pool = get_pool()
+        tdx_tcp["connected"] = pool.is_connected()
+        tdx_tcp["server"] = f"{pool._host}:{pool._port}" if pool._host else None
+        tdx_tcp["healthy_servers"] = len(pool._healthy_servers)
+    except Exception:
+        pass
+
+    return {
+        "tdx_local": {
+            "dir": TDX_DATA_DIR,
+            "exists": tdx_local,
+            "vipdoc_sh_lday": lday_sh,
+            "vipdoc_sz_lday": lday_sz,
+        },
+        "tdx_tcp": tdx_tcp,
+        "fallback": {
+            "eastmoney_http": True,
+            "sina_http": True,
+            "use_tdx": True,
+        },
+    }
+
+

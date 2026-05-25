@@ -165,11 +165,7 @@ class Tracker:
         """
         刷新所有跟踪标的最新收盘价。
 
-        数据源优先级: 通达信本地 .day → TDX TCP 补缺 → 东方财富 HTTP
-        同日缓存 + 并发拉取，大幅减少等待时间。
-
-        Returns:
-            {"refreshed": N, "failed": M, "skipped": K, "refresh_time": "..."}
+        数据源优先级: TDX TCP 批量报价（快速）→ 逐只 get_klines（降级）
         """
         from 选股.kline_source import get_klines
 
@@ -182,7 +178,7 @@ class Tracker:
 
         today_str = date.today().strftime("%Y-%m-%d")
 
-        # 收集唯一代码，跳过当日已刷新的
+        # 收集所有跟踪代码（盘中价格实时变化，每次全部重取）
         all_codes = set()
         skip_count = 0
         for e in entries:
@@ -191,48 +187,64 @@ class Tracker:
                 if s.get("latest_date") == today_str:
                     skip_count += 1
 
-        # 只拉取需要更新的代码
-        codes_to_fetch = list({
-            c for e in entries for s in e.get("stocks", [])
-            if (c := s["code"]) and s.get("latest_date") != today_str
-        })
+        codes_to_fetch = list(all_codes)
 
         if not codes_to_fetch:
             return {
-                "refreshed": 0, "failed": 0, "skipped": skip_count,
+                "refreshed": 0, "failed": 0, "skipped": 0,
                 "refresh_time": datetime.now().strftime("%m-%d %H:%M"),
             }
 
-        # 并发拉取价格
         price_map: dict[str, dict] = {}
         refreshed = 0
         failed = 0
 
-        def _fetch_one(code: str) -> tuple[str, dict | None]:
-            try:
-                _, klines = get_klines(code, count=5, period="day")
-                if klines:
-                    last_k = klines[-1]
-                    return code, {
-                        "price": round(float(last_k.get("close", 0)), 2),
-                        "date": last_k.get("date", ""),
-                    }
-            except Exception:
-                pass
-            return code, None
+        # ── 快速路径：TDX TCP 批量报价 ──
+        tcp_ok = False
+        try:
+            from 选股.tdx_pool import get_pool
+            pool = get_pool()
+            quotes = pool.get_quotes_batch(codes_to_fetch)
+            if quotes:
+                tcp_ok = True
+                for q in quotes:
+                    code = q.get("code", "")
+                    if code:
+                        price_map[code] = {
+                            "price": q.get("price", 0),
+                            "date": today_str,
+                        }
+                refreshed = len(price_map)
+        except Exception:
+            pass
 
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            futures = {pool.submit(_fetch_one, c): c for c in codes_to_fetch}
-            for future in as_completed(futures):
+        # ── 降级路径：逐只 get_klines ──
+        if not tcp_ok:
+            def _fetch_one(code: str) -> tuple[str, dict | None]:
                 try:
-                    code, result = future.result()
-                    if result:
-                        price_map[code] = result
-                        refreshed += 1
-                    else:
-                        failed += 1
+                    _, klines = get_klines(code, count=5, period="day")
+                    if klines:
+                        last_k = klines[-1]
+                        return code, {
+                            "price": round(float(last_k.get("close", 0)), 2),
+                            "date": last_k.get("date", ""),
+                        }
                 except Exception:
-                    failed += 1
+                    pass
+                return code, None
+
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {executor.submit(_fetch_one, c): c for c in codes_to_fetch}
+                for future in as_completed(futures):
+                    try:
+                        code, result = future.result()
+                        if result:
+                            price_map[code] = result
+                            refreshed += 1
+                        else:
+                            failed += 1
+                    except Exception:
+                        failed += 1
 
         if not price_map:
             return {

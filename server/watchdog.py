@@ -47,10 +47,16 @@ def main():
         "server.app:app",
         "--host", "0.0.0.0",
         "--port", "8002",
+        "--app-dir", str(PROJECT_ROOT),
     ]
 
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
+
+    # 切换到临时目录运行，避免锁定项目所在硬盘
+    import tempfile
+    cwd = tempfile.gettempdir()
+    log(f"工作目录: {cwd}（避免锁定 E: 盘）")
 
     restart_count = 0
     max_restarts = 20
@@ -58,12 +64,12 @@ def main():
     while True:
         log("正在启动 uvicorn 服务器...")
 
-        log_file = open(LOG_FILE, "a", encoding="utf-8")
         proc = subprocess.Popen(
             uvicorn_cmd,
             env=env,
-            stdout=log_file,
-            stderr=subprocess.STDOUT,
+            cwd=cwd,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
             creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
         )
 
@@ -80,7 +86,6 @@ def main():
             break
 
         exit_code = proc.returncode
-        log_file.close()
         log(f"服务器已退出 (PID: {proc.pid}, 退出码: {exit_code})")
 
         # 退出码 0 表示正常关闭，看护进程也退出

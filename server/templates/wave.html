@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>📈 股票交易看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <style>
 :root {
   --bg: #2d2a1f; --surface: rgba(55,50,35,0.55); --surface2: rgba(65,60,42,0.5);
@@ -76,71 +77,13 @@ h3 { font-size:.95em; color:var(--text2); margin:12px 0 6px; }
 .test-area input:focus { outline:none; border-color:var(--blue); }
 .test-result { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; margin:8px 0; white-space:pre-wrap; font-size:.82em; }
 
-/* ── 持仓卡片 ── */
-.cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; margin:10px 0; }
-.card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; transition:.15s; }
-.card:hover { border-color:var(--blue); }
-.card .name { font-weight:700; font-size:.95em; }
-.card .code { font-size:.72em; color:var(--text2); }
-.card .pnl { font-size:1.2em; font-weight:700; margin:6px 0 2px; }
-.card .pos { font-size:.8em; color:var(--text2); }
-.card .macd { margin-top:6px; }
-.card.golden { border-left:3px solid var(--green); }
-.card.death { border-left:3px solid var(--red); }
-.card.cash { border-left:3px solid var(--amber); background:var(--surface2); }
-.pnl-up { color:var(--green); }
-.pnl-down { color:var(--red); }
-.pnl-flat { color:var(--text2); }
-
 /* ── 警告条 ── */
 .alert { background:var(--red-bg); border:1px solid rgba(239,68,68,.3); border-radius:6px; padding:8px 12px; margin:10px 0; font-size:.85em; }
 .alert-amber { background:var(--amber-bg); border-color:rgba(245,158,11,.3); }
 
-/* ── 操作要点 ── */
-.action-group { background:var(--surface); border-radius:8px; padding:10px 12px; margin:8px 0; border:1px solid var(--border); }
-.action-group summary { cursor:pointer; font-weight:600; font-size:.9em; list-style:none; }
-.action-group summary::before { content:'▸ '; color:var(--blue); }
-.action-group[open] summary::before { content:'▾ '; }
 table { width:100%; border-collapse:collapse; font-size:.82em; margin:6px 0; }
 th { text-align:left; color:var(--text2); font-weight:500; padding:4px 6px; border-bottom:1px solid var(--border); }
 td { padding:4px 6px; border-bottom:1px solid rgba(140,130,90,.2); vertical-align:top; }
-.note-list { font-size:.82em; color:var(--text2); padding-left:16px; }
-.note-list li { margin:2px 0; }
-
-/* ── 日志 ── */
-.log-entry { background:var(--surface); border-radius:8px; padding:10px 12px; margin:8px 0; border:1px solid var(--border); }
-.log-date { font-weight:700; color:var(--blue); font-size:.9em; }
-.log-summary { font-size:.85em; margin-top:6px; color:var(--text); }
-.log-ops { margin-top:6px; }
-.op-row { display:flex; gap:6px; align-items:center; font-size:.82em; padding:3px 0; border-bottom:1px solid rgba(140,130,90,.15); flex-wrap:wrap; }
-.op-dir { font-weight:700; min-width:30px; }
-.op-buy { color:var(--red); }
-.op-sell { color:var(--green); }
-.op-hold { color:var(--text2); }
-.risk-item { font-size:.82em; color:var(--red); padding:2px 0; }
-.good-item { font-size:.82em; color:var(--green); padding:2px 0; }
-
-/* ── 回测 ── */
-.bt-table { overflow-x:auto; }
-.bt-table table { min-width:580px; }
-.bt-pnl-up { color:var(--green); font-weight:600; }
-.bt-pnl-down { color:var(--red); font-weight:600; }
-tr.bt-total { font-weight:700; border-top:2px solid var(--border); }
-.bt-note { font-size:.8em; color:var(--text2); margin-top:8px; }
-.bt-tabs { display:flex; gap:6px; margin-bottom:10px; }
-.bt-tab { background:var(--surface); color:var(--text2); border:1px solid var(--border); border-radius:6px; padding:5px 16px; font-size:.85em; cursor:pointer; transition:.15s; }
-.bt-tab:hover { border-color:var(--blue); color:var(--text); }
-.bt-tab.active { background:var(--blue); color:#fff; border-color:var(--blue); }
-.bt-subhead th { font-size:.72em; color:var(--text2); font-weight:400; padding:2px 6px; }
-
-/* ── 收起/展开 ── */
-.section { margin-bottom:16px; }
-.toggle-btn { background:var(--surface2); color:var(--text2); border:1px solid var(--border); border-radius:4px; padding:2px 10px; font-size:.75em; cursor:pointer; float:right; }
-.toggle-btn:hover { color:var(--text); border-color:var(--blue); }
-
-/* ── 加载旋转 ── */
-.spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
-@keyframes spin { to { transform:rotate(360deg); } }
 
 /* ── 选股跟踪看板 ── */
 .tracker-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding:10px 14px; background:var(--surface); border-radius:8px; border:1px solid var(--border); }
@@ -161,26 +104,60 @@ tr.bt-total { font-weight:700; border-top:2px solid var(--border); }
 .tracker-pnl-up { color:var(--green); font-weight:600; }
 .tracker-pnl-down { color:var(--red); font-weight:600; }
 
+/* ── 持仓看板 ── */
+.holdings-summary { display:flex; gap:16px; flex-wrap:wrap; margin:12px 0; }
+.holdings-summary .summary-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 18px; min-width:140px; }
+.holdings-summary .summary-card .label { font-size:.78em; color:var(--text2); }
+.holdings-summary .summary-card .value { font-size:1.3em; font-weight:700; margin-top:2px; }
+
+.holdings-table-wrap { overflow-x:auto; margin:10px 0; }
+.holdings-table { min-width:700px; }
+.holdings-table .btn-edit { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:.78em; cursor:pointer; transition:.15s; }
+.holdings-table .btn-edit:hover { border-color:var(--blue); color:var(--text); }
+.holdings-table .btn-close { background:var(--red-bg); color:var(--red); border:1px solid rgba(200,136,122,.3); border-radius:4px; padding:3px 10px; font-size:.78em; cursor:pointer; transition:.15s; }
+.holdings-table .btn-close:hover { background:rgba(200,136,122,.25); }
+.holdings-table .btn-delete { background:none; color:var(--text2); border:none; cursor:pointer; font-size:.85em; padding:3px 6px; opacity:.5; transition:.15s; }
+.holdings-table .btn-delete:hover { color:var(--red); opacity:1; }
+.holdings-table .pnl-up { color:var(--green); font-weight:600; }
+.holdings-table .pnl-down { color:var(--red); font-weight:600; }
+
+.holdings-form { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.holdings-form .form-row { display:flex; flex-wrap:wrap; gap:10px; align-items:end; }
+.holdings-form label { font-size:.8em; color:var(--text2); display:flex; flex-direction:column; gap:3px; }
+.holdings-form select, .holdings-form input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
+.holdings-form select:focus, .holdings-form input:focus { outline:none; border-color:var(--blue); }
+.holdings-form .form-actions { margin-top:10px; display:flex; gap:8px; }
+
+.closed-section { margin:20px 0; }
+.closed-section summary { cursor:pointer; font-weight:600; font-size:.95em; color:var(--blue); list-style:none; }
+.closed-section summary::before { content:'▸ '; }
+.closed-section[open] summary::before { content:'▾ '; }
+
+.nav-section { margin:20px 0; }
+.nav-chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.nav-chart-wrap canvas { width:100%; max-height:300px; }
+.nav-actions { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+
 /* ── 磨砂玻璃效果 ── */
-.scan-panel, .progress-area, .card, .log-entry, .action-group,
-.test-result, .bt-tab, .toggle-btn, .tracker-toolbar, .tracker-column,
-.btn-scan-secondary {
+.scan-panel, .progress-area, .test-result, .tracker-toolbar, .tracker-column,
+.btn-scan-secondary, .holdings-form, .holdings-summary .summary-card, .nav-chart-wrap {
   backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);
 }
 
 @media(max-width:480px) {
-  .cards { grid-template-columns:repeat(2,1fr); }
   body { padding:8px; }
   .scan-params { flex-direction:column; align-items:stretch; }
   .scan-params select, .scan-params input { min-width:auto; }
+  .holdings-summary { flex-direction:column; }
+  .holdings-form .form-row { flex-direction:column; }
+  .holdings-form select, .holdings-form input { min-width:auto; width:100%; }
 }
 </style>
 </head>
 <body>
 
 <h1>📈 股票交易看板</h1>
-<div class="meta">数据更新: {{ update_date }} ｜ MACD(5,34,5) ｜ Fib 回撤</div>
 
 <!-- ════════ Tab 导航 ════════ -->
 <div class="tab-nav">
@@ -192,336 +169,44 @@ tr.bt-total { font-weight:700; border-top:2px solid var(--border); }
 <!-- ════════ Tab: 持仓看板 ════════ -->
 <div id="tab-dashboard" class="tab-content active">
 
-<div class="cards">
-{% for h in holdings %}
-  <div class="card {{ 'golden' if h.is_golden else ('death' if h.is_death else ('cash' if h.is_cash else '')) }}">
-    <div class="name">{{ h.name }}</div>
-    <div class="code">{{ h.code }}</div>
-    {% if not h.is_cash %}
-      <div class="pnl {{ 'pnl-up' if h.pnl_val > 0 else ('pnl-down' if h.pnl_val < 0 else 'pnl-flat') }}">{{ h.pnl }}</div>
-      <div class="pos">仓位 {{ h.position }} ｜ 成本 {{ h.cost }}</div>
-      <div class="macd">
-        {% if h.is_golden %}
-          <span class="badge badge-green">金叉</span>
-        {% elif h.is_death %}
-          <span class="badge badge-red">死叉</span>
-        {% endif %}
-      </div>
-    {% else %}
-      <div class="pnl pnl-flat" style="font-size:1em">{{ h.position }}</div>
-    {% endif %}
-  </div>
-{% endfor %}
-</div>
+<!-- 净值汇总 -->
+<div class="holdings-summary" id="nav-summary"></div>
 
-{% if cash_alert_level == 'danger' %}
-<div class="alert">
-  ⚠️ 现金 {{ cash_pct }} 低于趋势行情 15% 红线 — 立即收缩仓位，暂停加仓
-</div>
-{% elif cash_alert_level == 'warning' %}
-<div class="alert alert-amber">
-  ⚠️ 现金 {{ cash_pct }} 处于趋势仓位区间（15%-30%）— 仅顺势持有或回踩补仓，避免追高
-</div>
-{% endif %}
-
-{% if death_stocks %}
-<div class="alert">
-  🚨 死叉持仓: {{ death_stocks | join('、') }} — 严格执行止损，不加仓
-</div>
-{% endif %}
-
-<!-- ════════ 策略与回测摘要 ════════ -->
-<h2>🎯 策略与回测摘要</h2>
-<div class="bt-table">
-<table>
-  <thead>
-    <tr>
-      <th>股票</th>
-      <th>当前策略</th>
-      <th>历史回测</th>
-      <th>胜率</th>
-      <th>止损</th>
-      <th>状态</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for h in holdings if not h.is_cash %}
-    <tr>
-      <td>{{ h.name }}</td>
-      <td>{{ h.strategy or '—' }}</td>
-      <td class="{{ 'bt-pnl-up' if h.backtest_return and ('-' not in h.backtest_return) else ('bt-pnl-down' if h.backtest_return else '') }}">
-        {{ ('+' ~ h.backtest_return ~ '%') if h.backtest_return and ('-' not in h.backtest_return) else ((h.backtest_return ~ '%') if h.backtest_return else '—') }}
-      </td>
-      <td>{{ (h.win_rate ~ '%') if h.win_rate else '—' }}</td>
-      <td>
-        {% if h.stop_loss_hard %}
-          {{ h.stop_loss }} / {{ h.stop_loss_hard }}
-        {% else %}
-          {{ h.stop_loss or '—' }}
-        {% endif %}
-      </td>
-      <td>
-        {% if h.is_death %}
-          <span class="badge badge-red">死叉</span>
-        {% elif h.is_golden %}
-          <span class="badge badge-green">金叉</span>
-        {% else %}
-          —
-        {% endif %}
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-</div>
-
-<!-- ════════ 操作要点 ════════ -->
-<h2>⚡ 操作要点</h2>
-{% for a in actions %}
-<details class="action-group" {% if loop.first %}open{% endif %}>
-  <summary>{{ a.title }}</summary>
-  {% if a.table %}
-  <table>
-    <thead><tr>{% for k in a.table[0].keys() %}<th>{{ k }}</th>{% endfor %}</tr></thead>
-    <tbody>{% for row in a.table %}<tr>{% for v in row.values() %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+<!-- 持仓操作区 -->
+<h2>📊 当前持仓</h2>
+<div id="add-trade-area"></div>
+<div class="holdings-table-wrap" id="open-trades-wrap">
+  <div id="open-trades-empty" style="color:var(--text2);font-size:.85em;padding:16px 0;">暂无持仓记录。点击上方按钮添加。</div>
+  <table class="holdings-table" id="open-trades-table" style="display:none">
+    <thead><tr>
+      <th>股票</th><th>代码</th><th>买入日期</th><th>持仓成本</th><th>持仓数量</th><th>买入策略</th><th>操作</th>
+    </tr></thead>
+    <tbody id="open-trades-body"></tbody>
   </table>
-  {% endif %}
-  {% if a.notes %}
-  <ul class="note-list">{% for n in a.notes %}<li>{{ n }}</li>{% endfor %}</ul>
-  {% endif %}
-</details>
-{% endfor %}
+</div>
 
-<!-- ════════ 操作日志 ════════ -->
-<h2>📋 最近操作</h2>
-{% for log in logs %}
-<details class="log-entry" {% if loop.first %}open{% endif %}>
-  <summary><span class="log-date">{{ log.date }} {{ log.weekday }}</span></summary>
-
-  {% if log.operations %}
-  <div class="log-ops">
-    {% for op in log.operations %}
-    <div class="op-row">
-      {% set dir_text = op.get('方向', op.get('direction', '')) %}
-      <span class="op-dir {{ 'op-buy' if '买' in dir_text else ('op-sell' if '卖' in dir_text else 'op-hold') }}">
-        {{ dir_text }}
-      </span>
-      <span style="font-weight:600">{{ op.get('股票', op.get('stock', '')) }}</span>
-      <span style="color:var(--text2)">{{ op.get('仓位变化', op.get('position_change', '')) }}</span>
-      <span style="color:var(--text2)">{{ op.get('价格区间', op.get('price', '')) }}</span>
-    </div>
-    {% endfor %}
+<!-- 已清仓交易 -->
+<details class="closed-section" id="closed-section">
+  <summary>📋 已清仓交易</summary>
+  <div class="holdings-table-wrap">
+    <table class="holdings-table" id="closed-trades-table" style="display:none">
+      <thead><tr>
+        <th>股票</th><th>代码</th><th>买入日期</th><th>持仓成本</th><th>卖出日期</th><th>卖出价</th><th>盈亏</th><th>盈亏比</th><th>买入策略</th><th>卖出策略</th>
+      </tr></thead>
+      <tbody id="closed-trades-body"></tbody>
+    </table>
+    <div id="closed-trades-empty" style="color:var(--text2);font-size:.85em;padding:12px 0;">暂无已清仓记录。</div>
   </div>
-  {% endif %}
-
-  {% if log.risks %}
-  <h3 style="color:var(--red)">⚠ 风险</h3>
-  {% for r in log.risks %}<div class="risk-item">· {{ r }}</div>{% endfor %}
-  {% endif %}
-
-  {% if log.positives %}
-  <h3 style="color:var(--green)">✓ 利好</h3>
-  {% for g in log.positives %}<div class="good-item">· {{ g }}</div>{% endfor %}
-  {% endif %}
-
-  {% if log.summary %}
-  <div class="log-summary"><strong>总结:</strong> {{ log.summary }}</div>
-  {% endif %}
 </details>
-{% endfor %}
 
-<!-- ════════ 回测参考 ════════ -->
-{% if backtest %}
-<h2>📈 回测参考</h2>
-
-<div class="bt-tabs">
-  <button class="bt-tab active" onclick="switchBT('1y')">1年回测</button>
-  <button class="bt-tab" onclick="switchBT('2y')">2年回测</button>
-</div>
-
-<div id="bt-1y" class="bt-panel">
-<h3>1年回测（{{ backtest.one_year.period }}）各股指定策略 · ¥10,000</h3>
-<div class="bt-table">
-<table>
-  <thead><tr><th>股票</th><th>策略</th><th colspan="3">无黄白线</th><th colspan="3">加黄白线</th><th>差异</th></tr>
-  <tr class="bt-subhead"><th></th><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
-  <tbody>
-  {% for i in range(backtest.one_year.stocks|length) %}
-  {% set a = backtest.one_year.stocks[i] %}
-  {% set b = backtest.one_year_wy.stocks[i] %}
-  {% set diff = a.pnl - b.pnl %}
-  <tr>
-    <td>{{ a.name }}</td><td style="font-size:.78em">{{ a.strategy }}</td>
-    <td>{{ a.trades }}</td><td>{{ a.win_rate }}%</td>
-    <td class="{{ 'bt-pnl-up' if a.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(a.pnl) }}</td>
-    <td>{{ b.trades }}</td><td>{{ b.win_rate }}%</td>
-    <td class="{{ 'bt-pnl-up' if b.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(b.pnl) }}</td>
-    <td class="{{ 'bt-pnl-up' if diff > 0 else ('bt-pnl-down' if diff < 0 else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) }}</td>
-  </tr>
-  {% endfor %}
-  <tr class="bt-total">
-    <td colspan="2">合计（¥60,000）</td>
-    <td></td><td></td>
-    <td class="bt-pnl-up">{{ '{:+,}'.format(backtest.one_year.total_pnl) }}</td>
-    <td></td><td></td>
-    <td class="{{ 'bt-pnl-up' if backtest.one_year_wy.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.one_year_wy.total_pnl) }}</td>
-    {% set d1 = backtest.one_year.total_pnl - backtest.one_year_wy.total_pnl %}
-    <td class="{{ 'bt-pnl-up' if d1 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(d1) }}</td>
-  </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-<div id="bt-2y" class="bt-panel" style="display:none">
-<h3>2年回测（{{ backtest.two_year.period }}）各股指定策略 · ¥10,000</h3>
-<div class="bt-table">
-<table>
-  <thead><tr><th>股票</th><th>策略</th><th colspan="4">无黄白线</th><th colspan="4">加黄白线</th><th>差异</th></tr>
-  <tr class="bt-subhead"><th></th><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>回撤</th><th>笔</th><th>胜率</th><th>盈亏</th><th>回撤</th><th></th></tr></thead>
-  <tbody>
-  {% for i in range(backtest.two_year.stocks|length) %}
-  {% set a = backtest.two_year.stocks[i] %}
-  {% set b = backtest.two_year_wy.stocks[i] %}
-  {% set diff = a.pnl - b.pnl %}
-  <tr>
-    <td>{{ a.name }}</td><td style="font-size:.78em">{{ a.strategy }}</td>
-    <td>{{ a.trades }}</td><td>{{ a.win_rate }}%</td>
-    <td class="{{ 'bt-pnl-up' if a.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(a.pnl) }}</td>
-    <td>{{ a.max_dd }}%</td>
-    <td>{{ b.trades }}</td><td>{{ b.win_rate }}%</td>
-    <td class="{{ 'bt-pnl-up' if b.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(b.pnl) }}</td>
-    <td>{{ b.max_dd }}%</td>
-    <td class="{{ 'bt-pnl-up' if diff > 0 else ('bt-pnl-down' if diff < 0 else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) }}</td>
-  </tr>
-  {% endfor %}
-  <tr class="bt-total">
-    <td colspan="2">合计（¥60,000）</td>
-    <td></td><td></td>
-    <td class="bt-pnl-up">{{ '{:+,}'.format(backtest.one_year.total_pnl) }}</td>
-    <td></td><td></td><td></td>
-    <td class="{{ 'bt-pnl-up' if backtest.one_year_wy.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.one_year_wy.total_pnl) }}</td>
-    <td></td>
-    {% set d2 = backtest.one_year.total_pnl - backtest.one_year_wy.total_pnl %}
-    <td class="{{ 'bt-pnl-up' if d2 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(d2) }}</td>
-  </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-<div class="alert-amber alert" style="margin-top:10px">
-  💡 <strong>黄白线结论:</strong> 无黄白线整体跑赢 — 1年多赚 ¥{{ "{:,}".format(backtest.one_year.total_pnl - backtest.one_year_wy.total_pnl) }}，2年多赚 ¥{{ "{:,}".format(backtest.two_year.total_pnl - backtest.two_year_wy.total_pnl) }}。白死叉提前止损 0 次，主要拦截了盈利入场。
-</div>
-
-<script>
-function switchBT(id){
-  document.querySelectorAll('.bt-panel').forEach(p=>p.style.display='none');
-  document.querySelectorAll('.bt-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('bt-'+id).style.display='block';
-  event.target.classList.add('active');
-}
-</script>
-{% endif %}
-
-{% if backtest and backtest.ruthless_one_year %}
-<h2>🔪 无情操盘手 vs 波浪理论</h2>
-<p style="font-size:.82em;color:var(--text2);margin-bottom:10px">
-  无情操盘手: B1超卖低吸 + B砖底部反转 ｜ 死叉/黄线清仓 + S1~S5出货 ｜ 止损=买入日低点
-</p>
-
-<div class="bt-tabs">
-  <button class="bt-tab active" onclick="switchRT('r1y')">1年对比</button>
-  <button class="bt-tab" onclick="switchRT('r2y')">2年对比</button>
-</div>
-
-<div id="rt-r1y" class="rt-panel">
-<h3>1年（{{ backtest.ruthless_one_year.period }}）各 ¥10,000</h3>
-<div class="bt-table">
-<table>
-  <thead><tr><th>股票</th><th colspan="3">波浪理论(无黄白)</th><th colspan="3">无情操盘手</th><th>差异</th></tr>
-  <tr class="bt-subhead"><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
-  <tbody>
-  {% for r in backtest.ruthless_one_year.stocks %}
-  {% set w_list = backtest.one_year.stocks | selectattr('code', 'equalto', r.code) | list %}
-  {% set w = w_list[0] if w_list else none %}
-  {% set diff = (r.pnl - w.pnl) if w else none %}
-  <tr>
-    <td>{{ r.name }}</td>
-    <td>{{ w.trades if w else '—' }}</td><td>{{ (w.win_rate | string + '%') if w else '—' }}</td>
-    <td class="{{ 'bt-pnl-up' if (w and w.pnl >= 0) else ('bt-pnl-down' if (w and w.pnl < 0) else '') }}">{{ '{:+,}'.format(w.pnl) if w else '—' }}</td>
-    <td>{{ r.trades }}</td><td>{{ r.win_rate }}%</td>
-    <td class="{{ 'bt-pnl-up' if r.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(r.pnl) }}</td>
-    <td class="{{ 'bt-pnl-up' if (diff is not none and diff > 0) else ('bt-pnl-down' if (diff is not none and diff < 0) else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) if diff is not none else '—' }}</td>
-  </tr>
-  {% endfor %}
-  <tr class="bt-total">
-    <td>合计（¥70,000）</td>
-    <td></td><td></td>
-    <td class="{{ 'bt-pnl-up' if backtest.one_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.one_year.total_pnl) }}（{{ backtest.one_year.total_pnl_pct }}%）</td>
-    <td></td><td></td>
-    <td class="{{ 'bt-pnl-up' if backtest.ruthless_one_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.ruthless_one_year.total_pnl) }}（{{ backtest.ruthless_one_year.total_pnl_pct }}%）</td>
-    {% set rd1 = backtest.ruthless_one_year.total_pnl - backtest.one_year.total_pnl %}
-    <td class="{{ 'bt-pnl-up' if rd1 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(rd1) }}</td>
-  </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-<div id="rt-r2y" class="rt-panel" style="display:none">
-<h3>2年（{{ backtest.ruthless_two_year.period }}）各 ¥10,000</h3>
-<div class="bt-table">
-<table>
-  <thead><tr><th>股票</th><th colspan="3">波浪理论(无黄白)</th><th colspan="3">无情操盘手</th><th>差异</th></tr>
-  <tr class="bt-subhead"><th></th><th>笔</th><th>胜率</th><th>盈亏</th><th>笔</th><th>胜率</th><th>盈亏</th><th></th></tr></thead>
-  <tbody>
-  {% for r in backtest.ruthless_two_year.stocks %}
-  {% set w_list = backtest.two_year.stocks | selectattr('code', 'equalto', r.code) | list %}
-  {% set w = w_list[0] if w_list else none %}
-  {% set diff = (r.pnl - w.pnl) if w else none %}
-  <tr>
-    <td>{{ r.name }}</td>
-    <td>{{ w.trades if w else '—' }}</td><td>{{ (w.win_rate | string + '%') if w else '—' }}</td>
-    <td class="{{ 'bt-pnl-up' if (w and w.pnl >= 0) else ('bt-pnl-down' if (w and w.pnl < 0) else '') }}">{{ '{:+,}'.format(w.pnl) if w else '—' }}</td>
-    <td>{{ r.trades }}</td><td>{{ r.win_rate }}%</td>
-    <td class="{{ 'bt-pnl-up' if r.pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(r.pnl) }}</td>
-    <td class="{{ 'bt-pnl-up' if (diff is not none and diff > 0) else ('bt-pnl-down' if (diff is not none and diff < 0) else '') }}" style="font-size:.78em">{{ '{:+,}'.format(diff) if diff is not none else '—' }}</td>
-  </tr>
-  {% endfor %}
-  <tr class="bt-total">
-    <td>合计（¥70,000）</td>
-    <td></td><td></td>
-    <td class="{{ 'bt-pnl-up' if backtest.two_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.two_year.total_pnl) }}（{{ backtest.two_year.total_pnl_pct }}%）</td>
-    <td></td><td></td>
-    <td class="{{ 'bt-pnl-up' if backtest.ruthless_two_year.total_pnl >= 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(backtest.ruthless_two_year.total_pnl) }}（{{ backtest.ruthless_two_year.total_pnl_pct }}%）</td>
-    {% set rd2 = backtest.ruthless_two_year.total_pnl - backtest.two_year.total_pnl %}
-    <td class="{{ 'bt-pnl-up' if rd2 > 0 else 'bt-pnl-down' }}">{{ '{:+,}'.format(rd2) }}</td>
-  </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-<div class="alert-amber alert" style="margin-top:10px">
-  💡 <strong>策略对比结论:</strong>
-  1年无情操盘手 +{{ backtest.ruthless_one_year.total_pnl_pct }}% 跑赢波浪 +{{ backtest.one_year.total_pnl_pct }}%（趋势股抓得好）；
-  2年波浪 +{{ backtest.two_year.total_pnl_pct }}% 大幅跑赢无情 +{{ backtest.ruthless_two_year.total_pnl_pct }}%（频繁止损磨损本金）。
-  震荡股（湖北宜化）不适合无情操盘手。
-</div>
-
-<script>
-function switchRT(id){
-  document.querySelectorAll('.rt-panel').forEach(p=>p.style.display='none');
-  event.target.parentElement.querySelectorAll('.bt-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('rt-'+id).style.display='block';
-  event.target.classList.add('active');
-}
-</script>
-{% endif %}
-
-<div style="margin-top:24px;text-align:center;color:var(--text2);font-size:.72em">
-  📈 Stock Dashboard · ranyue.cloud/stock_dashboard
+<!-- 净值曲线 -->
+<div class="nav-section">
+  <h2>📈 账户净值曲线</h2>
+  <div id="nav-actions-area"></div>
+  <div class="nav-chart-wrap">
+    <canvas id="nav-chart"></canvas>
+  </div>
+  <div id="nav-empty" style="color:var(--text2);font-size:.85em;text-align:center;padding:20px;">请先初始化账户净值。</div>
 </div>
 
 </div><!-- /tab-dashboard -->
@@ -625,39 +310,486 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     this.classList.add('active');
     document.getElementById('tab-' + this.dataset.tab).classList.add('active');
-    // 切换到选股 tab 时自动加载选项
     if (this.dataset.tab === 'stock-selection') {
       loadPoolsAndStrategies();
     }
-    // 切换到跟踪 tab 时自动加载数据
     if (this.dataset.tab === 'tracker') {
       loadTracker();
+    }
+    if (this.dataset.tab === 'dashboard') {
+      loadDashboard();
     }
   });
 });
 
 // ═══════════════════════════════════════════════════════════
-// API 基础路径
+// 持仓看板
 // ═══════════════════════════════════════════════════════════
 
-// 全局状态：当前轮询 timer
+let _holdingsStrategies = {buy:[], sell:[]};
+let _navChart = null;
+
+async function loadDashboard() {
+  await Promise.all([loadHoldings(), loadNav()]);
+}
+
+// ── 策略加载 ──
+async function loadStrategies() {
+  try {
+    const resp = await fetch('/api/holdings/strategies');
+    _holdingsStrategies = await resp.json();
+  } catch(e) { console.warn('加载策略失败', e); }
+}
+
+function strategyLabel(type, id) {
+  const list = _holdingsStrategies[type] || [];
+  const found = list.find(s => s.id === id);
+  return found ? found.label : id;
+}
+
+function strategyOptions(type) {
+  return (_holdingsStrategies[type] || []).map(s =>
+    `<option value="${s.id}">${s.label}</option>`
+  ).join('');
+}
+
+// ── 持仓 CRUD ──
+async function loadHoldings() {
+  try {
+    const resp = await fetch('/api/holdings?status=open');
+    const data = await resp.json();
+    renderOpenTrades(data.trades || []);
+  } catch(e) {
+    console.warn('加载持仓失败', e);
+  }
+  try {
+    const resp = await fetch('/api/holdings?status=closed');
+    const data = await resp.json();
+    renderClosedTrades(data.trades || []);
+  } catch(e) { console.warn('加载已清仓失败', e); }
+}
+
+function renderOpenTrades(trades) {
+  const tbody = document.getElementById('open-trades-body');
+  const table = document.getElementById('open-trades-table');
+  const empty = document.getElementById('open-trades-empty');
+  const area = document.getElementById('add-trade-area');
+
+  // 渲染添加按钮
+  area.innerHTML = `<button class="btn-scan" onclick="showAddForm()" style="margin-top:0;padding:6px 18px;font-size:.85em;">＋ 新增持仓</button>`;
+
+  if (trades.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = trades.map(t => `
+    <tr>
+      <td><strong>${t.stock_name}</strong></td>
+      <td style="color:var(--text2)">${t.stock_code}</td>
+      <td>${t.buy_date}</td>
+      <td>${t.cost_price.toFixed(2)}</td>
+      <td>${t.shares.toLocaleString()}</td>
+      <td><span class="badge badge-blue">${strategyLabel('buy', t.buy_strategy)}</span></td>
+      <td>
+        <button class="btn-edit" onclick="showEditForm('${t.id}')">编辑</button>
+        <button class="btn-close" onclick="showCloseForm('${t.id}')">清仓</button>
+        <button class="btn-delete" onclick="deleteTrade('${t.id}')" title="删除">✕</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderClosedTrades(trades) {
+  const tbody = document.getElementById('closed-trades-body');
+  const table = document.getElementById('closed-trades-table');
+  const empty = document.getElementById('closed-trades-empty');
+
+  if (trades.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = trades.map(t => {
+    const pnlClass = t.pnl >= 0 ? 'pnl-up' : 'pnl-down';
+    const pnlSign = t.pnl >= 0 ? '+' : '';
+    return `
+    <tr>
+      <td><strong>${t.stock_name}</strong></td>
+      <td style="color:var(--text2)">${t.stock_code}</td>
+      <td>${t.buy_date}</td>
+      <td>${t.cost_price.toFixed(2)}</td>
+      <td>${t.sell_date}</td>
+      <td>${t.sell_price.toFixed(2)}</td>
+      <td class="${pnlClass}">${pnlSign}${t.pnl.toLocaleString()}</td>
+      <td class="${pnlClass}">${pnlSign}${t.pnl_pct.toFixed(2)}%</td>
+      <td><span class="badge badge-blue">${strategyLabel('buy', t.buy_strategy)}</span></td>
+      <td><span class="badge badge-amber">${strategyLabel('sell', t.sell_strategy)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── 新增持仓表单 ──
+function showAddForm() {
+  const area = document.getElementById('add-trade-area');
+  area.innerHTML = `
+    <div class="holdings-form">
+      <div class="form-row">
+        <label>股票名称 <input type="text" id="af-name" placeholder="—"></label>
+        <label>股票代码 <input type="text" id="af-code" placeholder="000001" style="text-transform:uppercase;"></label>
+        <label>买入日期 <input type="date" id="af-date" value="${new Date().toISOString().slice(0,10)}"></label>
+        <label>持仓成本 <input type="number" id="af-price" step="0.01" min="0" placeholder="—"></label>
+        <label>持仓数量 <input type="number" id="af-shares" step="100" min="0" placeholder="—"></label>
+        <label>买入策略 <select id="af-strategy">${strategyOptions('buy')}</select></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn-scan" onclick="submitAdd()" style="margin-top:0;padding:6px 18px;font-size:.85em;">确认添加</button>
+        <button class="btn-scan-secondary" onclick="cancelForm()">取消</button>
+      </div>
+    </div>`;
+}
+
+async function submitAdd() {
+  const body = {
+    stock_name: document.getElementById('af-name').value.trim(),
+    stock_code: document.getElementById('af-code').value.trim(),
+    buy_date: document.getElementById('af-date').value,
+    cost_price: document.getElementById('af-price').value,
+    shares: document.getElementById('af-shares').value,
+    buy_strategy: document.getElementById('af-strategy').value,
+  };
+  if (!body.stock_name || !body.stock_code || !body.buy_date || !body.cost_price || !body.shares) {
+    alert('请填写所有必填字段'); return;
+  }
+  try {
+    const resp = await fetch('/api/holdings', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (data.error) { alert(data.error); return; }
+    cancelForm();
+    loadHoldings();
+  } catch(e) { alert('添加失败: ' + e.message); }
+}
+
+function cancelForm() {
+  document.getElementById('add-trade-area').innerHTML =
+    `<button class="btn-scan" onclick="showAddForm()" style="margin-top:0;padding:6px 18px;font-size:.85em;">＋ 新增持仓</button>`;
+}
+
+// ── 编辑持仓表单 ──
+async function showEditForm(tradeId) {
+  const resp = await fetch('/api/holdings?status=open');
+  const data = await resp.json();
+  const t = (data.trades || []).find(x => x.id === tradeId);
+  if (!t) return;
+
+  const area = document.getElementById('add-trade-area');
+  area.innerHTML = `
+    <div class="holdings-form">
+      <div class="form-row">
+        <label>股票名称 <input type="text" id="ef-name" value="${t.stock_name}"></label>
+        <label>股票代码 <input type="text" id="ef-code" value="${t.stock_code}" style="text-transform:uppercase;"></label>
+        <label>买入日期 <input type="date" id="ef-date" value="${t.buy_date}"></label>
+        <label>持仓成本 <input type="number" id="ef-price" step="0.01" min="0" value="${t.cost_price}"></label>
+        <label>持仓数量 <input type="number" id="ef-shares" step="100" min="0" value="${t.shares}"></label>
+        <label>买入策略 <select id="ef-strategy">${strategyOptions('buy')}</select></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn-scan" onclick="submitEdit('${tradeId}')" style="margin-top:0;padding:6px 18px;font-size:.85em;">保存修改</button>
+        <button class="btn-scan-secondary" onclick="cancelForm()">取消</button>
+      </div>
+    </div>`;
+  document.getElementById('ef-strategy').value = t.buy_strategy;
+}
+
+async function submitEdit(tradeId) {
+  const body = {
+    stock_name: document.getElementById('ef-name').value.trim(),
+    stock_code: document.getElementById('ef-code').value.trim(),
+    buy_date: document.getElementById('ef-date').value,
+    cost_price: document.getElementById('ef-price').value,
+    shares: document.getElementById('ef-shares').value,
+    buy_strategy: document.getElementById('ef-strategy').value,
+  };
+  try {
+    const resp = await fetch('/api/holdings/' + tradeId, {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (data.error) { alert(data.error); return; }
+    cancelForm();
+    loadHoldings();
+  } catch(e) { alert('修改失败: ' + e.message); }
+}
+
+// ── 清仓表单 ──
+function showCloseForm(tradeId) {
+  const area = document.getElementById('add-trade-area');
+  area.innerHTML = `
+    <div class="holdings-form">
+      <div class="form-row">
+        <label>卖出日期 <input type="date" id="cf-date" value="${new Date().toISOString().slice(0,10)}"></label>
+        <label>卖出价格 <input type="number" id="cf-price" step="0.01" min="0" placeholder="—"></label>
+        <label>卖出策略 <select id="cf-strategy">${strategyOptions('sell')}</select></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn-scan" onclick="submitClose('${tradeId}')" style="margin-top:0;padding:6px 18px;font-size:.85em;background:var(--red);">确认清仓</button>
+        <button class="btn-scan-secondary" onclick="cancelForm()">取消</button>
+      </div>
+    </div>`;
+}
+
+async function submitClose(tradeId) {
+  const body = {
+    sell_date: document.getElementById('cf-date').value,
+    sell_price: document.getElementById('cf-price').value,
+    sell_strategy: document.getElementById('cf-strategy').value,
+  };
+  if (!body.sell_date || !body.sell_price) {
+    alert('请填写卖出日期和价格'); return;
+  }
+  try {
+    const resp = await fetch('/api/holdings/' + tradeId + '/close', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (data.error) { alert(data.error); return; }
+    cancelForm();
+    loadHoldings();
+    loadNav();
+  } catch(e) { alert('清仓失败: ' + e.message); }
+}
+
+// ── 删除交易 ──
+async function deleteTrade(tradeId) {
+  if (!confirm('确认删除该条交易记录？')) return;
+  try {
+    const resp = await fetch('/api/holdings/' + tradeId, { method: 'DELETE' });
+    const data = await resp.json();
+    if (data.status === 'deleted') loadHoldings();
+  } catch(e) { alert('删除失败: ' + e.message); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 净值管理
+// ═══════════════════════════════════════════════════════════
+
+async function loadNav() {
+  try {
+    const resp = await fetch('/api/nav');
+    const nav = await resp.json();
+    renderNavSummary(nav);
+    renderNavChart(nav);
+    renderNavActions(nav);
+  } catch(e) { console.warn('加载净值失败', e); }
+}
+
+function renderNavSummary(nav) {
+  const div = document.getElementById('nav-summary');
+  const records = nav.records || [];
+  const hasInit = records.length > 0;
+  const totalReturn = nav.initial_nav > 0
+    ? ((nav.current_nav - nav.initial_nav) / nav.initial_nav * 100).toFixed(2)
+    : '0.00';
+  const returnClass = nav.current_nav >= nav.initial_nav ? 'pnl-up' : 'pnl-down';
+  const returnSign = nav.current_nav >= nav.initial_nav ? '+' : '';
+
+  div.innerHTML = `
+    <div class="summary-card">
+      <div class="label">当前净值</div>
+      <div class="value">¥${hasInit ? nav.current_nav.toLocaleString() : '—'}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">总收益率</div>
+      <div class="value ${returnClass}">${hasInit ? returnSign + totalReturn + '%' : '—'}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">交易笔数</div>
+      <div class="value">${records.filter(r => r.type === 'close').length}</div>
+    </div>`;
+}
+
+function renderNavActions(nav) {
+  const area = document.getElementById('nav-actions-area');
+  const hasInit = (nav.records || []).length > 0;
+
+  if (!hasInit) {
+    area.innerHTML = `
+      <div class="nav-actions">
+        <button class="btn-scan" onclick="showInitNavForm()" style="margin-top:0;padding:6px 18px;font-size:.85em;">初始化净值</button>
+      </div>`;
+    document.getElementById('nav-empty').style.display = 'block';
+    return;
+  }
+  document.getElementById('nav-empty').style.display = 'none';
+  area.innerHTML = `
+    <div class="nav-actions">
+      <button class="btn-scan-secondary" onclick="showAdjustForm('deposit')">入金</button>
+      <button class="btn-scan-secondary" onclick="showAdjustForm('withdraw')">出金</button>
+    </div>`;
+}
+
+function showInitNavForm() {
+  const area = document.getElementById('nav-actions-area');
+  area.innerHTML = `
+    <div class="holdings-form">
+      <div class="form-row">
+        <label>初始净值(元) <input type="number" id="init-nav" step="1000" min="0" placeholder="100000"></label>
+        <label>初始日期 <input type="date" id="init-date" value="${new Date().toISOString().slice(0,10)}"></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn-scan" onclick="submitInitNav()" style="margin-top:0;padding:6px 18px;font-size:.85em;">确认初始化</button>
+        <button class="btn-scan-secondary" onclick="loadNav()">取消</button>
+      </div>
+    </div>`;
+}
+
+async function submitInitNav() {
+  const body = {
+    initial_nav: document.getElementById('init-nav').value,
+    initial_date: document.getElementById('init-date').value,
+  };
+  if (!body.initial_nav || !body.initial_date) {
+    alert('请填写净值和日期'); return;
+  }
+  try {
+    const resp = await fetch('/api/nav/init', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (data.error) { alert(data.error); return; }
+    loadNav();
+  } catch(e) { alert('初始化失败: ' + e.message); }
+}
+
+function showAdjustForm(direction) {
+  const label = direction === 'deposit' ? '入金' : '出金';
+  const area = document.getElementById('nav-actions-area');
+  area.innerHTML = `
+    <div class="holdings-form">
+      <div class="form-row">
+        <label>${label}金额(元) <input type="number" id="adj-amount" step="1000" min="0" placeholder="50000"></label>
+        <label>日期 <input type="date" id="adj-date" value="${new Date().toISOString().slice(0,10)}"></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn-scan" onclick="submitAdjust('${direction}')" style="margin-top:0;padding:6px 18px;font-size:.85em;">确认${label}</button>
+        <button class="btn-scan-secondary" onclick="loadNav()">取消</button>
+      </div>
+    </div>`;
+}
+
+async function submitAdjust(direction) {
+  const body = {
+    amount: document.getElementById('adj-amount').value,
+    direction: direction,
+    date: document.getElementById('adj-date').value,
+  };
+  if (!body.amount || !body.date) {
+    alert('请填写金额和日期'); return;
+  }
+  try {
+    const resp = await fetch('/api/nav/adjust', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (data.error) { alert(data.error); return; }
+    loadNav();
+  } catch(e) { alert('操作失败: ' + e.message); }
+}
+
+function renderNavChart(nav) {
+  const records = nav.records || [];
+  const canvas = document.getElementById('nav-chart');
+  const emptyDiv = document.getElementById('nav-empty');
+
+  if (records.length < 1) {
+    canvas.style.display = 'none';
+    emptyDiv.style.display = 'block';
+    return;
+  }
+  canvas.style.display = 'block';
+  emptyDiv.style.display = 'none';
+
+  const labels = records.map(r => r.date);
+  const values = records.map(r => r.nav);
+
+  if (_navChart) _navChart.destroy();
+
+  _navChart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '账户净值',
+        data: values,
+        borderColor: '#8aa08a',
+        backgroundColor: 'rgba(138,160,138,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#8aa08a',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => '¥' + ctx.parsed.y.toLocaleString(),
+            afterLabel: ctx => {
+              const r = records[ctx.dataIndex];
+              const typeMap = {init:'初始', deposit:'入金', withdraw:'出金', close:'清仓'};
+              let extra = typeMap[r.type] || r.type;
+              if (r.note) extra += ' · ' + r.note;
+              return extra;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#908872', font: { size: 11 } },
+          grid: { color: 'rgba(140,130,90,0.1)' },
+        },
+        y: {
+          ticks: {
+            color: '#908872',
+            font: { size: 11 },
+            callback: v => '¥' + v.toLocaleString(),
+          },
+          grid: { color: 'rgba(140,130,90,0.1)' },
+        }
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// 选股扫描
+// ═══════════════════════════════════════════════════════════
+
 let _pollTimer = null;
 
-// ═══════════════════════════════════════════════════════════
-// 加载股票池和策略列表
-// ═══════════════════════════════════════════════════════════
 async function loadPoolsAndStrategies() {
   try {
     const [poolsRes, stratsRes] = await Promise.all([
       fetch('/api/pools').then(r => r.json()),
       fetch('/api/strategies').then(r => r.json())
     ]);
-    // 更新 stock pool select — pools are static in HTML, just validate
-    const poolSel = document.getElementById('ss-pool');
-    if (poolsRes.pools) {
-      // already hardcoded, but could update descriptions
-    }
-    // 更新 strategy select
     const stratSel = document.getElementById('ss-strategy');
     if (stratsRes.strategies && stratsRes.strategies.length > 0) {
       stratSel.innerHTML = stratsRes.strategies.map(s =>
@@ -669,9 +801,6 @@ async function loadPoolsAndStrategies() {
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-// 开始扫描
-// ═══════════════════════════════════════════════════════════
 async function startScan() {
   const btn = document.getElementById('ss-btn');
   const progress = document.getElementById('ss-progress');
@@ -680,7 +809,6 @@ async function startScan() {
   const errorDiv = document.getElementById('ss-error');
   const resultsDiv = document.getElementById('ss-results');
 
-  // 清除之前状态
   if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
   errorDiv.style.display = 'none';
   resultsDiv.style.display = 'none';
@@ -707,8 +835,6 @@ async function startScan() {
     const resp = await fetch('/api/scan?' + params.toString(), { method: 'POST' });
     const data = await resp.json();
     if (!data.task_id) { throw new Error(data.error || '提交失败'); }
-
-    // 开始轮询进度
     pollTask(data.task_id);
   } catch(e) {
     resetScanButtons();
@@ -733,7 +859,6 @@ async function stopScan() {
   stopBtn.textContent = '⏳ 停止中...';
 
   try {
-    // 找到当前运行的任务 ID
     const resp = await fetch('/api/scan/tasks');
     const data = await resp.json();
     const running = (data.tasks || []).find(t => t.status === 'running');
@@ -742,7 +867,6 @@ async function stopScan() {
       resetScanButtons();
       return;
     }
-
     const stopResp = await fetch('/api/scan/' + running.task_id + '/stop', { method: 'POST' });
     const stopData = await stopResp.json();
     if (stopData.status === 'cancelling') {
@@ -770,7 +894,6 @@ function pollTask(taskId) {
         showError(data.error || '任务查询失败');
         return;
       }
-
       const p = data.progress;
       const pct = p.total > 0 ? Math.min(100, Math.round(p.scanned / p.total * 100)) : 0;
       progressFill.style.width = pct + '%';
@@ -823,7 +946,6 @@ async function fetchResult(taskId) {
       tableDiv.innerHTML = '<p style="color:var(--text2);font-size:.85em;">当前市场条件下，暂无触发买入信号的标的。</p>';
       return;
     }
-
     resultsDiv.style.display = 'block';
     summary.textContent = `— 共 ${data.count} 只`;
 
@@ -844,12 +966,10 @@ async function fetchResult(taskId) {
         <td class="${pnlClass}">${sign}${info.pct_chg.toFixed(2)}%</td>
         <td style="font-size:.78em">${signalDesc}</td>
       </tr>`;
-      // detail row (hidden)
       html += `<tr class="row-detail" style="display:none"><td colspan="7">`;
       html += `<div class="detail-grid">`;
       html += `<span class="label">日期</span><span class="value">${info.date}</span>`;
       html += `<span class="label">成交量</span><span class="value">${(info.volume/10000).toFixed(0)}万</span>`;
-      // 策略指标
       if (r.indicators) {
         Object.entries(r.indicators).forEach(([k,v]) => {
           if (v !== null && v !== undefined) {
@@ -948,11 +1068,9 @@ async function loadTracker() {
       refreshInfo.textContent = '上次刷新: —';
       return;
     }
-
     emptyDiv.style.display = 'none';
     columnsDiv.style.display = 'grid';
 
-    // 找出最近一次刷新时间
     let lastRefresh = null;
     allEntries.forEach(e => {
       (e.stocks || []).forEach(s => {
@@ -962,7 +1080,6 @@ async function loadTracker() {
       });
     });
     refreshInfo.textContent = lastRefresh ? '上次刷新: ' + lastRefresh : '上次刷新: 从未';
-
     renderTracker(grouped, allEntries);
   } catch (e) {
     emptyDiv.style.display = 'block';
@@ -975,13 +1092,12 @@ function renderTracker(grouped, allEntries) {
   const columnsDiv = document.getElementById('tracker-columns');
   let html = '';
 
-  // 按策略分组渲染为列
   for (const [stratKey, stratGroup] of Object.entries(grouped)) {
     html += `<div class="tracker-column">`;
     html += `<h3>${stratGroup.strategy_name}</h3>`;
 
     const entries = stratGroup.entries || [];
-    entries.sort((a, b) => b.scan_date.localeCompare(a.scan_date)); // 日期降序
+    entries.sort((a, b) => b.scan_date.localeCompare(a.scan_date));
 
     entries.forEach(entry => {
       html += `<div class="tracker-date-group">`;
@@ -1015,13 +1131,10 @@ function renderTracker(grouped, allEntries) {
         });
         html += `</tbody></table></div>`;
       }
-
-      html += `</div>`;  // end tracker-date-group
+      html += `</div>`;
     });
-
-    html += `</div>`;  // end tracker-column
+    html += `</div>`;
   }
-
   columnsDiv.innerHTML = html;
 }
 
@@ -1037,8 +1150,6 @@ async function refreshTracker() {
     const resp = await fetch('/api/tracker/refresh', { method: 'POST' });
     const data = await resp.json();
     refreshInfo.textContent = '上次刷新: ' + (data.refresh_time || '刚完成');
-
-    // 重新渲染
     const grouped = data.grouped || {};
     const entries = Object.values(grouped);
     const allEntries = entries.reduce((a, g) => a.concat(g.entries || []), []);
@@ -1066,14 +1177,19 @@ async function deleteTrackerEntry(entryId, btn) {
   try {
     const resp = await fetch('/api/tracker/' + entryId, { method: 'DELETE' });
     const data = await resp.json();
-    if (data.status === 'deleted') {
-      // 重新加载
-      loadTracker();
-    }
+    if (data.status === 'deleted') loadTracker();
   } catch (e) {
     alert('删除失败: ' + e.message);
   }
 }
+
+// ═══════════════════════════════════════════════════════════
+// 初始化
+// ═══════════════════════════════════════════════════════════
+(async function init() {
+  await loadStrategies();
+  loadDashboard();
+})();
 </script>
 
 </body>

@@ -8,6 +8,7 @@ import sys
 import time
 import traceback
 import socket as _sock
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -212,37 +213,11 @@ def _extract_from_ind(ind: dict, spec: dict):
     return val
 
 
-def scan_all(
-    pool_name: str = "沪深300",
-    top_n: int = TOP_N,
-    min_score: int = MIN_SCORE,
-    workers: int = 4,
-    verbose: bool = True,
-    strategy=None,
-    progress_callback=None,
+def _scan_sequential(
+    stocks: list, top_n: int, min_score: int, delay: float,
+    verbose: bool, strategy, progress_callback, total: int,
 ) -> list[dict]:
-    """全量扫描入口
-
-    Args:
-        pool_name: 股票池名称
-        top_n: 返回前 N 只
-        min_score: 最低入围分
-        workers: 并发线程数（保留参数，当前为单线程）
-        verbose: 是否打印进度
-        strategy: 策略模块（可选），不传则使用模块默认策略
-        progress_callback: 进度回调函数(scanned, total, passed, current_stock_str)
-    """
-    # 获取股票池
-    if verbose:
-        print(f"获取股票池: {pool_name} ...")
-    stocks = get_stock_pool(pool_name)
-    stocks = filter_stocks(stocks)
-
-    total = len(stocks)
-    if verbose:
-        print(f"有效标的: {total} 只")
-
-    # 单线程顺序扫描（东方财富有反爬，并发容易触发封IP）
+    """单线程顺序扫描（HTTP 反爬保护 + sleep 间隔）"""
     results = []
     scanned = 0
     passed = 0
@@ -253,9 +228,7 @@ def scan_all(
         current_label = f"{code} {name}"
         try:
             r = scan_one(code, name, strategy=strategy)
-        except Exception as e:
-            if verbose and scanned % 100 == 0:
-                print(f"  [{scanned}/{total}] {current_label} 异常: {e}")
+        except Exception:
             if progress_callback:
                 progress_callback(scanned, total, passed, current_label)
             continue
@@ -264,7 +237,6 @@ def scan_all(
             results.append(r)
             passed += 1
 
-        # 进度回调
         if progress_callback:
             progress_callback(scanned, total, passed, current_label)
 
@@ -274,16 +246,121 @@ def scan_all(
             eta = (total - scanned) / rate if rate > 0 else 0
             print(f"  [{scanned}/{total}] 扫描中... 合格:{passed} | {rate:.1f}只/秒 | ETA:{eta:.0f}s")
 
-        # 请求间隔
-        time.sleep(REQUEST_DELAY)
+        time.sleep(delay)
 
     elapsed = time.time() - t0
     if verbose:
-        print(f"\n扫描完成: {scanned} 只 | 合格: {passed} 只 | 耗时: {elapsed:.0f}s")
+        print(f"\n扫描完成: {scanned} 只 | 合格: {passed} 只 | 耗时: {elapsed:.0f}s (顺序)")
 
-    # 排序取 top
     results.sort(key=lambda x: x["score"], reverse=True)
     return results[:top_n]
+
+
+def _scan_parallel(
+    stocks: list, top_n: int, min_score: int, workers: int,
+    verbose: bool, strategy, progress_callback, total: int,
+) -> list[dict]:
+    """并行扫描（TDX TCP 持久连接 + 本地 .day 文件，无 sleep 限制）"""
+    results = []
+    scanned = [0]
+    passed = [0]
+    t0 = time.time()
+    lock = threading.Lock()
+
+    def _scan_item(code: str, name: str):
+        try:
+            r = scan_one(code, name, strategy=strategy)
+        except Exception:
+            r = None
+
+        with lock:
+            scanned[0] += 1
+            if r is not None and r.get("score", 0) >= min_score:
+                results.append(r)
+                passed[0] += 1
+            if progress_callback:
+                progress_callback(scanned[0], total, passed[0], f"{code} {name}")
+
+        return r
+
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = {executor.submit(_scan_item, c, n): (c, n) for c, n in stocks}
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception:
+                pass
+
+    elapsed = time.time() - t0
+    if verbose:
+        print(f"\n扫描完成: {scanned[0]} 只 | 合格: {passed[0]} 只 | 耗时: {elapsed:.0f}s (并行 x{workers})")
+
+    results.sort(key=lambda x: x["score"], reverse=True)
+    return results[:top_n]
+
+
+def _tdx_pool_available() -> bool:
+    """检测 TDX TCP 持久连接是否可用（主动连接验证）"""
+    try:
+        from 选股.tdx_pool import get_pool
+        pool = get_pool()
+        # 尝试拉取 1 根 bar 来验证连接
+        bars = pool.get_security_bars("000001", start=0, count=1)
+        return bars is not None and len(bars) > 0
+    except Exception:
+        return False
+
+
+def scan_all(
+    pool_name: str = "沪深300",
+    top_n: int = TOP_N,
+    min_score: int | None = None,
+    workers: int = 4,
+    delay: float | None = None,
+    verbose: bool = True,
+    strategy=None,
+    progress_callback=None,
+) -> list[dict]:
+    """全量扫描入口。
+
+    Args:
+        pool_name: 股票池名称
+        top_n: 返回前 N 只
+        min_score: 最低入围分，None 则用 config 默认值
+        workers: 并发线程数（TDX TCP 可用时生效）
+        delay: 请求间隔秒数，None 则用 config 默认值
+        verbose: 是否打印进度
+        strategy: 策略模块（可选）
+        progress_callback: 进度回调(scanned, total, passed, current_stock_str)
+    """
+    if min_score is None:
+        min_score = MIN_SCORE
+    if delay is None:
+        delay = REQUEST_DELAY
+
+    # 获取股票池
+    if verbose:
+        print(f"获取股票池: {pool_name} ...")
+    stocks = get_stock_pool(pool_name)
+    stocks = filter_stocks(stocks)
+
+    total = len(stocks)
+    if verbose:
+        print(f"有效标的: {total} 只")
+
+    # 选择扫描路径：TDX TCP 可用 → 并行，否则 → 顺序（兼容 HTTP 反爬）
+    use_parallel = USE_TDX_DATA and workers > 1 and _tdx_pool_available()
+
+    if use_parallel:
+        if verbose:
+            print(f"数据源: TDX TCP 并行 (workers={workers})")
+        return _scan_parallel(stocks, top_n, min_score, workers, verbose, strategy,
+                             progress_callback, total)
+    else:
+        if verbose:
+            print(f"数据源: 顺序拉取 (delay={delay}s)")
+        return _scan_sequential(stocks, top_n, min_score, delay, verbose, strategy,
+                               progress_callback, total)
 
 
 if __name__ == "__main__":
