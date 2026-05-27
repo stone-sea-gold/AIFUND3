@@ -182,6 +182,30 @@ class HoldingsManager:
             self._save_nav(nav)
         return nav
 
+    def reset_nav(self) -> dict:
+        """重置净值（清空所有记录）"""
+        with self._lock:
+            nav = {
+                "initial_nav": 0,
+                "initial_date": None,
+                "current_nav": 0,
+                "records": [],
+            }
+            self._save_nav(nav)
+        return nav
+
+    def undo_nav(self) -> dict | None:
+        """撤销最后一条净值记录"""
+        with self._lock:
+            nav = self._load_nav()
+            records = nav.get("records", [])
+            if len(records) <= 1:
+                return None
+            removed = records.pop()
+            nav["current_nav"] = records[-1]["nav"]
+            self._save_nav(nav)
+        return nav
+
     def adjust_nav(self, amount: float, direction: str, date: str, note: str = "") -> dict:
         """出入金调整"""
         with self._lock:

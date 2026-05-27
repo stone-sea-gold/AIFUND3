@@ -504,6 +504,21 @@ def api_adjust_nav(body: dict = Body(...)):
     return nav
 
 
+@app.post("/api/nav/reset")
+def api_reset_nav():
+    """重置净值（清空所有记录）"""
+    return _holdings_mgr.reset_nav()
+
+
+@app.post("/api/nav/undo")
+def api_undo_nav():
+    """撤销最后一条净值记录"""
+    nav = _holdings_mgr.undo_nav()
+    if nav is None:
+        return JSONResponse({"error": "无记录可撤销（至少保留初始净值）"}, status_code=400)
+    return nav
+
+
 # ── API：数据源诊断 ────────────────────────────────────────────
 
 @app.get("/api/sources")
@@ -527,6 +542,13 @@ def api_data_sources():
     except Exception:
         pass
 
+    daily_status = {"error": None}
+    try:
+        from 选股.kline_source import get_daily_data_status
+        daily_status = get_daily_data_status()
+    except Exception as e:
+        daily_status = {"error": str(e)}
+
     return {
         "tdx_local": {
             "dir": TDX_DATA_DIR,
@@ -535,11 +557,11 @@ def api_data_sources():
             "vipdoc_sz_lday": lday_sz,
         },
         "tdx_tcp": tdx_tcp,
+        "daily": daily_status,
         "fallback": {
             "eastmoney_http": True,
             "sina_http": True,
             "use_tdx": True,
         },
     }
-
 

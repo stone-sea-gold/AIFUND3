@@ -1,6 +1,20 @@
 {
-  "initial_nav": 0,
-  "initial_date": null,
-  "current_nav": 0,
-  "records": []
+  "initial_nav": 4066.63,
+  "initial_date": "2026-05-25",
+  "current_nav": 4666.63,
+  "records": [
+    {
+      "date": "2026-05-25",
+      "nav": 4066.63,
+      "type": "init",
+      "note": "初始净值"
+    },
+    {
+      "date": "2026-05-26",
+      "nav": 4666.63,
+      "type": "deposit",
+      "amount": 600.0,
+      "note": "入金"
+    }
+  ]
 }

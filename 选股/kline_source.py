@@ -147,6 +147,42 @@ def _read_tdx_daily(code: str, count: int) -> tuple[str, list[dict]] | None:
 from 选股.tdx_pool import get_pool, normalize_tcp_bars
 
 
+def _filter_complete_bars(bars: list[dict], since_date: str) -> list[dict]:
+    """过滤出 since_date 之后的完整日K。"""
+    fresh = [k for k in bars if k["date"] >= since_date]
+
+    # 盘中安全：15:00 前排除今日不完整 bar；15:00 后视为完整日线边界。
+    today_str = date.today().strftime("%Y-%m-%d")
+    if not _is_market_closed_now() and _is_weekday(date.today()):
+        fresh = [k for k in fresh if k["date"] != today_str]
+
+    return fresh
+
+
+def _fetch_recent_bars_with_source(code: str, since_date: str, max_bars: int = 20) -> tuple[list[dict], str] | None:
+    """
+    补缺最近 K 线：优先 mootdx TCP，失败降级到东方财富 HTTP。
+
+    Args:
+        code: 股票代码
+        since_date: 只保留此日期及之后的 bar
+        max_bars: 最多拉取根数
+
+    Returns:
+        (list[dict], source) 或 None
+    """
+    source = "tdx_tcp"
+    bars = _fetch_via_tcp(code, max_bars)
+    if bars is None:
+        source = "eastmoney_http"
+        bars = _fetch_via_http(code, max_bars)
+    if bars is None:
+        return None
+
+    fresh = _filter_complete_bars(bars, since_date)
+    return fresh, source
+
+
 def _fetch_recent_bars(code: str, since_date: str, max_bars: int = 20) -> list[dict] | None:
     """
     补缺最近 K 线：优先 mootdx TCP，失败降级到东方财富 HTTP。
@@ -159,24 +195,10 @@ def _fetch_recent_bars(code: str, since_date: str, max_bars: int = 20) -> list[d
     Returns:
         list[dict] 标准 kline 格式，或 None
     """
-    bars = _fetch_via_tcp(code, max_bars)
-    if bars is None:
-        bars = _fetch_via_http(code, max_bars)
-    if bars is None:
+    result = _fetch_recent_bars_with_source(code, since_date, max_bars)
+    if result is None:
         return None
-
-    # 过滤 since_date 之后
-    fresh = [k for k in bars if k["date"] >= since_date]
-
-    # 盘中安全：若今日未收盘，排除不完整 bar
-    today_str = date.today().strftime("%Y-%m-%d")
-    from datetime import datetime as _dt
-    now = _dt.now()
-    market_closed = (now.hour > 15) or (now.hour == 15 and now.minute >= 30)
-    if not market_closed and _is_weekday(date.today()):
-        fresh = [k for k in fresh if k["date"] != today_str]
-
-    return fresh
+    return result[0]
 
 
 def _fetch_via_tcp(code: str, count: int) -> list[dict] | None:
@@ -358,7 +380,13 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
                 last_date = date.fromisoformat(last_date_str)
                 gap = _count_trading_gaps(last_date, date.today())
 
-                if gap <= stale_days:
+                need_today_after_close = (
+                    _is_weekday(date.today())
+                    and _is_market_closed_now()
+                    and last_date_str < today_str
+                )
+
+                if gap <= stale_days and not need_today_after_close:
                     result = (name, klines)
                 else:
                     fresh = _fetch_recent_bars(code, last_date_str, max_bars=max(10, gap + 5))
@@ -388,10 +416,80 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
         if k and not is_open:
             last_str = k[-1]["date"]
             g = _count_trading_gaps(date.fromisoformat(last_str), date.today())
-            if g <= stale_days:
+            need_today_after_close = (
+                _is_weekday(date.today())
+                and _is_market_closed_now()
+                and last_str < today_str
+            )
+            if g <= stale_days and not need_today_after_close:
                 _save_cache(code, result[0], k)
 
     return result
+
+
+def get_daily_data_status(sample_code: str = "000001") -> dict:
+    """返回当前日线数据状态，供看板展示。"""
+    today_str = date.today().strftime("%Y-%m-%d")
+    is_trading_day = _is_weekday(date.today())
+    market_closed = _is_market_closed_now()
+
+    local_latest = None
+    try:
+        local = _read_tdx_daily(sample_code, 5)
+        if local and local[1]:
+            local_latest = local[1][-1]["date"]
+    except Exception:
+        local_latest = None
+
+    latest_date = local_latest
+    source = "tdx_local" if local_latest else "none"
+    fallback_used = False
+    fallback_source = None
+
+    need_today_after_close = (
+        is_trading_day
+        and market_closed
+        and local_latest != today_str
+    )
+
+    if need_today_after_close:
+        result = _fetch_recent_bars_with_source(sample_code, local_latest or "", max_bars=10)
+        if result is not None:
+            fresh, src = result
+            if fresh:
+                fetched_latest = max(k["date"] for k in fresh)
+                if latest_date is None or fetched_latest > latest_date:
+                    latest_date = fetched_latest
+                    source = src
+                    fallback_used = True
+                    fallback_source = src
+
+    expected_date = today_str if is_trading_day and market_closed else latest_date
+    complete = bool(latest_date)
+    if is_trading_day and market_closed:
+        complete = latest_date == today_str
+
+    gap_days = None
+    if latest_date:
+        try:
+            gap_days = _count_trading_gaps(date.fromisoformat(latest_date), date.today())
+        except Exception:
+            gap_days = None
+
+    return {
+        "sample_code": sample_code,
+        "latest_date": latest_date,
+        "local_latest_date": local_latest,
+        "expected_date": expected_date,
+        "complete": complete,
+        "is_trading_day": is_trading_day,
+        "market_closed": market_closed,
+        "fallback_used": fallback_used,
+        "fallback_source": fallback_source,
+        "source": source,
+        "gap_days": gap_days,
+        "today": today_str,
+    }
 
 
 # ═══════════════════════════════════════════════════════════════
