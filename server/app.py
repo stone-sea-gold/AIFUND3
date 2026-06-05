@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from fastapi import Body, FastAPI, Query
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from jinja2 import Environment, FileSystemLoader
 
 # ── 路径处理：确保 server/ 下能导入项目根目录的模块 ──
@@ -37,11 +37,22 @@ os.environ["NO_PROXY"] = "*"
 from server.scan_manager import get_manager
 from server.tracker import get_tracker
 from server.holdings_manager import get_holdings_manager
+from server.sector_monitor.sector_manager import get_sector_manager
 
 app = FastAPI(title="波浪交易看板")
 
 _template_dir = os.path.join(os.path.dirname(__file__), "templates")
 _jinja_env = Environment(loader=FileSystemLoader(_template_dir), autoescape=True)
+
+
+@app.on_event("startup")
+def _startup_load_sector_map():
+    """服务器启动时后台加载板块数据（不阻塞启动）"""
+    try:
+        from 选股.block_source import _ensure_loading
+        _ensure_loading()
+    except Exception:
+        pass
 
 # ── 页面路由 ──────────────────────────────────────────────────
 
@@ -244,6 +255,8 @@ def api_test_stock(code: str, strategy: str = Query("b1", description="策略名
             ],
             "latest_info": dict(r["latest_info"]),
             "indicators": dict(r.get("indicators", {})),
+            "industry": r.get("industry", ""),
+            "concepts": r.get("concepts", []),
         }
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
@@ -564,4 +577,63 @@ def api_data_sources():
             "use_tdx": True,
         },
     }
+
+
+# ── API：板块主线监控 ─────────────────────────────────────────
+
+_sector_mgr = get_sector_manager()
+
+
+@app.get("/api/sector/latest")
+def api_sector_latest():
+    """获取最新板块主线分析结果"""
+    result = _sector_mgr.get_latest()
+    if result is None:
+        return {"status": "empty", "message": "尚未执行板块分析，请先点击「分析板块主线」"}
+    return result
+
+
+@app.post("/api/sector/analyze")
+def api_sector_analyze():
+    """触发一次板块主线分析"""
+    try:
+        result = _sector_mgr.run_analysis()
+        return result
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/sector/history")
+def api_sector_history():
+    """获取历史主线演变记录"""
+    return {"entries": _sector_mgr.get_history()}
+
+
+@app.get("/api/sector/{name:path}/stocks")
+def api_sector_stocks(name: str):
+    """获取板块成分股列表"""
+    detail = _sector_mgr.get_sector_detail(name)
+    if detail is None:
+        return JSONResponse({"error": f"板块 '{name}' 不存在"}, status_code=404)
+    code = detail.get("code", "")
+    if not code:
+        return JSONResponse({"error": "该板块无板块代码，无法获取成分股"}, status_code=400)
+    stocks = _sector_mgr.get_sector_stocks(code)
+    if not stocks:
+        return JSONResponse({
+            "error": "成分股数据暂时不可用（东方财富API不可达），请稍后重试",
+            "name": name,
+            "code": code,
+            "stocks": [],
+        }, status_code=503)
+    return {"name": name, "code": code, "stocks": [{"code": c, "name": n} for c, n in stocks]}
+
+
+@app.get("/api/sector/{name:path}")
+def api_sector_detail(name: str):
+    """获取单个板块详情"""
+    detail = _sector_mgr.get_sector_detail(name)
+    if detail is None:
+        return JSONResponse({"error": f"板块 '{name}' 不存在"}, status_code=404)
+    return detail
 

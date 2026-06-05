@@ -1,20 +1,29 @@
 {
-  "initial_nav": 4066.63,
-  "initial_date": "2026-05-25",
-  "current_nav": 4666.63,
+  "initial_nav": 4462.48,
+  "initial_date": "2026-05-28",
+  "current_nav": 5483.28,
   "records": [
     {
-      "date": "2026-05-25",
-      "nav": 4066.63,
+      "date": "2026-05-28",
+      "nav": 4462.48,
       "type": "init",
       "note": "初始净值"
     },
     {
-      "date": "2026-05-26",
-      "nav": 4666.63,
-      "type": "deposit",
-      "amount": 600.0,
-      "note": "入金"
+      "date": "2026-06-04",
+      "nav": 5456.38,
+      "type": "close",
+      "trade_id": "t_20260602_093723_e78c",
+      "pnl": 993.9,
+      "note": "清仓红星发展"
+    },
+    {
+      "date": "2026-06-05",
+      "nav": 5483.28,
+      "type": "close",
+      "trade_id": "t_20260603_150554_60b6",
+      "pnl": 26.9,
+      "note": "清仓浙江众成"
     }
   ]
 }

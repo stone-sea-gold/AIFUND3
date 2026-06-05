@@ -214,6 +214,8 @@ class ScanManager:
                     ],
                     "latest_info": dict(r["latest_info"]),
                     "indicators": dict(r.get("indicators", {})),
+                    "industry": r.get("industry", ""),
+                    "concepts": r.get("concepts", []),
                 })
 
             with self._lock:
@@ -225,17 +227,21 @@ class ScanManager:
             try:
                 from server.tracker import get_tracker
                 tracker = get_tracker()
+                _strat_name = getattr(strategy, "STRATEGY_NAME", task.strategy_name)
+                print(f"[tracker] 保存扫描结果: task={task_id}, strategy={task.strategy_name}, strategy_name={_strat_name}, stocks={len(trimmed)}")
                 tracker.add_entry(
                     task_id=task_id,
                     scan_date=task.created_at.strftime("%Y-%m-%d"),
                     strategy=task.strategy_name,
-                    strategy_name=getattr(strategy, "STRATEGY_NAME", task.strategy_name),
+                    strategy_name=_strat_name,
                     pool_name=task.pool_name,
                     top_n=task.top_n,
                     stocks=trimmed,
                 )
-            except Exception:
-                pass  # 保存失败不影响扫描本身
+                print(f"[tracker] 保存成功: task={task_id}")
+            except Exception as e:
+                print(f"[tracker] 保存失败: task={task_id}, error={e}")
+                import traceback; traceback.print_exc()
 
         except ScanCancelled:
             with self._lock:

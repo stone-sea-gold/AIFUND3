@@ -143,6 +143,18 @@ def scan_one(code: str, name: str, strategy=None) -> dict | None:
     for spec in s.RESULT_INDICATORS:
         result_indicators[spec["key"]] = _extract_from_ind(ind, spec)
 
+    # 板块信息（从缓存中获取，缓存未加载则跳过）
+    industry = ""
+    concepts = []
+    try:
+        from 选股 import block_source
+        if block_source._sector_map_cache and code in block_source._sector_map_cache:
+            sector = block_source._sector_map_cache[code]
+            industry = sector.get("industry", "")
+            concepts = sector.get("concepts", [])
+    except Exception:
+        pass
+
     return {
         "code": code,
         "name": stock_name,
@@ -151,6 +163,8 @@ def scan_one(code: str, name: str, strategy=None) -> dict | None:
         "latest_info": latest_info,
         "klines": klines,
         "indicators": result_indicators,
+        "industry": industry,
+        "concepts": concepts,
     }
 
 
@@ -283,11 +297,20 @@ def _scan_parallel(
 
         return r
 
+    # 并行扫描：ScanCancelled 从 progress_callback 抛出时需立即停止
+    try:
+        from server.scan_manager import ScanCancelled
+    except ImportError:
+        ScanCancelled = Exception  # fallback
+
     with ThreadPoolExecutor(max_workers=workers) as executor:
         futures = {executor.submit(_scan_item, c, n): (c, n) for c, n in stocks}
         for future in as_completed(futures):
             try:
                 future.result()
+            except ScanCancelled:
+                executor.shutdown(wait=False, cancel_futures=True)
+                raise
             except Exception:
                 pass
 

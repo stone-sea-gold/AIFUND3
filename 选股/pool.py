@@ -38,8 +38,8 @@ HEADERS_EM = {
 }
 
 INDEX_CONFIG = {
-    "沪深300": {"fs": "b:MK0146"},
-    "中证500": {"fs": "b:MK0021"},
+    "沪深300": {"fs": "m:0+t:6,m:1+t:2"},
+    "中证500": {"fs": "b:BK0701"},
     "全A":     {"fs": "m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23"},
 }
 
@@ -85,7 +85,19 @@ def _api_fetch_stock_list_em(pool_name: str) -> list[tuple[str, str]] | None:
     items = _fetch_paginated(config["fs"])
     if not items:
         return None
-    return [(item["f12"], item["f14"]) for item in items if "f12" in item and "f14" in item]
+    # 过滤：仅保留A股个股，排除ETF/LOF/港股
+    result = []
+    for item in items:
+        code = item.get("f12", "")
+        name = item.get("f14", "")
+        if not code or not name:
+            continue
+        if len(code) != 6:
+            continue  # 排除港股等非6位代码
+        if code.startswith(("159", "16", "51", "513", "56", "58")):
+            continue  # 排除ETF/LOF基金
+        result.append((code, name))
+    return result if result else None
 
 
 # ── 新浪财经 API（沪深主板精确列表）───────────────────────────

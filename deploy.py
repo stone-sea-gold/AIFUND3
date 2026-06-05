@@ -397,10 +397,6 @@ def read_ngrok_pid():
     except:
         return None
 
-def is_running():
-    """兼容旧版：检查是否有 uvicorn 在运行"""
-    return read_pid() is not None and _pid_alive(read_pid())
-
 
 # ── 系统级工具  ─────────────────────────────────────────────
 

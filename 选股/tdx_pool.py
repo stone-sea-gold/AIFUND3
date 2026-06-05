@@ -354,6 +354,41 @@ class TdxConnectionPool:
                 self._api = None
                 return None
 
+    def get_block_list(self, block_file: str = "block.dat") -> list | None:
+        """
+        获取板块列表（TCP协议）。
+
+        Args:
+            block_file: 板块文件名
+              - 'block_zs.dat': 指数板块（含行业板块）
+              - 'block_gn.dat': 概念板块
+              - 'block.dat': 所有板块合并
+
+        Returns:
+            DataFrame(blockname, block_type, code_index, code) 或 None
+        """
+        with self._lock:
+            try:
+                self._ensure_connected()
+                return self._api.get_and_parse_block_info(block_file)
+            except Exception:
+                self._api = None
+                return None
+
+    def get_sector_bars(self, code: str, start: int = 0, count: int = 30) -> list[dict] | None:
+        """
+        获取板块指数日K线（88XXXX格式）。
+
+        通达信板块指数代码以88开头，属于上证市场(market=1)。
+        """
+        with self._lock:
+            try:
+                self._ensure_connected()
+                return self._api.get_security_bars(9, 1, code, start, count)
+            except Exception:
+                self._api = None
+                return None
+
 
 # ═══════════════════════════════════════════════════════════════
 # 全局单例

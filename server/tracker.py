@@ -130,6 +130,8 @@ class Tracker:
                         "latest_price": None,
                         "latest_date": None,
                         "pct_change": None,
+                        "industry": s.get("industry", ""),
+                        "concepts": s.get("concepts", []),
                     }
                     for s in stocks
                 ],
