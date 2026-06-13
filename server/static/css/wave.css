@@ -1,0 +1,80 @@
+/* ═══════════════════════════════════════════════════════════
+   Wave Dashboard — Page-Specific Styles
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Layout: Sidebar + Content ── */
+.app-layout { display:flex; min-height:calc(100dvh - 56px); }
+
+.sidebar {
+  width:200px; flex-shrink:0;
+  background:var(--surface); border-right:1px solid var(--border);
+  padding:16px 0; position:sticky; top:56px; height:calc(100dvh - 56px); overflow-y:auto;
+}
+.sidebar-link {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 20px; font-size:.85em; font-weight:500; color:var(--text2);
+  text-decoration:none; border-left:3px solid transparent;
+  transition:all .2s var(--ease); cursor:pointer;
+}
+.sidebar-link:hover { color:var(--text); background:var(--bg-subtle); }
+.sidebar-link.active { color:var(--accent); background:var(--accent-bg); border-left-color:var(--accent); }
+.sidebar-link .link-icon { font-size:1.1em; width:20px; text-align:center; }
+
+.content { flex:1; padding:24px 32px; max-width:900px; }
+
+/* ── Section Headers ── */
+.section-header { margin-bottom:24px; }
+.section-header h1 { font-size:1.5em; }
+.section-header p { font-size:.85em; color:var(--text2); margin-top:4px; }
+
+/* ── Metrics Grid ── */
+.metrics-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px;
+  margin-bottom:24px;
+}
+.metric-card { text-align:center; padding:16px; }
+.metric-card .metric-label { font-size:.75em; color:var(--text3); margin-bottom:4px; text-transform:uppercase; letter-spacing:.03em; }
+.metric-card .metric-value { font-size:1.3em; font-weight:700; }
+
+/* ── Detail Grid (scan results expand) ── */
+.detail-grid { display:grid; grid-template-columns:auto 1fr; gap:4px 16px; font-size:.82em; }
+.cursor-pointer { cursor:pointer; }
+
+/* ── Scan Panel ── */
+.scan-panel .form-row { align-items:end; }
+.scan-panel .form-group { min-width:100px; }
+
+/* ── Holdings Table Actions ── */
+td .btn { margin-right:4px; }
+td .btn:last-child { margin-right:0; }
+
+/* ── Sector Cards ── */
+.sector-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; }
+.sector-mainline { border-left:3px solid var(--accent); }
+.sector-potential { border-left:3px solid var(--amber); }
+.sector-fading { border-left:3px solid var(--red); opacity:.7; }
+.sector-fading-list { display:flex; flex-wrap:wrap; gap:6px; }
+.card-stocks { margin-top:8px; padding-top:8px; border-top:1px solid var(--border-subtle); }
+
+/* ── Data Status Bar ── */
+.data-status { font-size:.78em; color:var(--text3); padding:8px 0; }
+
+/* ── Tracker ── */
+.tracker-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
+.tracker-date-group { margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border-subtle); }
+.tracker-date-group:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+
+/* ── Responsive ── */
+@media(max-width:768px) {
+  .app-layout { flex-direction:column; }
+  .sidebar {
+    width:100%; height:auto; position:static;
+    display:flex; overflow-x:auto; padding:0; border-right:none; border-bottom:1px solid var(--border);
+  }
+  .sidebar-link { border-left:none; border-bottom:3px solid transparent; padding:10px 16px; white-space:nowrap; }
+  .sidebar-link.active { border-bottom-color:var(--accent); border-left-color:transparent; }
+  .content { padding:16px; max-width:100%; }
+  .metrics-grid { grid-template-columns:repeat(2, 1fr); }
+  .sector-grid { grid-template-columns:1fr; }
+  .tracker-grid { grid-template-columns:1fr; }
+}

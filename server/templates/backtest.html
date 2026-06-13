@@ -4,504 +4,111 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>回测系统</title>
+<link rel="stylesheet" href="/static/css/common.css">
+<link rel="stylesheet" href="/static/css/backtest.css">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #2d2a1f; --surface: rgba(55,50,35,0.55); --surface2: rgba(65,60,42,0.5);
-  --border: rgba(140,130,90,0.25); --text: #cdc8b0; --text2: #908872;
-  --green: #a8b868; --red: #c8887a; --amber: #c8a848;
-  --blue: #8aa08a; --purple: #c4a0b8;
-  --green-bg: rgba(168,184,104,.12); --red-bg: rgba(200,136,122,.12);
-  --amber-bg: rgba(200,168,72,.12);
-  --shadow: 0 2px 12px rgba(45,42,31,0.5);
-  --shadow-hover: 0 6px 24px rgba(45,42,31,0.6);
-  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:linear-gradient(135deg,#2d2a1f 0%,#2a2518 50%,#28241a 100%); color:var(--text); font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif; line-height:1.6; padding:12px; max-width:960px; margin:0 auto; min-height:100vh; font-optical-sizing:auto; position:relative; }
-body::before { content:''; position:fixed; inset:0; opacity:.035; pointer-events:none; z-index:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size:256px 256px; }
-body > * { position:relative; z-index:1; }
-h1 { font-size:1.6em; margin-bottom:4px; font-weight:700; letter-spacing:-0.01em; text-wrap:pretty; }
-h2 { font-size:1.15em; color:var(--blue); margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); text-wrap:pretty; }
-
-/* ── 滚动条（与主界面一致）── */
-::-webkit-scrollbar { width:6px; height:6px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:rgba(140,130,90,0.3); border-radius:3px; }
-::-webkit-scrollbar-thumb:hover { background:rgba(140,130,90,0.5); }
-
-.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin:10px 0; }
-.form-row { display:flex; flex-wrap:wrap; gap:10px; align-items:end; }
-.form-row label { font-size:.8em; color:var(--text2); display:flex; flex-direction:column; gap:3px; }
-.form-row select, .form-row input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
-.form-row select:focus, .form-row input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 2px rgba(138,160,138,0.25); }
-.form-row input[type=number] { min-width:70px; width:80px; }
-.form-row input[type=date] { width:140px; }
-
-.btn { background:var(--blue); color:#fff; border:none; border-radius:var(--radius-sm); padding:8px 24px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:.15s; margin-top:12px; }
-.btn:hover { opacity:.85; }
-.btn:active { transform:scale(0.97); }
-.btn:disabled { opacity:.4; cursor:not-allowed; }
-.btn-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 16px; font-size:.85em; cursor:pointer; font-family:inherit; transition:.15s; }
-.btn-secondary:hover { border-color:var(--blue); color:var(--text); }
-
-.progress-bar { height:8px; background:var(--bg); border-radius:var(--radius-sm); overflow:hidden; margin-bottom:8px; }
-.progress-fill { height:100%; background:var(--blue); border-radius:var(--radius-sm); transition:width .5s, background .4s; width:0%; }
-.progress-fill.running { animation:pulse-bar 1.8s ease-in-out infinite; }
-.progress-fill.done { background:var(--green); }
-.progress-fill.fail { background:var(--red); }
-@keyframes pulse-bar { 0%,100%{opacity:1} 50%{opacity:.6} }
-.progress-text { font-size:.82em; color:var(--text2); }
-.progress-text strong { color:var(--text); }
-
-.metrics-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:10px 0; }
-.metric { background:var(--surface2); border-radius:var(--radius-md); padding:12px; text-align:center; transition:transform .2s, box-shadow .2s; }
-.metric:hover { transform:translateY(-2px); box-shadow:var(--shadow-hover); }
-.metric .label { font-size:.75em; color:var(--text2); margin-bottom:4px; }
-.metric .value { font-size:1.4em; font-weight:700; font-variant-numeric:tabular-nums; }
-.metric .value.up { color:var(--red); }
-.metric .value.down { color:var(--green); }
-
-.chart-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin:10px 0; }
-.chart-box .chart { width:100%; height:320px; }
-
-table { width:100%; border-collapse:collapse; font-size:.82em; margin:6px 0; }
-th { text-align:left; color:var(--text2); font-weight:500; padding:4px 6px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:1; }
-td { padding:4px 6px; border-bottom:1px solid rgba(140,130,90,.2); vertical-align:top; font-variant-numeric:tabular-nums; }
-tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
-tbody tr:hover td { background:var(--surface2); }
-.up { color:var(--red); font-weight:600; }
-.down { color:var(--green); font-weight:600; }
-
-.task-list { margin:10px 0; }
-.task-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; margin:6px 0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:border-color .2s, background .2s, transform .15s; }
-.task-item:active { transform:scale(0.995); }
-.task-item:hover { border-color:var(--blue); }
-.task-item.active { border-color:var(--amber); background:var(--amber-bg); }
-.task-item .info { font-size:.85em; }
-.task-item .info strong { color:var(--text); }
-.task-item .status { font-size:.8em; padding:2px 8px; border-radius:10px; }
-.status-completed { background:var(--green-bg); color:var(--green); }
-.status-running { background:var(--amber-bg); color:var(--amber); }
-.status-pending { background:rgba(138,160,138,.15); color:var(--blue); }
-.status-failed { background:var(--red-bg); color:var(--red); }
-
-.meta { color:var(--text2); font-size:.8em; }
-.hidden { display:none; }
-.back-link { color:var(--blue); text-decoration:none; font-size:.85em; }
-.back-link:hover { text-decoration:underline; }
-
-/* ── 磨砂玻璃 ── */
-.card, .metric, .chart-box, .task-item { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-
-/* ── 空状态 ── */
-.empty-state { text-align:center; padding:28px 16px; color:var(--text2); }
-.empty-state .empty-icon { font-size:2em; margin-bottom:8px; opacity:.5; }
-.empty-state .empty-text { font-size:.85em; line-height:1.6; }
-.empty-state .empty-hint { font-size:.78em; color:rgba(144,136,114,0.6); margin-top:4px; }
-
-/* ── Toast 通知 ── */
-.toast-container { position:fixed; top:16px; right:16px; z-index:10000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
-.toast { pointer-events:auto; padding:10px 18px; border-radius:var(--radius-md); font-size:.85em; font-weight:500; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:var(--shadow-hover); transform:translateX(120%); opacity:0; transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .35s ease; max-width:360px; word-break:break-all; }
-.toast.show { transform:translateX(0); opacity:1; }
-.toast-error { background:rgba(200,50,50,0.92); color:#fdd; border:1px solid rgba(255,100,100,0.4); }
-.toast-success { background:rgba(80,160,80,0.92); color:#dfd; border:1px solid rgba(100,200,100,0.4); }
-.toast-info { background:rgba(80,130,180,0.92); color:#ddf; border:1px solid rgba(100,160,220,0.4); }
-
-/* ── 确认模态框 ── */
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; display:none; align-items:center; justify-content:center; backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); }
-.modal-overlay.active { display:flex; }
-.modal-box { background:rgba(45,42,31,0.98); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px 28px; max-width:400px; width:90%; box-shadow:var(--shadow-hover); animation:modalIn .25s ease-out; }
-.modal-box .modal-msg { font-size:.95em; color:var(--text); margin-bottom:20px; line-height:1.6; }
-.modal-box .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-.modal-box .modal-actions .btn-modal-confirm { background:var(--blue); color:#fff; border:none; border-radius:var(--radius-sm); padding:8px 22px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:opacity .15s, transform .15s; }
-.modal-box .modal-actions .btn-modal-confirm:hover { opacity:.85; }
-.modal-box .modal-actions .btn-modal-confirm:active { transform:scale(0.97); }
-.modal-box .modal-actions .btn-modal-cancel { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 18px; font-size:.9em; cursor:pointer; font-family:inherit; transition:border-color .15s; }
-.modal-box .modal-actions .btn-modal-cancel:hover { border-color:var(--blue); }
-.modal-box .modal-actions .btn-modal-danger { background:rgba(200,50,50,0.85); color:#fdd; border:none; border-radius:var(--radius-sm); padding:8px 22px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:opacity .15s, transform .15s; }
-.modal-box .modal-actions .btn-modal-danger:hover { opacity:.85; }
-.modal-box .modal-actions .btn-modal-danger:active { transform:scale(0.97); }
-
-@keyframes modalIn { from { opacity:0; transform:scale(0.92) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
-</style>
 </head>
 <body>
 
-<nav><a href="/" class="back-link">← 返回看板</a></nav>
-<main>
-<h1>回测系统</h1>
-<p class="meta">对选股策略进行历史回测，评估策略绩效</p>
-
-<!-- 配置区 -->
-<div class="card">
-  <h2>回测配置</h2>
-  <div class="form-row">
-    <label>策略
-      <select id="bt-strategy"></select>
-    </label>
-    <label>股票池
-      <select id="bt-pool">
-        <option value="沪深300">沪深300</option>
-        <option value="沪深主板">沪深主板</option>
-        <option value="中证500">中证500</option>
-        <option value="自选">自选</option>
-      </select>
-    </label>
-    <label>每轮选股数
-      <input type="number" id="bt-topn" value="10" min="1" max="50">
-    </label>
-    <label>最低分
-      <input type="number" id="bt-minscore" value="25" min="0" max="100">
-    </label>
-    <label>持有天数
-      <input type="number" id="bt-hold" value="3" min="1" max="60">
-    </label>
-    <label>本金(元)
-      <input type="number" id="bt-capital" value="100000" min="10000" step="10000">
-    </label>
+<!-- ════════ Navigation Bar ════════ -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <span class="logo-dot"></span>
+    <span>股票交易看板</span>
   </div>
-  <div class="form-row" style="margin-top:10px;">
-    <label>开始日期
-      <input type="date" id="bt-start">
-    </label>
-    <label>结束日期
-      <input type="date" id="bt-end">
-    </label>
+  <div class="nav-links">
+    <a href="/" class="nav-link">看板</a>
+    <a href="/backtest" class="nav-link active">回测系统</a>
   </div>
-  <button class="btn" id="btn-run" onclick="submitBacktest()" style="margin-top:18px;">开始回测</button>
-</div>
+</nav>
 
-<!-- 进度区 -->
-<div class="card hidden" id="progress-section">
-  <h2>回测进度</h2>
-  <div class="progress-bar"><div class="progress-fill running" id="progress-fill"></div></div>
-  <div class="progress-text" id="progress-text">准备中...</div>
-</div>
+<main class="page-container">
 
-<!-- 结果区 -->
-<div id="result-section" class="hidden">
-  <h2 style="display:flex;justify-content:space-between;align-items:center;">
-    <span>回测结果</span>
-    <button onclick="closeResult()" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:var(--radius-sm);padding:2px 10px;font-size:.8em;cursor:pointer;">关闭</button>
-  </h2>
-  <div class="metrics-grid" id="metrics-grid"></div>
-
-  <div class="chart-box">
-    <h2 style="margin-top:0">净值曲线 (NAV)</h2>
-    <div id="chart-nav" class="chart"></div>
-  </div>
-  <div class="chart-box">
-    <h2 style="margin-top:0">收益率分布</h2>
-    <div id="chart-dist" class="chart"></div>
+  <div class="section-header">
+    <h1>回测系统</h1>
+    <p>对选股策略进行历史回测，评估策略绩效</p>
   </div>
 
+  <!-- Config -->
   <div class="card">
-    <h2>交易明细</h2>
-    <div style="overflow-x:auto; max-height:500px; overflow-y:auto;">
-      <table>
-        <thead><tr>
-          <th>代码</th><th>名称</th><th>买入日</th><th>卖出日</th><th>收益率</th><th>评分</th><th>原因</th>
-        </tr></thead>
-        <tbody id="trades-body"></tbody>
-      </table>
+    <h2 style="margin-top:0">回测配置</h2>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">策略</label><select class="form-select" id="bt-strategy"></select></div>
+      <div class="form-group"><label class="form-label">股票池</label><select class="form-select" id="bt-pool"><option value="沪深300">沪深300</option><option value="沪深主板">沪深主板</option><option value="中证500">中证500</option><option value="自选">自选</option></select></div>
+      <div class="form-group"><label class="form-label">每轮选股数</label><input class="form-input" type="number" id="bt-topn" value="10" min="1" max="50"></div>
+      <div class="form-group"><label class="form-label">最低分</label><input class="form-input" type="number" id="bt-minscore" value="25" min="0" max="100"></div>
+      <div class="form-group"><label class="form-label">持有天数</label><input class="form-input" type="number" id="bt-hold" value="3" min="1" max="60"></div>
+      <div class="form-group"><label class="form-label">本金(元)</label><input class="form-input" type="number" id="bt-capital" value="100000" min="10000" step="10000"></div>
+    </div>
+    <div class="form-row mt-4">
+      <div class="form-group"><label class="form-label">开始日期</label><input class="form-input" type="date" id="bt-start"></div>
+      <div class="form-group"><label class="form-label">结束日期</label><input class="form-input" type="date" id="bt-end"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" id="btn-run" onclick="submitBacktest()">开始回测</button>
     </div>
   </div>
-</div>
+
+  <!-- Progress -->
+  <div class="card mt-4 hidden" id="progress-section">
+    <h2 style="margin-top:0">回测进度</h2>
+    <div class="progress-bar"><div class="progress-fill running" id="progress-fill"></div></div>
+    <div class="progress-text" id="progress-text">准备中...</div>
+  </div>
+
+  <!-- Results -->
+  <div id="result-section" class="hidden">
+    <div class="flex items-center justify-between mt-6 mb-4">
+      <h2 style="margin:0">回测结果</h2>
+      <button class="btn-close-result" onclick="closeResult()">关闭</button>
+    </div>
+    <div class="bt-metrics" id="metrics-grid"></div>
+
+    <div class="chart-box">
+      <h3 style="margin-top:0">净值曲线 (NAV)</h3>
+      <div id="chart-nav" class="chart"></div>
+    </div>
+    <div class="chart-box">
+      <h3 style="margin-top:0">收益率分布</h3>
+      <div id="chart-dist" class="chart"></div>
+    </div>
+
+    <div class="card mt-4">
+      <h2 style="margin-top:0">交易明细</h2>
+      <div class="table-wrap" style="max-height:500px;overflow-y:auto">
+        <table>
+          <thead><tr>
+            <th>代码</th><th>名称</th><th>买入日</th><th>卖出日</th><th class="text-right">收益率</th><th class="text-right">评分</th><th>原因</th>
+          </tr></thead>
+          <tbody id="trades-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="card mt-6">
+    <h2 style="margin-top:0">历史回测</h2>
+    <div class="task-list" id="task-list">
+      <div class="text-sm text-muted text-center" style="padding:24px">加载中...</div>
+    </div>
+  </div>
 
 </main>
 
-<!-- 历史任务 -->
-<div class="card">
-  <h2>历史回测</h2>
-  <div class="task-list" id="task-list">
-    <div class="meta">加载中...</div>
-  </div>
-</div>
-
-<script>
-// ── Toast & Confirm ──
-function showToast(msg, type, duration) {
-  type = type || 'error'; duration = duration || 3500;
-  var container = document.getElementById('toast-container');
-  var el = document.createElement('div');
-  el.className = 'toast toast-' + type;
-  el.textContent = msg;
-  container.appendChild(el);
-  requestAnimationFrame(function() { el.classList.add('show'); });
-  setTimeout(function() { el.classList.remove('show'); setTimeout(function() { el.remove(); }, 400); }, duration);
-}
-function showConfirm(msg, options) {
-  options = options || {};
-  return new Promise(function(resolve) {
-    var overlay = document.getElementById('modal-overlay');
-    var msgEl = document.getElementById('modal-msg');
-    var confirmBtn = document.getElementById('modal-confirm-btn');
-    var cancelBtn = document.getElementById('modal-cancel-btn');
-    msgEl.textContent = msg;
-    confirmBtn.textContent = options.confirmText || '确认';
-    cancelBtn.textContent = options.cancelText || '取消';
-    confirmBtn.className = options.danger ? 'btn-modal-danger' : 'btn-modal-confirm';
-    overlay.classList.add('active');
-    function cleanup() { overlay.classList.remove('active'); confirmBtn.removeEventListener('click', onConfirm); cancelBtn.removeEventListener('click', onCancel); overlay.removeEventListener('click', onBackdrop); }
-    function onConfirm() { cleanup(); resolve(true); }
-    function onCancel() { cleanup(); resolve(false); }
-    function onBackdrop(e) { if (e.target === overlay) { cleanup(); resolve(false); } }
-    confirmBtn.addEventListener('click', onConfirm); cancelBtn.addEventListener('click', onCancel); overlay.addEventListener('click', onBackdrop);
-  });
-}
-
-var currentTaskId = null;
-var pollTimer = null;
-
-// 初始化：加载策略列表和历史任务
-(function() {
-  fetch('/api/strategies').then(r=>r.json()).then(d=>{
-    var sel = document.getElementById('bt-strategy');
-    (d.strategies||[]).forEach(s=>{
-      var opt = document.createElement('option');
-      opt.value = s.name;
-      opt.textContent = s.display_name;
-      sel.appendChild(opt);
-    });
-  });
-  // 默认开始日期：6个月前
-  var now = new Date();
-  var sixMonthsAgo = new Date(now);
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-  document.getElementById('bt-start').value = sixMonthsAgo.toISOString().slice(0,10);
-  document.getElementById('bt-end').value = now.toISOString().slice(0,10);
-
-  refreshTaskList();
-})();
-
-function submitBacktest() {
-  var btn = document.getElementById('btn-run');
-  btn.disabled = true;
-  btn.textContent = '提交中...';
-
-  var body = {
-    strategy: document.getElementById('bt-strategy').value,
-    pool: document.getElementById('bt-pool').value,
-    top_n: parseInt(document.getElementById('bt-topn').value) || 10,
-    min_score: parseInt(document.getElementById('bt-minscore').value) || 25,
-    holding_days: parseInt(document.getElementById('bt-hold').value) || 3,
-    initial_capital: parseFloat(document.getElementById('bt-capital').value) || 100000,
-    start_date: document.getElementById('bt-start').value || null,
-    end_date: document.getElementById('bt-end').value || null,
-  };
-
-  fetch('/api/backtest', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  }).then(r=>r.json()).then(d=>{
-    currentTaskId = d.task_id;
-    document.getElementById('progress-section').classList.remove('hidden');
-    document.getElementById('result-section').classList.add('hidden');
-    pollProgress();
-  }).catch(e=>{
-    showToast('提交失败: ' + e);
-    btn.disabled = false;
-    btn.textContent = '开始回测';
-  });
-}
-
-function pollProgress() {
-  if (!currentTaskId) return;
-  clearTimeout(pollTimer);
-
-  fetch('/api/backtest/' + currentTaskId).then(r=>r.json()).then(d=>{
-    var fill = document.getElementById('progress-fill');
-    var text = document.getElementById('progress-text');
-
-    if (d.status === 'completed') {
-      fill.style.width = '100%';
-      fill.className = 'progress-fill done';
-      text.innerHTML = '<strong>回测完成</strong>';
-      document.getElementById('btn-run').disabled = false;
-      document.getElementById('btn-run').textContent = '开始回测';
-      renderResult(d.result);
-      refreshTaskList();
-      showToast('回测完成', 'success');
-      return;
-    }
-
-    if (d.status === 'failed') {
-      fill.className = 'progress-fill fail';
-      text.innerHTML = '<strong>回测失败:</strong> ' + (d.error || '未知错误');
-      document.getElementById('btn-run').disabled = false;
-      document.getElementById('btn-run').textContent = '开始回测';
-      refreshTaskList();
-      showToast('回测失败: ' + (d.error || '未知错误'));
-      return;
-    }
-
-    // running / pending
-    var p = d.progress || {};
-    var info = p.current_date ? ('正在处理: ' + p.current_date) : '准备中...';
-    if (p.rounds_done > 0) info += ' | 已完成 ' + p.rounds_done + ' 轮';
-    text.innerHTML = info;
-    pollTimer = setTimeout(pollProgress, 2000);
-  }).catch(()=>{
-    pollTimer = setTimeout(pollProgress, 3000);
-  });
-}
-
-function renderResult(result) {
-  if (!result) return;
-  document.getElementById('result-section').classList.remove('hidden');
-
-  var m = result.metrics || {};
-  var grid = document.getElementById('metrics-grid');
-  var items = [
-    {label:'本金', value:fmtNum(m.initial_capital), cls:''},
-    {label:'最终资产', value:fmtNum(m.final_nav), cls:m.final_nav>=m.initial_capital?'up':'down'},
-    {label:'总收益率', value:fmtPct(m.total_return_pct), cls:m.total_return_pct>=0?'up':'down'},
-    {label:'夏普比率', value:(m.nav_sharpe||0).toFixed(2), cls:''},
-    {label:'最大回撤', value:(m.nav_max_drawdown||0).toFixed(2)+'%', cls:'down'},
-    {label:'胜率', value:(m.win_rate||0).toFixed(1)+'%', cls:''},
-    {label:'交易笔数', value:m.total_trades||0, cls:''},
-    {label:'止损次数', value:m.stop_loss_count||0, cls:m.stop_loss_count>0?'down':''},
-  ];
-  grid.innerHTML = items.map(function(i){
-    return '<div class="metric"><div class="label">'+i.label+'</div><div class="value '+i.cls+'">'+i.value+'</div></div>';
-  }).join('');
-
-  // 交易明细
-  var trades = result.trades || [];
-  var tbody = document.getElementById('trades-body');
-  tbody.innerHTML = trades.slice(0,200).map(function(t){
-    var cls = t.return_pct>=0?'up':'down';
-    var reasonMap = {stop_loss:'止损',take_profit:'到期',end_of_backtest:'回测结束'};
-    var reason = reasonMap[t.reason]||t.reason;
-    return '<tr><td>'+t.code+'</td><td>'+t.name+'</td><td>'+t.buy_date+'</td><td>'+t.sell_date+'</td>'
-      +'<td class="'+cls+'">'+fmtPct(t.return_pct)+'</td><td>'+t.score+'</td><td>'+reason+'</td></tr>';
-  }).join('');
-
-  // 图表
-  renderCharts(trades, result.nav_history);
-}
-
-function renderCharts(trades, navHistory) {
-  var returns = trades.map(function(t){return t.return_pct;});
-  var codes = trades.map(function(t){return t.code;});
-
-  // NAV 曲线数据
-  var navDates = (navHistory||[]).map(function(h){return h.date;});
-  var navValues = (navHistory||[]).map(function(h){return h.nav;});
-  var initialNav = navValues.length ? navValues[0] : 100000;
-
-  // NAV 净值曲线
-  var navChart = echarts.init(document.getElementById('chart-nav'));
-  var navInterval = navDates.length > 60 ? Math.ceil(navDates.length / 30) : (navDates.length > 20 ? 2 : 0);
-  navChart.setOption({
-    tooltip:{trigger:'axis',formatter:function(p){
-      return p[0].axisValue+'<br/>净值: ¥'+Number(p[0].value).toLocaleString();
-    }},
-    grid:{left:70,right:20,top:10,bottom:60},
-    xAxis:{type:'category',data:navDates,axisLabel:{fontSize:10,rotate:45,interval:navInterval}},
-    yAxis:{type:'value',scale:true,axisLabel:{formatter:function(v){return '¥'+(v/10000).toFixed(1)+'万';}},splitLine:{lineStyle:{type:'dashed',color:'rgba(140,130,90,0.2)'}}},
-    series:[{type:'line',data:navValues,smooth:false,symbol:'none',
-      lineStyle:{color:'#c8a848',width:2},
-      areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(200,168,72,0.25)'},{offset:1,color:'rgba(200,168,72,0.02)'}]}}
-    }]
-  });
-
-  // 收益率分布
-  var distChart = echarts.init(document.getElementById('chart-dist'));
-  distChart.setOption({
-    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
-      return codes[p[0].dataIndex]+'<br/>收益率: '+p[0].value.toFixed(2)+'%';
-    }},
-    grid:{left:50,right:20,top:10,bottom:50},
-    xAxis:{type:'category',data:codes,axisLabel:{rotate:45,fontSize:10,interval:function(i){return returns.length<=30||i%Math.ceil(returns.length/30)===0;}}},
-    yAxis:{type:'value',axisLabel:{formatter:'{value}%'},splitLine:{lineStyle:{type:'dashed',color:'rgba(140,130,90,0.2)'}}},
-    series:[{type:'bar',data:returns.map(function(v){return{value:v,itemStyle:{color:v>=0?'#c8887a':'#a8b868'}};}),barMaxWidth:30}]
-  });
-
-  window.addEventListener('resize',function(){navChart.resize();distChart.resize();});
-}
-
-function refreshTaskList() {
-  fetch('/api/backtest/tasks').then(r=>r.json()).then(d=>{
-    var list = document.getElementById('task-list');
-    var tasks = d.tasks || [];
-    if (!tasks.length) { list.innerHTML='<div class="meta">暂无回测记录</div>'; return; }
-    list.innerHTML = tasks.map(function(t){
-      var statusClass = 'status-'+t.status;
-      var statusText = {pending:'等待中',running:'运行中',completed:'已完成',failed:'失败',cancelled:'已中断'}[t.status]||t.status;
-      var info = '<strong>'+t.strategy+'</strong> @ '+t.pool+' | top'+t.top_n+' | 持有'+t.holding_days+'天';
-      if (t.status==='completed'&&t.progress) info += ' | '+t.progress.elapsed+'s';
-      var isActive = currentTaskId === t.task_id;
-      var activeClass = isActive ? ' active' : '';
-      var clickAction = t.status==='completed' ? ' onclick="loadTask(\''+t.task_id+'\')"' : '';
-      var actions = '';
-      if (t.status==='running') actions = ' <button class="btn-secondary" onclick="event.stopPropagation();stopTask(\''+t.task_id+'\')" style="padding:3px 10px;font-size:.75em;color:var(--red);border-color:var(--red);">停止</button>';
-      return '<div class="task-item'+activeClass+'" data-task-id="'+t.task_id+'"'+clickAction+'><div class="info">'+info+'</div><div>'+actions+'<span class="status '+statusClass+'">'+statusText+'</span></div></div>';
-    }).join('');
-  });
-}
-
-async function stopTask(taskId) {
-  if (!(await showConfirm('确定要停止这个回测任务吗？中断后数据不会保存。', {danger:true}))) return;
-  fetch('/api/backtest/'+taskId+'/stop', {method:'POST'}).then(r=>r.json()).then(d=>{
-    if(d.status==='stopped') {
-      clearTimeout(pollTimer);
-      document.getElementById('progress-section').classList.add('hidden');
-      document.getElementById('btn-run').disabled = false;
-      document.getElementById('btn-run').textContent = '开始回测';
-      refreshTaskList();
-      showToast('回测已停止', 'info');
-    } else {
-      showToast(d.error || '停止失败');
-    }
-  });
-}
-
-function loadTask(taskId) {
-  currentTaskId = taskId;
-  // 更新高亮
-  document.querySelectorAll('.task-item').forEach(function(el){
-    el.classList.toggle('active', el.dataset.taskId === taskId);
-  });
-  fetch('/api/backtest/'+taskId).then(r=>r.json()).then(d=>{
-    if(d.result) renderResult(d.result);
-  });
-}
-
-function closeResult() {
-  currentTaskId = null;
-  document.getElementById('result-section').classList.add('hidden');
-  document.querySelectorAll('.task-item.active').forEach(function(el){
-    el.classList.remove('active');
-  });
-}
-
-function fmtPct(v) {
-  if(v===undefined||v===null) return '0.00%';
-  return (v>=0?'+':'')+v.toFixed(2)+'%';
-}
-
-function fmtNum(v) {
-  if(v===undefined||v===null) return '0';
-  return '¥'+v.toLocaleString();
-}
-</script>
-
+<!-- Toast & Modal -->
 <div id="toast-container" class="toast-container"></div>
 <div id="modal-overlay" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-msg" id="modal-msg"></div>
     <div class="modal-actions">
-      <button class="btn-modal-cancel" id="modal-cancel-btn">取消</button>
-      <button class="btn-modal-confirm" id="modal-confirm-btn">确认</button>
+      <button class="btn btn-secondary" id="modal-cancel-btn">取消</button>
+      <button class="btn btn-primary" id="modal-confirm-btn">确认</button>
     </div>
   </div>
 </div>
 
+<script src="/static/js/common.js"></script>
+<script src="/static/js/backtest.js"></script>
 </body>
 </html>

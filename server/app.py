@@ -24,6 +24,7 @@ from pathlib import Path
 
 from fastapi import Body, FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader
 
 # ── 路径处理：确保 server/ 下能导入项目根目录的模块 ──
@@ -43,7 +44,10 @@ from server.backtest_manager import get_backtest_manager
 app = FastAPI(title="波浪交易看板")
 
 _template_dir = os.path.join(os.path.dirname(__file__), "templates")
+_static_dir = os.path.join(os.path.dirname(__file__), "static")
 _jinja_env = Environment(loader=FileSystemLoader(_template_dir), autoescape=True)
+
+app.mount("/static", StaticFiles(directory=_static_dir), name="static")
 
 
 @app.on_event("startup")
