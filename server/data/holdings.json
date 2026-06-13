@@ -104,13 +104,45 @@
       "cost_price": 40.291,
       "shares": 100,
       "buy_strategy": "brick_trend",
+      "sell_date": "2026-06-08",
+      "sell_price": 39.4,
+      "sell_strategy": "stop_loss",
+      "status": "closed",
+      "pnl": -89.1,
+      "pnl_pct": -2.21,
+      "created_at": "2026-06-05T09:41:58"
+    },
+    {
+      "id": "t_20260610_095408_9bc8",
+      "stock_name": "中信银行",
+      "stock_code": "601998",
+      "buy_date": "2026-06-10",
+      "cost_price": 7.492,
+      "shares": 200,
+      "buy_strategy": "other",
       "sell_date": null,
       "sell_price": null,
       "sell_strategy": null,
       "status": "open",
       "pnl": null,
       "pnl_pct": null,
-      "created_at": "2026-06-05T09:41:58"
+      "created_at": "2026-06-10T09:54:08"
+    },
+    {
+      "id": "t_20260610_095449_f202",
+      "stock_name": "平安银行",
+      "stock_code": "000001",
+      "buy_date": "2026-06-10",
+      "cost_price": 11.057,
+      "shares": 300,
+      "buy_strategy": "other",
+      "sell_date": null,
+      "sell_price": null,
+      "sell_strategy": null,
+      "status": "open",
+      "pnl": null,
+      "pnl_pct": null,
+      "created_at": "2026-06-10T09:54:49"
     }
   ],
   "strategies": {

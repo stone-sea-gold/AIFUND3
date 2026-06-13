@@ -1,0 +1,37 @@
+{
+  "task_id": "d14aa574",
+  "strategy_name": "b1",
+  "pool_name": "沪深300",
+  "date_range": {
+    "start": "2025-12-08",
+    "end": "2026-06-05"
+  },
+  "total_rounds": 117,
+  "total_trades": 267,
+  "metrics": {
+    "initial_capital": 10000.0,
+    "final_nav": 11856.0,
+    "total_return_pct": 18.56,
+    "total_pnl": 1856.0,
+    "total_trades": 267,
+    "avg_return_pct": 0.84,
+    "win_rate": 45.3,
+    "wins": 121,
+    "losses": 146,
+    "max_return_pct": 32.66,
+    "min_return_pct": -11.3,
+    "nav_sharpe": 1.6632,
+    "nav_max_drawdown": 11.87,
+    "stop_loss_count": 43
+  },
+  "config": {
+    "strategy_name": "b1",
+    "pool_name": "沪深300",
+    "top_n": 10,
+    "min_score": 25,
+    "holding_days": 3,
+    "initial_capital": 10000.0
+  },
+  "elapsed": 278.9,
+  "saved_at": "2026-06-06T10:39:44.475513"
+}

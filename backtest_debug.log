@@ -1,0 +1,4 @@
+[api] exclude_enabled=True (type=bool) body_keys=['strategy', 'pool', 'top_n', 'min_score', 'holding_days', 'initial_capital', 'exclude_enabled']
+[engine] exclude_enabled=True |   filter 'b1_data_error': enabled=True |   filter 'b1_kdj_filter': enabled=True
+[api] exclude_enabled=False (type=bool) body_keys=['strategy', 'pool', 'top_n', 'min_score', 'holding_days', 'initial_capital', 'exclude_enabled']
+[engine] exclude_enabled=False |   filter 'b1_data_error': enabled=False |   filter 'b1_kdj_filter': enabled=False

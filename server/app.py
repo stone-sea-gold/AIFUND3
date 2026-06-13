@@ -38,6 +38,7 @@ from server.scan_manager import get_manager
 from server.tracker import get_tracker
 from server.holdings_manager import get_holdings_manager
 from server.sector_monitor.sector_manager import get_sector_manager
+from server.backtest_manager import get_backtest_manager
 
 app = FastAPI(title="波浪交易看板")
 
@@ -530,6 +531,86 @@ def api_undo_nav():
     if nav is None:
         return JSONResponse({"error": "无记录可撤销（至少保留初始净值）"}, status_code=400)
     return nav
+
+
+# ── 页面：回测系统 ──────────────────────────────────────────────
+
+@app.get("/backtest", response_class=HTMLResponse)
+def backtest_page():
+    """回测系统页面"""
+    template = _jinja_env.get_template("backtest.html")
+    return HTMLResponse(template.render())
+
+
+# ── API：回测任务 ────────────────────────────────────────────────
+
+_bt_mgr = get_backtest_manager()
+
+
+@app.post("/api/backtest")
+def api_submit_backtest(body: dict = Body(...)):
+    """提交回测任务"""
+    task_id = _bt_mgr.submit(
+        strategy=body.get("strategy", "b1"),
+        pool=body.get("pool", "沪深300"),
+        top_n=int(body.get("top_n", 10)),
+        min_score=int(body.get("min_score", 25)),
+        holding_days=int(body.get("holding_days", 3)),
+        initial_capital=float(body.get("initial_capital", 100000)),
+        start_date=body.get("start_date"),
+        end_date=body.get("end_date"),
+    )
+    return {"task_id": task_id, "status": "submitted"}
+
+
+@app.get("/api/backtest/tasks")
+def api_list_backtest_tasks():
+    """所有回测任务摘要"""
+    return {"tasks": _bt_mgr.list_tasks()}
+
+
+@app.get("/api/backtest/{task_id}")
+def api_backtest_status(task_id: str):
+    """获取回测任务状态"""
+    task = _bt_mgr.get_task(task_id)
+    if not task:
+        return JSONResponse({"error": "任务不存在"}, status_code=404)
+    resp = {
+        "task_id": task.task_id,
+        "status": task.status,
+        "strategy": task.strategy,
+        "pool": task.pool,
+        "progress": dict(task.progress),
+        "error": task.error,
+    }
+    if task.status == "completed" and task.result:
+        resp["result"] = {
+            "metrics": task.result.get("metrics"),
+            "total_rounds": task.result.get("total_rounds"),
+            "total_trades": task.result.get("total_trades"),
+            "date_range": task.result.get("date_range"),
+            "elapsed": task.result.get("elapsed"),
+            "config": task.result.get("config"),
+            "trades": task.result.get("trades"),
+            "nav_history": task.result.get("nav_history"),
+        }
+    return resp
+
+
+@app.post("/api/backtest/{task_id}/stop")
+def api_stop_backtest(task_id: str):
+    """停止正在运行的回测任务"""
+    if _bt_mgr.stop_task(task_id):
+        return {"status": "stopped"}
+    return JSONResponse({"error": "任务不存在或不在运行中"}, status_code=400)
+
+
+@app.delete("/api/backtest/{task_id}")
+def api_delete_backtest_task(task_id: str):
+    """删除已完成的回测任务"""
+    if _bt_mgr.delete_task(task_id):
+        return {"status": "deleted"}
+    return JSONResponse({"error": "任务不存在或无法删除"}, status_code=400)
 
 
 # ── API：数据源诊断 ────────────────────────────────────────────

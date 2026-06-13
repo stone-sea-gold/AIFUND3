@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>📈 股票交易看板</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #2d2a1f; --surface: rgba(55,50,35,0.55); --surface2: rgba(65,60,42,0.5);
@@ -13,13 +16,16 @@
   --blue: #8aa08a; --purple: #c4a0b8;
   --green-bg: rgba(168,184,104,.12); --red-bg: rgba(200,136,122,.12);
   --amber-bg: rgba(200,168,72,.12);
-  --shadow: 0 2px 12px rgba(0,0,0,0.3);
-  --shadow-hover: 0 6px 24px rgba(0,0,0,0.4);
+  --shadow: 0 2px 12px rgba(45,42,31,0.5);
+  --shadow-hover: 0 6px 24px rgba(45,42,31,0.6);
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:linear-gradient(135deg,#2d2a1f 0%,#2a2518 50%,#28241a 100%); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif; line-height:1.6; padding:12px; max-width:960px; margin:0 auto; min-height:100vh; }
-h1 { font-size:1.6em; margin-bottom:4px; font-weight:700; letter-spacing:0.02em; }
-h2 { font-size:1.1em; color:var(--blue); margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+body { background:linear-gradient(135deg,#2d2a1f 0%,#2a2518 50%,#28241a 100%); color:var(--text); font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif; line-height:1.6; padding:12px; max-width:960px; margin:0 auto; min-height:100vh; font-optical-sizing:auto; position:relative; }
+body::before { content:''; position:fixed; inset:0; opacity:.035; pointer-events:none; z-index:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size:256px 256px; }
+body > * { position:relative; z-index:1; }
+h1 { font-size:1.6em; margin-bottom:4px; font-weight:700; letter-spacing:-0.01em; text-wrap:pretty; }
+h2 { font-size:1.15em; color:var(--blue); margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); text-wrap:pretty; }
 h3 { font-size:.95em; color:var(--text2); margin:12px 0 6px; }
 .meta { color:var(--text2); font-size:.8em; margin-bottom:16px; }
 .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:.75em; font-weight:600; }
@@ -39,23 +45,23 @@ h3 { font-size:.95em; color:var(--text2); margin:12px 0 6px; }
 .tab-content.active { display:block; animation:tabFadeIn .35s ease-out; }
 
 /* ── 选股面板 ── */
-.scan-panel { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.scan-panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin:10px 0; }
 .scan-params { display:flex; flex-wrap:wrap; gap:10px; align-items:end; }
 .scan-params label { font-size:.8em; color:var(--text2); display:flex; flex-direction:column; gap:3px; }
-.scan-params select, .scan-params input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
+.scan-params select, .scan-params input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
 .scan-params select:focus, .scan-params input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 2px rgba(138,160,138,0.25); }
 .scan-params input[type=number] { min-width:70px; width:80px; }
-.btn-scan { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 24px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:.15s; margin-top:12px; }
+.btn-scan { background:var(--blue); color:#fff; border:none; border-radius:var(--radius-sm); padding:8px 24px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:.15s; margin-top:12px; }
 .btn-scan:hover { opacity:.85; }
 .btn-scan:active { transform:scale(0.97); }
 .btn-scan:disabled { opacity:.4; cursor:not-allowed; }
-.btn-scan-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 16px; font-size:.85em; cursor:pointer; font-family:inherit; transition:.15s; }
+.btn-scan-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 16px; font-size:.85em; cursor:pointer; font-family:inherit; transition:.15s; }
 .btn-scan-secondary:hover { border-color:var(--blue); color:var(--text); }
 
 /* ── 进度条 ── */
-.progress-area { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
-.progress-bar { height:8px; background:var(--bg); border-radius:4px; overflow:hidden; margin-bottom:8px; }
-.progress-fill { height:100%; background:var(--blue); border-radius:4px; transition:width .5s, background .4s; width:0%; }
+.progress-area { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin:10px 0; }
+.progress-bar { height:8px; background:var(--bg); border-radius:var(--radius-sm); overflow:hidden; margin-bottom:8px; }
+.progress-fill { height:100%; background:var(--blue); border-radius:var(--radius-sm); transition:width .5s, background .4s; width:0%; }
 .progress-fill.running { animation:pulse-bar 1.8s ease-in-out infinite; }
 .progress-fill.done { background:var(--green); }
 .progress-fill.fail { background:var(--red); }
@@ -81,24 +87,24 @@ h3 { font-size:.95em; color:var(--text2); margin:12px 0 6px; }
 
 /* ── 单票诊断 ── */
 .test-area { margin:10px 0; }
-.test-area input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:.85em; font-family:inherit; width:120px; }
+.test-area input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:5px 8px; font-size:.85em; font-family:inherit; width:120px; }
 .test-area input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 2px rgba(138,160,138,0.25); }
-.test-result { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; margin:8px 0; white-space:pre-wrap; font-size:.82em; }
+.test-result { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; margin:8px 0; white-space:pre-wrap; font-size:.82em; }
 
 /* ── 警告条 ── */
-.alert { background:var(--red-bg); border:1px solid rgba(239,68,68,.3); border-radius:6px; padding:8px 12px; margin:10px 0; font-size:.85em; }
+.alert { background:var(--red-bg); border:1px solid rgba(239,68,68,.3); border-radius:var(--radius-sm); padding:8px 12px; margin:10px 0; font-size:.85em; }
 .alert-amber { background:var(--amber-bg); border-color:rgba(245,158,11,.3); }
 
 table { width:100%; border-collapse:collapse; font-size:.82em; margin:6px 0; }
 th { text-align:left; color:var(--text2); font-weight:500; padding:4px 6px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:1; }
-td { padding:4px 6px; border-bottom:1px solid rgba(140,130,90,.2); vertical-align:top; }
+td { padding:4px 6px; border-bottom:1px solid rgba(140,130,90,.2); vertical-align:top; font-variant-numeric:tabular-nums; }
 tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 
 /* ── 选股跟踪看板 ── */
-.tracker-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding:10px 14px; background:var(--surface); border-radius:8px; border:1px solid var(--border); }
+.tracker-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding:10px 14px; background:var(--surface); border-radius:var(--radius-md); border:1px solid var(--border); }
 .tracker-toolbar .refresh-info { font-size:.8em; color:var(--text2); }
 .tracker-columns { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:12px; margin-top:10px; }
-.tracker-column { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; }
+.tracker-column { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; }
 .tracker-column h3 { font-size:.95em; color:var(--blue); margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
 .tracker-date-group { margin-bottom:12px; }
 .tracker-date-group:last-child { margin-bottom:0; }
@@ -115,26 +121,26 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 
 /* ── 持仓看板 ── */
 .holdings-summary { display:flex; gap:16px; flex-wrap:wrap; margin:12px 0; }
-.holdings-summary .summary-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 18px; min-width:140px; transition:transform .2s, box-shadow .2s; cursor:default; }
+.holdings-summary .summary-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 18px; min-width:140px; transition:transform .2s, box-shadow .2s; cursor:default; }
 .holdings-summary .summary-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-hover); }
 .holdings-summary .summary-card .label { font-size:.78em; color:var(--text2); }
-.holdings-summary .summary-card .value { font-size:1.3em; font-weight:700; margin-top:2px; }
+.holdings-summary .summary-card .value { font-size:1.3em; font-weight:700; margin-top:2px; font-variant-numeric:tabular-nums; }
 
 .holdings-table-wrap { overflow-x:auto; margin:10px 0; }
 .holdings-table { min-width:700px; }
-.holdings-table .btn-edit { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:.78em; cursor:pointer; transition:.15s; }
+.holdings-table .btn-edit { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:3px 10px; font-size:.78em; cursor:pointer; transition:.15s; }
 .holdings-table .btn-edit:hover { border-color:var(--blue); color:var(--text); }
-.holdings-table .btn-close { background:var(--red-bg); color:var(--red); border:1px solid rgba(200,136,122,.3); border-radius:4px; padding:3px 10px; font-size:.78em; cursor:pointer; transition:.15s; }
+.holdings-table .btn-close { background:var(--red-bg); color:var(--red); border:1px solid rgba(200,136,122,.3); border-radius:var(--radius-sm); padding:3px 10px; font-size:.78em; cursor:pointer; transition:.15s; }
 .holdings-table .btn-close:hover { background:rgba(200,136,122,.25); }
 .holdings-table .btn-delete { background:none; color:var(--text2); border:none; cursor:pointer; font-size:.85em; padding:3px 6px; opacity:.5; transition:.15s; }
 .holdings-table .btn-delete:hover { color:var(--red); opacity:1; }
 .holdings-table .pnl-up { color:var(--green); font-weight:600; }
 .holdings-table .pnl-down { color:var(--red); font-weight:600; }
 
-.holdings-form { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.holdings-form { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin:10px 0; }
 .holdings-form .form-row { display:flex; flex-wrap:wrap; gap:10px; align-items:end; }
 .holdings-form label { font-size:.8em; color:var(--text2); display:flex; flex-direction:column; gap:3px; }
-.holdings-form select, .holdings-form input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
+.holdings-form select, .holdings-form input { background:rgba(40,38,28,0.8); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:5px 8px; font-size:.85em; font-family:inherit; min-width:100px; }
 .holdings-form select:focus, .holdings-form input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 2px rgba(138,160,138,0.25); }
 .holdings-form .form-actions { margin-top:10px; display:flex; gap:8px; }
 
@@ -144,7 +150,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 .closed-section[open] summary::before { content:'▾ '; }
 
 .nav-section { margin:20px 0; }
-.nav-chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin:10px 0; }
+.nav-chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin:10px 0; }
 .nav-chart-wrap canvas { width:100%; max-height:300px; }
 .nav-actions { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
 
@@ -156,10 +162,10 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 }
 
 /* ── 板块主线 ── */
-.sector-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding:10px 14px; background:var(--surface); border-radius:8px; border:1px solid var(--border); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+.sector-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding:10px 14px; background:var(--surface); border-radius:var(--radius-md); border:1px solid var(--border); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
 .sector-toolbar .info { font-size:.8em; color:var(--text2); }
 .sector-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:10px; }
-.sector-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; transition:transform .2s, box-shadow .2s; cursor:pointer; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+.sector-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; transition:transform .2s, box-shadow .2s; cursor:pointer; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
 .sector-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-hover); }
 .sector-card.mainline { border-left:3px solid var(--green); }
 .sector-card.potential { border-left:3px solid var(--amber); }
@@ -194,6 +200,20 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
   .tracker-columns { grid-template-columns:1fr; }
   .detail-grid { grid-template-columns:1fr; }
 }
+
+/* ── 空状态 ── */
+.empty-state { text-align:center; padding:28px 16px; color:var(--text2); }
+.empty-state .empty-icon { font-size:2em; margin-bottom:8px; opacity:.5; }
+.empty-state .empty-text { font-size:.85em; line-height:1.6; }
+.empty-state .empty-hint { font-size:.78em; color:rgba(144,136,114,0.6); margin-top:4px; }
+
+/* ── 工具类 ── */
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+.text-muted { color:var(--text2); }
+.text-sm { font-size:.85em; }
+.text-xs { font-size:.78em; }
+.text-red { color:var(--red); }
+.fw-600 { font-weight:600; }
 
 /* ── 进度条脉冲动画 ── */
 @keyframes pulse-bar {
@@ -231,7 +251,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 
 /* ── Toast 通知 ── */
 .toast-container { position:fixed; top:16px; right:16px; z-index:10000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
-.toast { pointer-events:auto; padding:10px 18px; border-radius:8px; font-size:.85em; font-weight:500; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:var(--shadow-hover); transform:translateX(120%); opacity:0; transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .35s ease; max-width:360px; word-break:break-all; }
+.toast { pointer-events:auto; padding:10px 18px; border-radius:var(--radius-md); font-size:.85em; font-weight:500; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:var(--shadow-hover); transform:translateX(120%); opacity:0; transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .35s ease; max-width:360px; word-break:break-all; }
 .toast.show { transform:translateX(0); opacity:1; }
 .toast-error { background:rgba(200,50,50,0.92); color:#fdd; border:1px solid rgba(255,100,100,0.4); }
 .toast-success { background:rgba(80,160,80,0.92); color:#dfd; border:1px solid rgba(100,200,100,0.4); }
@@ -240,15 +260,15 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 /* ── 确认模态框 ── */
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; display:none; align-items:center; justify-content:center; backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); }
 .modal-overlay.active { display:flex; }
-.modal-box { background:rgba(45,42,31,0.98); border:1px solid var(--border); border-radius:12px; padding:24px 28px; max-width:400px; width:90%; box-shadow:var(--shadow-hover); animation:modalIn .25s ease-out; }
+.modal-box { background:rgba(45,42,31,0.98); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px 28px; max-width:400px; width:90%; box-shadow:var(--shadow-hover); animation:modalIn .25s ease-out; }
 .modal-box .modal-msg { font-size:.95em; color:var(--text); margin-bottom:20px; line-height:1.6; }
 .modal-box .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-.modal-box .modal-actions .btn-modal-confirm { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 22px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:opacity .15s, transform .15s; }
+.modal-box .modal-actions .btn-modal-confirm { background:var(--blue); color:#fff; border:none; border-radius:var(--radius-sm); padding:8px 22px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:opacity .15s, transform .15s; }
 .modal-box .modal-actions .btn-modal-confirm:hover { opacity:.85; }
 .modal-box .modal-actions .btn-modal-confirm:active { transform:scale(0.97); }
-.modal-box .modal-actions .btn-modal-cancel { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 18px; font-size:.9em; cursor:pointer; font-family:inherit; transition:border-color .15s; }
+.modal-box .modal-actions .btn-modal-cancel { background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 18px; font-size:.9em; cursor:pointer; font-family:inherit; transition:border-color .15s; }
 .modal-box .modal-actions .btn-modal-cancel:hover { border-color:var(--blue); }
-.modal-box .modal-actions .btn-modal-danger { background:rgba(200,50,50,0.85); color:#fdd; border:none; border-radius:6px; padding:8px 22px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:opacity .15s, transform .15s; }
+.modal-box .modal-actions .btn-modal-danger { background:rgba(200,50,50,0.85); color:#fdd; border:none; border-radius:var(--radius-sm); padding:8px 22px; font-size:.9em; cursor:pointer; font-family:inherit; font-weight:600; transition:opacity .15s, transform .15s; }
 .modal-box .modal-actions .btn-modal-danger:hover { opacity:.85; }
 .modal-box .modal-actions .btn-modal-danger:active { transform:scale(0.97); }
 
@@ -264,15 +284,17 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 <div class="meta" id="data-status-label">最新完整日线: 加载中...</div>
 
 <!-- ════════ Tab 导航 ════════ -->
-<div class="tab-nav">
-  <button class="tab-btn active" data-tab="dashboard">📊 持仓看板</button>
-  <button class="tab-btn" data-tab="stock-selection">🎯 选股扫描</button>
-  <button class="tab-btn" data-tab="tracker">📋 选股跟踪</button>
-  <button class="tab-btn" data-tab="sector">🔥 板块主线</button>
-</div>
+<nav class="tab-nav" role="tablist">
+  <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" aria-controls="tab-dashboard">📊 持仓看板</button>
+  <button class="tab-btn" data-tab="stock-selection" role="tab" aria-selected="false" aria-controls="tab-stock-selection">🎯 选股扫描</button>
+  <button class="tab-btn" data-tab="tracker" role="tab" aria-selected="false" aria-controls="tab-tracker">📋 选股跟踪</button>
+  <button class="tab-btn" data-tab="sector" role="tab" aria-selected="false" aria-controls="tab-sector">🔥 板块主线</button>
+  <a href="/backtest" class="tab-btn" style="text-decoration:none;">📈 回测系统</a>
+</nav>
 
+<main>
 <!-- ════════ Tab: 持仓看板 ════════ -->
-<div id="tab-dashboard" class="tab-content active">
+<div id="tab-dashboard" class="tab-content active" role="tabpanel">
 
 <!-- 净值汇总 -->
 <div class="holdings-summary" id="nav-summary"></div>
@@ -281,7 +303,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 <h2>📊 当前持仓</h2>
 <div id="add-trade-area"></div>
 <div class="holdings-table-wrap" id="open-trades-wrap">
-  <div id="open-trades-empty" style="color:var(--text2);font-size:.85em;padding:16px 0;">暂无持仓记录。点击上方按钮添加。</div>
+  <div id="open-trades-empty" class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">暂无持仓记录</div><div class="empty-hint">点击上方「新增持仓」按钮开始记录</div></div>
   <table class="holdings-table" id="open-trades-table" style="display:none">
     <thead><tr>
       <th>股票</th><th>代码</th><th>买入日期</th><th>持仓成本</th><th>持仓数量</th><th>买入策略</th><th>操作</th>
@@ -300,7 +322,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
       </tr></thead>
       <tbody id="closed-trades-body"></tbody>
     </table>
-    <div id="closed-trades-empty" style="color:var(--text2);font-size:.85em;padding:12px 0;">暂无已清仓记录。</div>
+    <div id="closed-trades-empty" class="empty-state" style="padding:16px 0;"><div class="empty-icon">📋</div><div class="empty-text">暂无已清仓记录</div></div>
   </div>
 </details>
 
@@ -311,13 +333,13 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
   <div class="nav-chart-wrap">
     <canvas id="nav-chart"></canvas>
   </div>
-  <div id="nav-empty" style="color:var(--text2);font-size:.85em;text-align:center;padding:20px;">请先初始化账户净值。</div>
+  <div id="nav-empty" class="empty-state"><div class="empty-icon">📈</div><div class="empty-text">请先初始化账户净值</div><div class="empty-hint">设置初始金额后即可追踪投资收益曲线</div></div>
 </div>
 
 </div><!-- /tab-dashboard -->
 
 <!-- ════════ Tab: 选股扫描 ════════ -->
-<div id="tab-stock-selection" class="tab-content">
+<div id="tab-stock-selection" class="tab-content" role="tabpanel">
 
 <h2>🎯 选股扫描</h2>
 
@@ -377,7 +399,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
   <label style="font-size:.8em;color:var(--text2);margin-right:6px;">股票代码</label>
   <input type="text" id="ss-test-code" placeholder="例如 600519" style="text-transform:uppercase;">
   <label style="font-size:.8em;color:var(--text2);margin:0 6px 0 12px;">策略</label>
-  <select id="ss-test-strategy" style="background:rgba(40,38,28,0.8);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:.85em;">
+  <select id="ss-test-strategy" style="background:rgba(40,38,28,0.8);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px;font-size:.85em;">
     <option value="b1">B1量价共振</option>
     <option value="brick">砖型图趋势拐点</option>
     <option value="ruthless_wave">无情操盘手+波浪理论</option>
@@ -389,7 +411,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 </div><!-- /tab-stock-selection -->
 
 <!-- ════════ Tab: 选股跟踪 ════════ -->
-<div id="tab-tracker" class="tab-content">
+<div id="tab-tracker" class="tab-content" role="tabpanel">
 
 <h2>📋 选股跟踪</h2>
 
@@ -399,14 +421,14 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 </div>
 
 <div id="tracker-content">
-  <div class="tracker-no-data" id="tracker-empty">暂无跟踪数据。完成选股扫描后，结果将自动保存到这里。</div>
+  <div class="tracker-no-data empty-state" id="tracker-empty"><div class="empty-icon">📋</div><div class="empty-text">暂无跟踪数据</div><div class="empty-hint">完成选股扫描后，结果将自动保存到这里</div></div>
   <div id="tracker-columns" class="tracker-columns" style="display:none"></div>
 </div>
 
 </div><!-- /tab-tracker -->
 
 <!-- ════════ Tab: 板块主线 ════════ -->
-<div id="tab-sector" class="tab-content">
+<div id="tab-sector" class="tab-content" role="tabpanel">
 
 <h2>🔥 板块主线监控</h2>
 
@@ -438,6 +460,7 @@ tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
 </div>
 
 </div><!-- /tab-sector -->
+</main>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -490,9 +513,10 @@ function showConfirm(msg, options) {
 // ═══════════════════════════════════════════════════════════
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', function(){
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     this.classList.add('active');
+    this.setAttribute('aria-selected','true');
     document.getElementById('tab-' + this.dataset.tab).classList.add('active');
     if (this.dataset.tab === 'stock-selection') {
       loadPoolsAndStrategies();

@@ -201,12 +201,19 @@ def _check_volume_valid(klines: list[dict]) -> bool:
     return True
 
 
+_criterion_klines_cache: dict[int, bool] = {}
+
+
 def _call_criterion(func, ind: dict, klines: list[dict], weight: int, params: dict) -> tuple[int, dict]:
-    """调用条件函数，根据函数签名自动传参"""
-    import inspect
-    sig = inspect.signature(func)
+    """调用条件函数，根据函数签名自动传参（结果已缓存，避免重复 inspect）"""
+    func_id = id(func)
+    has_klines = _criterion_klines_cache.get(func_id)
+    if has_klines is None:
+        import inspect
+        has_klines = "klines" in inspect.signature(func).parameters
+        _criterion_klines_cache[func_id] = has_klines
     kwargs = {"ind": ind, "weight": weight, "params": params}
-    if "klines" in sig.parameters:
+    if has_klines:
         kwargs["klines"] = klines
     return func(**kwargs)
 

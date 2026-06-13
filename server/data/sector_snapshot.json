@@ -1,951 +1,27 @@
 {
-  "scan_date": "2026-06-04",
-  "scan_time": "2026-06-04 17:57:43",
+  "scan_date": "2026-06-10",
+  "scan_time": "2026-06-10 17:30:21",
   "industry": [
     {
-      "name": "板块880812",
-      "code": "BK0812",
-      "index_code": "880812",
-      "pct_chg": 3.4,
-      "total_score": 59,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 8.66,
-              "rs5": 12.82,
-              "rs10": 32.4
-            },
-            "trend_up": false,
-            "reason": "RS5=+12.8% RS3=+8.7% RS10=+32.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.4,
-            "returns": {
-              "ret3": 8.32,
-              "ret5": 12.16,
-              "ret10": 29.5
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.40% 5日+12.16% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.83,
-            "turnover": 0,
-            "reason": "成交额比=1.83x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881003",
-      "code": "BK1003",
-      "index_code": "881003",
-      "pct_chg": 3.02,
-      "total_score": 59,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 5.94,
-              "rs5": 10.15,
-              "rs10": 11.58
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.2% RS3=+5.9% RS10=+11.6% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.02,
-            "returns": {
-              "ret3": 5.61,
-              "ret5": 9.5,
-              "ret10": 8.69
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.02% 5日+9.50% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.55,
-            "turnover": 0,
-            "reason": "成交额比=1.55x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880015",
-      "code": "BK0015",
-      "index_code": "880015",
-      "pct_chg": 12.05,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 30,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 206.78,
-              "rs5": 62.39,
-              "rs10": -6.26
-            },
-            "trend_up": true,
-            "reason": "RS5=+62.4% RS3=+206.8% RS10=-6.3% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 12.05,
-            "returns": {
-              "ret3": 206.44,
-              "ret5": 61.74,
-              "ret10": -9.15
-            },
-            "ma_bullish": true,
-            "reason": "今日+12.05% 5日+61.74% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.96,
-            "turnover": 0,
-            "reason": "成交额比=0.96x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880005",
-      "code": "BK0005",
-      "index_code": "880005",
-      "pct_chg": 10.57,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 30,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 145.34,
-              "rs5": 74.9,
-              "rs10": -10.77
-            },
-            "trend_up": true,
-            "reason": "RS5=+74.9% RS3=+145.3% RS10=-10.8% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 10.57,
-            "returns": {
-              "ret3": 145.01,
-              "ret5": 74.25,
-              "ret10": -13.66
-            },
-            "ma_bullish": true,
-            "reason": "今日+10.57% 5日+74.25% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.95,
-            "turnover": 0,
-            "reason": "成交额比=0.95x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880035",
-      "code": "BK0035",
-      "index_code": "880035",
-      "pct_chg": 4.99,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 30,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 102.79,
-              "rs5": 88.49,
-              "rs10": -17.17
-            },
-            "trend_up": true,
-            "reason": "RS5=+88.5% RS3=+102.8% RS10=-17.2% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 4.99,
-            "returns": {
-              "ret3": 102.46,
-              "ret5": 87.83,
-              "ret10": -20.06
-            },
-            "ma_bullish": true,
-            "reason": "今日+4.99% 5日+87.83% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.96,
-            "turnover": 0,
-            "reason": "成交额比=0.96x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881004",
-      "code": "BK1004",
-      "index_code": "881004",
-      "pct_chg": 3.84,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 8.53,
-              "rs5": 13.51,
-              "rs10": 17.47
-            },
-            "trend_up": false,
-            "reason": "RS5=+13.5% RS3=+8.5% RS10=+17.5% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.84,
-            "returns": {
-              "ret3": 8.2,
-              "ret5": 12.85,
-              "ret10": 14.58
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.84% 5日+12.85% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.27,
-            "turnover": 0,
-            "reason": "成交额比=1.27x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880302",
-      "code": "BK0302",
-      "index_code": "880302",
-      "pct_chg": 3.13,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.29,
-              "rs5": 10.6,
-              "rs10": 12.36
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.13,
-            "returns": {
-              "ret3": 5.96,
-              "ret5": 9.95,
-              "ret10": 9.47
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.13% 5日+9.95% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.42,
-            "turnover": 0,
-            "reason": "成交额比=1.42x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881002",
-      "code": "BK1002",
-      "index_code": "881002",
-      "pct_chg": 3.13,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.29,
-              "rs5": 10.6,
-              "rs10": 12.36
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.13,
-            "returns": {
-              "ret3": 5.96,
-              "ret5": 9.95,
-              "ret10": 9.47
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.13% 5日+9.95% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.42,
-            "turnover": 0,
-            "reason": "成交额比=1.42x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880301",
-      "code": "BK0301",
-      "index_code": "880301",
-      "pct_chg": 3.12,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.3,
-              "rs5": 10.59,
-              "rs10": 12.31
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.3% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.12,
-            "returns": {
-              "ret3": 5.97,
-              "ret5": 9.94,
-              "ret10": 9.42
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.12% 5日+9.94% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.44,
-            "turnover": 0,
-            "reason": "成交额比=1.44x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881001",
-      "code": "BK1001",
-      "index_code": "881001",
-      "pct_chg": 3.12,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.3,
-              "rs5": 10.59,
-              "rs10": 12.31
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.3% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.12,
-            "returns": {
-              "ret3": 5.97,
-              "ret5": 9.94,
-              "ret10": 9.42
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.12% 5日+9.94% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.44,
-            "turnover": 0,
-            "reason": "成交额比=1.44x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881301",
-      "code": "BK1301",
-      "index_code": "881301",
-      "pct_chg": 5.25,
+      "name": "板块880045",
+      "code": "BK0045",
+      "index_code": "880045",
+      "pct_chg": 207.35,
       "total_score": 55,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 4.88,
-              "rs5": 9.19,
-              "rs10": 15.5
+              "rs3": 36.31,
+              "rs5": 26.45,
+              "rs10": -10.63
             },
-            "trend_up": false,
-            "reason": "RS5=+9.2% RS3=+4.9% RS10=+15.5% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 5.25,
-            "returns": {
-              "ret3": 4.55,
-              "ret5": 8.54,
-              "ret10": 12.61
-            },
-            "ma_bullish": true,
-            "reason": "今日+5.25% 5日+8.54% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 4,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.06,
-            "turnover": 0,
-            "reason": "成交额比=1.06x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880963",
-      "code": "BK0963",
-      "index_code": "880963",
-      "pct_chg": 1.45,
-      "total_score": 55,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 0.92,
-              "rs5": 9.35,
-              "rs10": 11.68
-            },
-            "trend_up": false,
-            "reason": "RS5=+9.3% RS3=+0.9% RS10=+11.7% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+26.5% RS3=+36.3% RS10=-10.6% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -954,25 +30,25 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.45,
+            "pct_chg": 207.35,
             "returns": {
-              "ret3": 0.58,
-              "ret5": 8.7,
-              "ret10": 8.79
+              "ret3": 34.84,
+              "ret5": 24.4,
+              "ret10": -14.34
             },
-            "ma_bullish": true,
-            "reason": "今日+1.45% 5日+8.70% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+207.35% 5日+24.40% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 8,
+          "score": 4,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.65,
+            "amount_ratio": 1.01,
             "turnover": 0,
-            "reason": "成交额比=1.65x 换手=0.0%"
+            "reason": "成交额比=1.01x 换手=0.0%"
           }
         },
         {
@@ -1005,426 +81,6 @@
         }
       ],
       "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880045",
-      "code": "BK0045",
-      "index_code": "880045",
-      "pct_chg": 17.26,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 18.3,
-              "rs5": 48.77,
-              "rs10": -23.05
-            },
-            "trend_up": false,
-            "reason": "RS5=+48.8% RS3=+18.3% RS10=-23.1% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 17.26,
-            "returns": {
-              "ret3": 17.96,
-              "ret5": 48.12,
-              "ret10": -25.94
-            },
-            "ma_bullish": true,
-            "reason": "今日+17.26% 5日+48.12% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.84,
-            "turnover": 0,
-            "reason": "成交额比=0.84x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881165",
-      "code": "BK1165",
-      "index_code": "881165",
-      "pct_chg": 4.67,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 3.46,
-              "rs5": 5.08,
-              "rs10": 7.59
-            },
-            "trend_up": false,
-            "reason": "RS5=+5.1% RS3=+3.5% RS10=+7.6% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 17,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 4.67,
-            "returns": {
-              "ret3": 3.13,
-              "ret5": 4.43,
-              "ret10": 4.7
-            },
-            "ma_bullish": false,
-            "reason": "今日+4.67% 5日+4.43% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 10,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 2.29,
-            "turnover": 0,
-            "reason": "成交额比=2.29x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880754",
-      "code": "BK0754",
-      "index_code": "880754",
-      "pct_chg": 3.16,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 4.95,
-              "rs5": 10.93,
-              "rs10": 17.11
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.9% RS3=+5.0% RS10=+17.1% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.16,
-            "returns": {
-              "ret3": 4.62,
-              "ret5": 10.27,
-              "ret10": 14.22
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.16% 5日+10.27% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.92,
-            "turnover": 0,
-            "reason": "成交额比=0.92x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880303",
-      "code": "BK0303",
-      "index_code": "880303",
-      "pct_chg": 2.65,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.51,
-              "rs5": 10.3,
-              "rs10": 10.8
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.3% RS3=+6.5% RS10=+10.8% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 19,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 2.65,
-            "returns": {
-              "ret3": 6.18,
-              "ret5": 9.64,
-              "ret10": 7.91
-            },
-            "ma_bullish": false,
-            "reason": "今日+2.65% 5日+9.64% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.52,
-            "turnover": 0,
-            "reason": "成交额比=1.52x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881005",
-      "code": "BK1005",
-      "index_code": "881005",
-      "pct_chg": 2.65,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.51,
-              "rs5": 10.29,
-              "rs10": 10.8
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.3% RS3=+6.5% RS10=+10.8% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 19,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 2.65,
-            "returns": {
-              "ret3": 6.18,
-              "ret5": 9.64,
-              "ret10": 7.91
-            },
-            "ma_bullish": false,
-            "reason": "今日+2.65% 5日+9.64% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.52,
-            "turnover": 0,
-            "reason": "成交额比=1.52x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
       "up_count": 0,
       "down_count": 0,
       "amount": 0,
@@ -1434,22 +90,22 @@
       "name": "板块880075",
       "code": "BK0075",
       "index_code": "880075",
-      "pct_chg": 9.47,
-      "total_score": 51,
+      "pct_chg": 35.27,
+      "total_score": 55,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 402.22,
-              "rs5": 505.2,
-              "rs10": -3.12
+              "rs3": 1174.2,
+              "rs5": 17.27,
+              "rs10": 5.16
             },
-            "trend_up": false,
-            "reason": "RS5=+505.2% RS3=+402.2% RS10=-3.1% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+17.3% RS3=+1174.2% RS10=+5.2% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -1458,14 +114,14 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 9.47,
+            "pct_chg": 35.27,
             "returns": {
-              "ret3": 401.89,
-              "ret5": 504.55,
-              "ret10": -6.01
+              "ret3": 1172.73,
+              "ret5": 15.23,
+              "ret10": 1.45
             },
             "ma_bullish": false,
-            "reason": "今日+9.47% 5日+504.55% (+5资金重分配)"
+            "reason": "今日+35.27% 5日+15.23% (+5资金重分配)"
           }
         },
         {
@@ -1508,7 +164,259 @@
           }
         }
       ],
-      "category": "potential",
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880345",
+      "code": "BK0345",
+      "index_code": "880345",
+      "pct_chg": 9.03,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 6.7,
+              "rs5": 10.42,
+              "rs10": 25.56
+            },
+            "trend_up": false,
+            "reason": "RS5=+10.4% RS3=+6.7% RS10=+25.6% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 9.03,
+            "returns": {
+              "ret3": 5.23,
+              "ret5": 8.38,
+              "ret10": 21.85
+            },
+            "ma_bullish": true,
+            "reason": "今日+9.03% 5日+8.38% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.03,
+            "turnover": 0,
+            "reason": "成交额比=1.03x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "游戏Ⅱ",
+      "code": "BK1046",
+      "index_code": "881046",
+      "pct_chg": 5.85,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 4.82,
+              "rs5": 12.74,
+              "rs10": 9.91
+            },
+            "trend_up": false,
+            "reason": "RS5=+12.7% RS3=+4.8% RS10=+9.9% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.85,
+            "returns": {
+              "ret3": 3.35,
+              "ret5": 10.7,
+              "ret10": 6.2
+            },
+            "ma_bullish": true,
+            "reason": "今日+5.85% 5日+10.70% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.03,
+            "turnover": 0,
+            "reason": "成交额比=1.03x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "文娱用品",
+      "code": "BK1266",
+      "index_code": "881266",
+      "pct_chg": 3.03,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.49,
+              "rs5": 12.32,
+              "rs10": 6.98
+            },
+            "trend_up": false,
+            "reason": "RS5=+12.3% RS3=+5.5% RS10=+7.0% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 3.03,
+            "returns": {
+              "ret3": 4.02,
+              "ret5": 10.27,
+              "ret10": 3.27
+            },
+            "ma_bullish": true,
+            "reason": "今日+3.03% 5日+10.27% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.17,
+            "turnover": 0,
+            "reason": "成交额比=1.17x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
       "up_count": 0,
       "down_count": 0,
       "amount": 0,
@@ -1518,22 +426,22 @@
       "name": "板块880006",
       "code": "BK0006",
       "index_code": "880006",
-      "pct_chg": 18.52,
-      "total_score": 49,
+      "pct_chg": 306.25,
+      "total_score": 53,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 39.46,
-              "rs5": 167.32,
-              "rs10": -47.88
+              "rs3": 283.83,
+              "rs5": 142.79,
+              "rs10": 106.84
             },
-            "trend_up": false,
-            "reason": "RS5=+167.3% RS3=+39.5% RS10=-47.9% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+142.8% RS3=+283.8% RS10=+106.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -1542,14 +450,14 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 18.52,
+            "pct_chg": 306.25,
             "returns": {
-              "ret3": 39.13,
-              "ret5": 166.67,
-              "ret10": -50.77
+              "ret3": 282.35,
+              "ret5": 140.74,
+              "ret10": 103.12
             },
             "ma_bullish": false,
-            "reason": "今日+18.52% 5日+166.67% (+5资金重分配)"
+            "reason": "今日+306.25% 5日+140.74% (+5资金重分配)"
           }
         },
         {
@@ -1602,22 +510,22 @@
       "name": "板块880016",
       "code": "BK0016",
       "index_code": "880016",
-      "pct_chg": 18.52,
-      "total_score": 49,
+      "pct_chg": 306.25,
+      "total_score": 53,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 45.79,
-              "rs5": 167.32,
-              "rs10": -47.88
+              "rs3": 283.83,
+              "rs5": 142.79,
+              "rs10": 106.84
             },
-            "trend_up": false,
-            "reason": "RS5=+167.3% RS3=+45.8% RS10=-47.9% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+142.8% RS3=+283.8% RS10=+106.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -1626,14 +534,182 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 18.52,
+            "pct_chg": 306.25,
             "returns": {
-              "ret3": 45.45,
-              "ret5": 166.67,
-              "ret10": -50.77
+              "ret3": 282.35,
+              "ret5": 140.74,
+              "ret10": 103.12
             },
             "ma_bullish": false,
-            "reason": "今日+18.52% 5日+166.67% (+5资金重分配)"
+            "reason": "今日+306.25% 5日+140.74% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880035",
+      "code": "BK0035",
+      "index_code": "880035",
+      "pct_chg": 206.55,
+      "total_score": 53,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 113.29,
+              "rs5": 16.39,
+              "rs10": -3.05
+            },
+            "trend_up": true,
+            "reason": "RS5=+16.4% RS3=+113.3% RS10=-3.0% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 206.55,
+            "returns": {
+              "ret3": 111.81,
+              "ret5": 14.35,
+              "ret10": -6.76
+            },
+            "ma_bullish": false,
+            "reason": "今日+206.55% 5日+14.35% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.98,
+            "turnover": 0,
+            "reason": "成交额比=0.98x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881339",
+      "code": "BK1339",
+      "index_code": "881339",
+      "pct_chg": 4.43,
+      "total_score": 53,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 9.81,
+              "rs5": 16.09,
+              "rs10": 38.73
+            },
+            "trend_up": false,
+            "reason": "RS5=+16.1% RS3=+9.8% RS10=+38.7% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 4.43,
+            "returns": {
+              "ret3": 8.33,
+              "ret5": 14.05,
+              "ret10": 35.02
+            },
+            "ma_bullish": true,
+            "reason": "今日+4.43% 5日+14.05% 均线多头 (+5资金重分配)"
           }
         },
         {
@@ -1683,11 +759,11 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881461",
-      "code": "BK1461",
-      "index_code": "881461",
-      "pct_chg": 2.87,
-      "total_score": 49,
+      "name": "板块881320",
+      "code": "BK1320",
+      "index_code": "881320",
+      "pct_chg": 6.03,
+      "total_score": 51,
       "details": [
         {
           "criterion": "rs",
@@ -1696,12 +772,12 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": -0.97,
-              "rs5": 7.86,
-              "rs10": 21.46
+              "rs3": 5.52,
+              "rs5": 12.09,
+              "rs10": 4.77
             },
             "trend_up": false,
-            "reason": "RS5=+7.9% RS3=-1.0% RS10=+21.5% (+5资金重分配)"
+            "reason": "RS5=+12.1% RS3=+5.5% RS10=+4.8% (+5资金重分配)"
           }
         },
         {
@@ -1710,25 +786,25 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 2.87,
+            "pct_chg": 6.03,
             "returns": {
-              "ret3": -1.3,
-              "ret5": 7.21,
-              "ret10": 18.57
+              "ret3": 4.05,
+              "ret5": 10.04,
+              "ret10": 1.06
             },
-            "ma_bullish": true,
-            "reason": "今日+2.87% 5日+7.21% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+6.03% 5日+10.04% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 2,
+          "score": 4,
           "weight": 15,
           "detail": {
-            "amount_ratio": 0.94,
+            "amount_ratio": 1.05,
             "turnover": 0,
-            "reason": "成交额比=0.94x 换手=0.0%"
+            "reason": "成交额比=1.05x 换手=0.0%"
           }
         },
         {
@@ -1767,125 +843,41 @@
       "net_inflow": 0
     },
     {
-      "name": "板块880307",
-      "code": "BK0307",
-      "index_code": "880307",
-      "pct_chg": 2.77,
-      "total_score": 49,
+      "name": "钙钛矿电池",
+      "code": "BK1094",
+      "index_code": "881094",
+      "pct_chg": 4.34,
+      "total_score": 51,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": -1.12,
-              "rs5": 7.64,
-              "rs10": 21.16
+              "rs3": 5.56,
+              "rs5": 5.33,
+              "rs10": 0.75
             },
-            "trend_up": false,
-            "reason": "RS5=+7.6% RS3=-1.1% RS10=+21.2% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+5.3% RS3=+5.6% RS10=+0.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
           "criterion": "momentum",
           "desc": "行业动量",
-          "score": 21,
+          "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 2.77,
+            "pct_chg": 4.34,
             "returns": {
-              "ret3": -1.45,
-              "ret5": 6.99,
-              "ret10": 18.27
+              "ret3": 4.08,
+              "ret5": 3.28,
+              "ret10": -2.97
             },
-            "ma_bullish": true,
-            "reason": "今日+2.77% 5日+6.99% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.94,
-            "turnover": 0,
-            "reason": "成交额比=0.94x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880774",
-      "code": "BK0774",
-      "index_code": "880774",
-      "pct_chg": 1.63,
-      "total_score": 49,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 5.99,
-              "rs5": 5.73,
-              "rs10": 15.23
-            },
-            "trend_up": false,
-            "reason": "RS5=+5.7% RS3=+6.0% RS10=+15.2% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 19,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 1.63,
-            "returns": {
-              "ret3": 5.66,
-              "ret5": 5.08,
-              "ret10": 12.34
-            },
-            "ma_bullish": true,
-            "reason": "今日+1.63% 5日+5.08% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+4.34% 5日+3.28% (+5资金重分配)"
           }
         },
         {
@@ -1935,25 +927,25 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881110",
-      "code": "BK1110",
-      "index_code": "881110",
-      "pct_chg": 1.42,
+      "name": "板块880005",
+      "code": "BK0005",
+      "index_code": "880005",
+      "pct_chg": 89.46,
       "total_score": 49,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 5.15,
-              "rs5": 8.81,
-              "rs10": 0.73
+              "rs3": 85.2,
+              "rs5": 6.2,
+              "rs10": -9.81
             },
-            "trend_up": false,
-            "reason": "RS5=+8.8% RS3=+5.1% RS10=+0.7% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+6.2% RS3=+85.2% RS10=-9.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -1962,25 +954,25 @@
           "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.42,
+            "pct_chg": 89.46,
             "returns": {
-              "ret3": 4.82,
-              "ret5": 8.15,
-              "ret10": -2.16
+              "ret3": 83.72,
+              "ret5": 4.16,
+              "ret10": -13.52
             },
             "ma_bullish": false,
-            "reason": "今日+1.42% 5日+8.15% (+5资金重分配)"
+            "reason": "今日+89.46% 5日+4.16% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 6,
+          "score": 2,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.21,
+            "amount_ratio": 0.95,
             "turnover": 0,
-            "reason": "成交额比=1.21x 换手=0.0%"
+            "reason": "成交额比=0.95x 换手=0.0%"
           }
         },
         {
@@ -2019,10 +1011,178 @@
       "net_inflow": 0
     },
     {
-      "name": "板块880863",
-      "code": "BK0863",
-      "index_code": "880863",
-      "pct_chg": 1.37,
+      "name": "板块880004",
+      "code": "BK0004",
+      "index_code": "880004",
+      "pct_chg": 9.26,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 23.95,
+              "rs5": 6.78,
+              "rs10": -2.33
+            },
+            "trend_up": true,
+            "reason": "RS5=+6.8% RS3=+23.9% RS10=-2.3% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 17,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 9.26,
+            "returns": {
+              "ret3": 22.48,
+              "ret5": 4.73,
+              "ret10": -6.04
+            },
+            "ma_bullish": false,
+            "reason": "今日+9.26% 5日+4.73% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.95,
+            "turnover": 0,
+            "reason": "成交额比=0.95x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880014",
+      "code": "BK0014",
+      "index_code": "880014",
+      "pct_chg": 8.69,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 22.61,
+              "rs5": 5.8,
+              "rs10": 3.4
+            },
+            "trend_up": true,
+            "reason": "RS5=+5.8% RS3=+22.6% RS10=+3.4% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 17,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 8.69,
+            "returns": {
+              "ret3": 21.14,
+              "ret5": 3.75,
+              "ret10": -0.32
+            },
+            "ma_bullish": false,
+            "reason": "今日+8.69% 5日+3.75% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880844",
+      "code": "BK0844",
+      "index_code": "880844",
+      "pct_chg": 7.09,
       "total_score": 49,
       "details": [
         {
@@ -2032,12 +1192,180 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 6.64,
-              "rs5": 8.58,
-              "rs10": 19.86
+              "rs3": 6.67,
+              "rs5": 6.1,
+              "rs10": 13.52
             },
             "trend_up": false,
-            "reason": "RS5=+8.6% RS3=+6.6% RS10=+19.9% (+5资金重分配)"
+            "reason": "RS5=+6.1% RS3=+6.7% RS10=+13.5% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 7.09,
+            "returns": {
+              "ret3": 5.19,
+              "ret5": 4.05,
+              "ret10": 9.81
+            },
+            "ma_bullish": true,
+            "reason": "今日+7.09% 5日+4.05% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.78,
+            "turnover": 0,
+            "reason": "成交额比=0.78x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881335",
+      "code": "BK1335",
+      "index_code": "881335",
+      "pct_chg": 5.89,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 2.47,
+              "rs5": 6.91,
+              "rs10": 23.59
+            },
+            "trend_up": false,
+            "reason": "RS5=+6.9% RS3=+2.5% RS10=+23.6% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.89,
+            "returns": {
+              "ret3": 1.0,
+              "ret5": 4.87,
+              "ret10": 19.87
+            },
+            "ma_bullish": true,
+            "reason": "今日+5.89% 5日+4.87% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "动力电池回收",
+      "code": "BK1052",
+      "index_code": "881052",
+      "pct_chg": 4.64,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 6.38,
+              "rs5": 9.76,
+              "rs10": -0.31
+            },
+            "trend_up": false,
+            "reason": "RS5=+9.8% RS3=+6.4% RS10=-0.3% (+5资金重分配)"
           }
         },
         {
@@ -2046,182 +1374,14 @@
           "score": 19,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.37,
+            "pct_chg": 4.64,
             "returns": {
-              "ret3": 6.31,
-              "ret5": 7.93,
-              "ret10": 16.97
-            },
-            "ma_bullish": true,
-            "reason": "今日+1.37% 5日+7.93% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 4,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.15,
-            "turnover": 0,
-            "reason": "成交额比=1.15x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881064",
-      "code": "BK1064",
-      "index_code": "881064",
-      "pct_chg": 3.81,
-      "total_score": 48,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 23,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 4.14,
-              "rs5": 3.56,
-              "rs10": 2.59
-            },
-            "trend_up": true,
-            "reason": "RS5=+3.6% RS3=+4.1% RS10=+2.6% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 15,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.81,
-            "returns": {
-              "ret3": 3.81,
-              "ret5": 2.91,
-              "ret10": -0.3
+              "ret3": 4.9,
+              "ret5": 7.71,
+              "ret10": -4.02
             },
             "ma_bullish": false,
-            "reason": "今日+3.81% 5日+2.91% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 10,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 2.23,
-            "turnover": 0,
-            "reason": "成交额比=2.23x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881033",
-      "code": "BK1033",
-      "index_code": "881033",
-      "pct_chg": 3.45,
-      "total_score": 47,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 3.31,
-              "rs5": 5.23,
-              "rs10": -5.44
-            },
-            "trend_up": false,
-            "reason": "RS5=+5.2% RS3=+3.3% RS10=-5.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 17,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.45,
-            "returns": {
-              "ret3": 2.98,
-              "ret5": 4.58,
-              "ret10": -8.33
-            },
-            "ma_bullish": false,
-            "reason": "今日+3.45% 5日+4.58% (+5资金重分配)"
+            "reason": "今日+4.64% 5日+7.71% (+5资金重分配)"
           }
         },
         {
@@ -2271,11 +1431,11 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881084",
-      "code": "BK1084",
-      "index_code": "881084",
-      "pct_chg": 1.98,
-      "total_score": 47,
+      "name": "钒电池",
+      "code": "BK1095",
+      "index_code": "881095",
+      "pct_chg": 2.78,
+      "total_score": 49,
       "details": [
         {
           "criterion": "rs",
@@ -2284,12 +1444,12 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 4.75,
-              "rs5": 5.51,
-              "rs10": 14.16
+              "rs3": 4.87,
+              "rs5": 8.93,
+              "rs10": -4.22
             },
             "trend_up": false,
-            "reason": "RS5=+5.5% RS3=+4.8% RS10=+14.2% (+5资金重分配)"
+            "reason": "RS5=+8.9% RS3=+4.9% RS10=-4.2% (+5资金重分配)"
           }
         },
         {
@@ -2298,25 +1458,25 @@
           "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.98,
+            "pct_chg": 2.78,
             "returns": {
-              "ret3": 4.41,
-              "ret5": 4.86,
-              "ret10": 11.27
+              "ret3": 3.4,
+              "ret5": 6.88,
+              "ret10": -7.93
             },
-            "ma_bullish": true,
-            "reason": "今日+1.98% 5日+4.86% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+2.78% 5日+6.88% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 4,
+          "score": 6,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.13,
+            "amount_ratio": 1.29,
             "turnover": 0,
-            "reason": "成交额比=1.13x 换手=0.0%"
+            "reason": "成交额比=1.29x 换手=0.0%"
           }
         },
         {
@@ -2355,10 +1515,10 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881339",
-      "code": "BK1339",
-      "index_code": "881339",
-      "pct_chg": 1.17,
+      "name": "医疗器械",
+      "code": "BK1041",
+      "index_code": "881041",
+      "pct_chg": 5.27,
       "total_score": 47,
       "details": [
         {
@@ -2368,12 +1528,180 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 11.29,
-              "rs5": 21.25,
-              "rs10": 11.1
+              "rs3": 2.81,
+              "rs5": 8.82,
+              "rs10": 1.99
             },
             "trend_up": false,
-            "reason": "RS5=+21.2% RS3=+11.3% RS10=+11.1% (+5资金重分配)"
+            "reason": "RS5=+8.8% RS3=+2.8% RS10=+2.0% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 19,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.27,
+            "returns": {
+              "ret3": 1.33,
+              "ret5": 6.78,
+              "ret10": -1.72
+            },
+            "ma_bullish": false,
+            "reason": "今日+5.27% 5日+6.78% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.93,
+            "turnover": 0,
+            "reason": "成交额比=0.93x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881341",
+      "code": "BK1341",
+      "index_code": "881341",
+      "pct_chg": 3.1,
+      "total_score": 47,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.29,
+              "rs5": 8.35,
+              "rs10": 8.84
+            },
+            "trend_up": false,
+            "reason": "RS5=+8.3% RS3=+5.3% RS10=+8.8% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 19,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 3.1,
+            "returns": {
+              "ret3": 3.82,
+              "ret5": 6.31,
+              "ret10": 5.12
+            },
+            "ma_bullish": false,
+            "reason": "今日+3.10% 5日+6.31% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881321",
+      "code": "BK1321",
+      "index_code": "881321",
+      "pct_chg": 3.18,
+      "total_score": 45,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 1.62,
+              "rs5": 5.31,
+              "rs10": -5.86
+            },
+            "trend_up": false,
+            "reason": "RS5=+5.3% RS3=+1.6% RS10=-5.9% (+5资金重分配)"
           }
         },
         {
@@ -2382,14 +1710,602 @@
           "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.17,
+            "pct_chg": 3.18,
             "returns": {
-              "ret3": 10.96,
-              "ret5": 20.6,
-              "ret10": 8.2
+              "ret3": 0.14,
+              "ret5": 3.27,
+              "ret10": -9.57
             },
             "ma_bullish": false,
-            "reason": "今日+1.17% 5日+20.60% (+5资金重分配)"
+            "reason": "今日+3.18% 5日+3.27% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.99,
+            "turnover": 0,
+            "reason": "成交额比=0.99x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "AI制药（医疗）",
+      "code": "BK1170",
+      "index_code": "881170",
+      "pct_chg": 2.48,
+      "total_score": 45,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 6.25,
+              "rs5": 7.46,
+              "rs10": 6.47
+            },
+            "trend_up": false,
+            "reason": "RS5=+7.5% RS3=+6.2% RS10=+6.5% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 17,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 2.48,
+            "returns": {
+              "ret3": 4.78,
+              "ret5": 5.41,
+              "ret10": 2.75
+            },
+            "ma_bullish": false,
+            "reason": "今日+2.48% 5日+5.41% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.7,
+            "turnover": 0,
+            "reason": "成交额比=0.70x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "户外露营",
+      "code": "BK1079",
+      "index_code": "881079",
+      "pct_chg": 5.76,
+      "total_score": 44,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 4.35,
+              "rs5": 3.0,
+              "rs10": -5.5
+            },
+            "trend_up": true,
+            "reason": "RS5=+3.0% RS3=+4.3% RS10=-5.5% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.76,
+            "returns": {
+              "ret3": 2.88,
+              "ret5": 0.95,
+              "ret10": -9.21
+            },
+            "ma_bullish": false,
+            "reason": "今日+5.76% 5日+0.95% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 6,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.39,
+            "turnover": 0,
+            "reason": "成交额比=1.39x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880792",
+      "code": "BK0792",
+      "index_code": "880792",
+      "pct_chg": 2.58,
+      "total_score": 43,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 2.56,
+              "rs5": 5.46,
+              "rs10": 12.24
+            },
+            "trend_up": false,
+            "reason": "RS5=+5.5% RS3=+2.6% RS10=+12.2% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 2.58,
+            "returns": {
+              "ret3": 1.09,
+              "ret5": 3.41,
+              "ret10": 8.52
+            },
+            "ma_bullish": false,
+            "reason": "今日+2.58% 5日+3.41% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.95,
+            "turnover": 0,
+            "reason": "成交额比=0.95x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880347",
+      "code": "BK0347",
+      "index_code": "880347",
+      "pct_chg": 4.16,
+      "total_score": 42,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.26,
+              "rs5": 4.92,
+              "rs10": 0.4
+            },
+            "trend_up": true,
+            "reason": "RS5=+4.9% RS3=+5.3% RS10=+0.4% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 4.16,
+            "returns": {
+              "ret3": 3.78,
+              "ret5": 2.88,
+              "ret10": -3.31
+            },
+            "ma_bullish": false,
+            "reason": "今日+4.16% 5日+2.88% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.05,
+            "turnover": 0,
+            "reason": "成交额比=1.05x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881096",
+      "code": "BK1096",
+      "index_code": "881096",
+      "pct_chg": 4.73,
+      "total_score": 40,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.72,
+              "rs5": 4.5,
+              "rs10": 2.03
+            },
+            "trend_up": true,
+            "reason": "RS5=+4.5% RS3=+5.7% RS10=+2.0% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 4.73,
+            "returns": {
+              "ret3": 4.25,
+              "ret5": 2.45,
+              "ret10": -1.69
+            },
+            "ma_bullish": false,
+            "reason": "今日+4.73% 5日+2.45% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.89,
+            "turnover": 0,
+            "reason": "成交额比=0.89x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880778",
+      "code": "BK0778",
+      "index_code": "880778",
+      "pct_chg": 3.55,
+      "total_score": 40,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 7.57,
+              "rs5": 4.89,
+              "rs10": 5.57
+            },
+            "trend_up": true,
+            "reason": "RS5=+4.9% RS3=+7.6% RS10=+5.6% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 3.55,
+            "returns": {
+              "ret3": 6.09,
+              "ret5": 2.84,
+              "ret10": 1.86
+            },
+            "ma_bullish": false,
+            "reason": "今日+3.55% 5日+2.84% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.62,
+            "turnover": 0,
+            "reason": "成交额比=0.62x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "半导体",
+      "code": "BK1036",
+      "index_code": "881036",
+      "pct_chg": 2.9,
+      "total_score": 40,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 7.63,
+              "rs5": 3.93,
+              "rs10": 0.58
+            },
+            "trend_up": true,
+            "reason": "RS5=+3.9% RS3=+7.6% RS10=+0.6% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 13,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 2.9,
+            "returns": {
+              "ret3": 6.16,
+              "ret5": 1.88,
+              "ret10": -3.13
+            },
+            "ma_bullish": false,
+            "reason": "今日+2.90% 5日+1.88% (+5资金重分配)"
           }
         },
         {
@@ -2439,41 +2355,41 @@
       "net_inflow": 0
     },
     {
-      "name": "板块880752",
-      "code": "BK0752",
-      "index_code": "880752",
-      "pct_chg": 1.57,
-      "total_score": 45,
+      "name": "白酒Ⅱ",
+      "code": "BK1277",
+      "index_code": "881277",
+      "pct_chg": 4.85,
+      "total_score": 39,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 18,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 4.42,
-              "rs5": 5.54,
-              "rs10": 2.86
+              "rs3": 2.28,
+              "rs5": 4.1,
+              "rs10": 0.6
             },
             "trend_up": false,
-            "reason": "RS5=+5.5% RS3=+4.4% RS10=+2.9% (+5资金重分配)"
+            "reason": "RS5=+4.1% RS3=+2.3% RS10=+0.6% (+5资金重分配)"
           }
         },
         {
           "criterion": "momentum",
           "desc": "行业动量",
-          "score": 13,
+          "score": 15,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.57,
+            "pct_chg": 4.85,
             "returns": {
-              "ret3": 4.09,
-              "ret5": 4.89,
-              "ret10": -0.03
+              "ret3": 0.81,
+              "ret5": 2.06,
+              "ret10": -3.11
             },
             "ma_bullish": false,
-            "reason": "今日+1.57% 5日+4.89% (+5资金重分配)"
+            "reason": "今日+4.85% 5日+2.06% (+5资金重分配)"
           }
         },
         {
@@ -2482,9 +2398,9 @@
           "score": 6,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.42,
+            "amount_ratio": 1.33,
             "turnover": 0,
-            "reason": "成交额比=1.42x 换手=0.0%"
+            "reason": "成交额比=1.33x 换手=0.0%"
           }
         },
         {
@@ -2516,7 +2432,91 @@
           }
         }
       ],
-      "category": "potential",
+      "category": "neutral",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "天然气",
+      "code": "BK0843",
+      "index_code": "880843",
+      "pct_chg": 4.36,
+      "total_score": 39,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 18,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.61,
+              "rs5": 4.68,
+              "rs10": 11.32
+            },
+            "trend_up": false,
+            "reason": "RS5=+4.7% RS3=+5.6% RS10=+11.3% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 19,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 4.36,
+            "returns": {
+              "ret3": 4.14,
+              "ret5": 2.64,
+              "ret10": 7.6
+            },
+            "ma_bullish": true,
+            "reason": "今日+4.36% 5日+2.64% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.72,
+            "turnover": 0,
+            "reason": "成交额比=0.72x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "neutral",
       "up_count": 0,
       "down_count": 0,
       "amount": 0,
@@ -2526,949 +2526,25 @@
   "concept": [],
   "mainline": [
     {
-      "name": "板块880812",
-      "code": "BK0812",
-      "index_code": "880812",
-      "pct_chg": 3.4,
-      "total_score": 59,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 8.66,
-              "rs5": 12.82,
-              "rs10": 32.4
-            },
-            "trend_up": false,
-            "reason": "RS5=+12.8% RS3=+8.7% RS10=+32.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.4,
-            "returns": {
-              "ret3": 8.32,
-              "ret5": 12.16,
-              "ret10": 29.5
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.40% 5日+12.16% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.83,
-            "turnover": 0,
-            "reason": "成交额比=1.83x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881003",
-      "code": "BK1003",
-      "index_code": "881003",
-      "pct_chg": 3.02,
-      "total_score": 59,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 5.94,
-              "rs5": 10.15,
-              "rs10": 11.58
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.2% RS3=+5.9% RS10=+11.6% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.02,
-            "returns": {
-              "ret3": 5.61,
-              "ret5": 9.5,
-              "ret10": 8.69
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.02% 5日+9.50% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.55,
-            "turnover": 0,
-            "reason": "成交额比=1.55x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880015",
-      "code": "BK0015",
-      "index_code": "880015",
-      "pct_chg": 12.05,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 30,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 206.78,
-              "rs5": 62.39,
-              "rs10": -6.26
-            },
-            "trend_up": true,
-            "reason": "RS5=+62.4% RS3=+206.8% RS10=-6.3% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 12.05,
-            "returns": {
-              "ret3": 206.44,
-              "ret5": 61.74,
-              "ret10": -9.15
-            },
-            "ma_bullish": true,
-            "reason": "今日+12.05% 5日+61.74% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.96,
-            "turnover": 0,
-            "reason": "成交额比=0.96x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880005",
-      "code": "BK0005",
-      "index_code": "880005",
-      "pct_chg": 10.57,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 30,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 145.34,
-              "rs5": 74.9,
-              "rs10": -10.77
-            },
-            "trend_up": true,
-            "reason": "RS5=+74.9% RS3=+145.3% RS10=-10.8% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 10.57,
-            "returns": {
-              "ret3": 145.01,
-              "ret5": 74.25,
-              "ret10": -13.66
-            },
-            "ma_bullish": true,
-            "reason": "今日+10.57% 5日+74.25% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.95,
-            "turnover": 0,
-            "reason": "成交额比=0.95x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880035",
-      "code": "BK0035",
-      "index_code": "880035",
-      "pct_chg": 4.99,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 30,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 102.79,
-              "rs5": 88.49,
-              "rs10": -17.17
-            },
-            "trend_up": true,
-            "reason": "RS5=+88.5% RS3=+102.8% RS10=-17.2% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 4.99,
-            "returns": {
-              "ret3": 102.46,
-              "ret5": 87.83,
-              "ret10": -20.06
-            },
-            "ma_bullish": true,
-            "reason": "今日+4.99% 5日+87.83% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.96,
-            "turnover": 0,
-            "reason": "成交额比=0.96x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881004",
-      "code": "BK1004",
-      "index_code": "881004",
-      "pct_chg": 3.84,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 8.53,
-              "rs5": 13.51,
-              "rs10": 17.47
-            },
-            "trend_up": false,
-            "reason": "RS5=+13.5% RS3=+8.5% RS10=+17.5% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.84,
-            "returns": {
-              "ret3": 8.2,
-              "ret5": 12.85,
-              "ret10": 14.58
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.84% 5日+12.85% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.27,
-            "turnover": 0,
-            "reason": "成交额比=1.27x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880302",
-      "code": "BK0302",
-      "index_code": "880302",
-      "pct_chg": 3.13,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.29,
-              "rs5": 10.6,
-              "rs10": 12.36
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.13,
-            "returns": {
-              "ret3": 5.96,
-              "ret5": 9.95,
-              "ret10": 9.47
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.13% 5日+9.95% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.42,
-            "turnover": 0,
-            "reason": "成交额比=1.42x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881002",
-      "code": "BK1002",
-      "index_code": "881002",
-      "pct_chg": 3.13,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.29,
-              "rs5": 10.6,
-              "rs10": 12.36
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.13,
-            "returns": {
-              "ret3": 5.96,
-              "ret5": 9.95,
-              "ret10": 9.47
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.13% 5日+9.95% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.42,
-            "turnover": 0,
-            "reason": "成交额比=1.42x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880301",
-      "code": "BK0301",
-      "index_code": "880301",
-      "pct_chg": 3.12,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.3,
-              "rs5": 10.59,
-              "rs10": 12.31
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.3% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.12,
-            "returns": {
-              "ret3": 5.97,
-              "ret5": 9.94,
-              "ret10": 9.42
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.12% 5日+9.94% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.44,
-            "turnover": 0,
-            "reason": "成交额比=1.44x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881001",
-      "code": "BK1001",
-      "index_code": "881001",
-      "pct_chg": 3.12,
-      "total_score": 57,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.3,
-              "rs5": 10.59,
-              "rs10": 12.31
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.6% RS3=+6.3% RS10=+12.3% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.12,
-            "returns": {
-              "ret3": 5.97,
-              "ret5": 9.94,
-              "ret10": 9.42
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.12% 5日+9.94% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 6,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.44,
-            "turnover": 0,
-            "reason": "成交额比=1.44x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881301",
-      "code": "BK1301",
-      "index_code": "881301",
-      "pct_chg": 5.25,
+      "name": "板块880045",
+      "code": "BK0045",
+      "index_code": "880045",
+      "pct_chg": 207.35,
       "total_score": 55,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 4.88,
-              "rs5": 9.19,
-              "rs10": 15.5
+              "rs3": 36.31,
+              "rs5": 26.45,
+              "rs10": -10.63
             },
-            "trend_up": false,
-            "reason": "RS5=+9.2% RS3=+4.9% RS10=+15.5% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 5.25,
-            "returns": {
-              "ret3": 4.55,
-              "ret5": 8.54,
-              "ret10": 12.61
-            },
-            "ma_bullish": true,
-            "reason": "今日+5.25% 5日+8.54% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 4,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.06,
-            "turnover": 0,
-            "reason": "成交额比=1.06x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "mainline",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880963",
-      "code": "BK0963",
-      "index_code": "880963",
-      "pct_chg": 1.45,
-      "total_score": 55,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 0.92,
-              "rs5": 9.35,
-              "rs10": 11.68
-            },
-            "trend_up": false,
-            "reason": "RS5=+9.3% RS3=+0.9% RS10=+11.7% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+26.5% RS3=+36.3% RS10=-10.6% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -3477,25 +2553,361 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.45,
+            "pct_chg": 207.35,
             "returns": {
-              "ret3": 0.58,
-              "ret5": 8.7,
-              "ret10": 8.79
+              "ret3": 34.84,
+              "ret5": 24.4,
+              "ret10": -14.34
             },
-            "ma_bullish": true,
-            "reason": "今日+1.45% 5日+8.70% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+207.35% 5日+24.40% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 8,
+          "score": 4,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.65,
+            "amount_ratio": 1.01,
             "turnover": 0,
-            "reason": "成交额比=1.65x 换手=0.0%"
+            "reason": "成交额比=1.01x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880075",
+      "code": "BK0075",
+      "index_code": "880075",
+      "pct_chg": 35.27,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 1174.2,
+              "rs5": 17.27,
+              "rs10": 5.16
+            },
+            "trend_up": true,
+            "reason": "RS5=+17.3% RS3=+1174.2% RS10=+5.2% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 35.27,
+            "returns": {
+              "ret3": 1172.73,
+              "ret5": 15.23,
+              "ret10": 1.45
+            },
+            "ma_bullish": false,
+            "reason": "今日+35.27% 5日+15.23% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.07,
+            "turnover": 0,
+            "reason": "成交额比=1.07x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880345",
+      "code": "BK0345",
+      "index_code": "880345",
+      "pct_chg": 9.03,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 6.7,
+              "rs5": 10.42,
+              "rs10": 25.56
+            },
+            "trend_up": false,
+            "reason": "RS5=+10.4% RS3=+6.7% RS10=+25.6% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 9.03,
+            "returns": {
+              "ret3": 5.23,
+              "ret5": 8.38,
+              "ret10": 21.85
+            },
+            "ma_bullish": true,
+            "reason": "今日+9.03% 5日+8.38% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.03,
+            "turnover": 0,
+            "reason": "成交额比=1.03x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "游戏Ⅱ",
+      "code": "BK1046",
+      "index_code": "881046",
+      "pct_chg": 5.85,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 4.82,
+              "rs5": 12.74,
+              "rs10": 9.91
+            },
+            "trend_up": false,
+            "reason": "RS5=+12.7% RS3=+4.8% RS10=+9.9% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.85,
+            "returns": {
+              "ret3": 3.35,
+              "ret5": 10.7,
+              "ret10": 6.2
+            },
+            "ma_bullish": true,
+            "reason": "今日+5.85% 5日+10.70% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.03,
+            "turnover": 0,
+            "reason": "成交额比=1.03x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "mainline",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "文娱用品",
+      "code": "BK1266",
+      "index_code": "881266",
+      "pct_chg": 3.03,
+      "total_score": 55,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.49,
+              "rs5": 12.32,
+              "rs10": 6.98
+            },
+            "trend_up": false,
+            "reason": "RS5=+12.3% RS3=+5.5% RS10=+7.0% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 3.03,
+            "returns": {
+              "ret3": 4.02,
+              "ret5": 10.27,
+              "ret10": 3.27
+            },
+            "ma_bullish": true,
+            "reason": "今日+3.03% 5日+10.27% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.17,
+            "turnover": 0,
+            "reason": "成交额比=1.17x 换手=0.0%"
           }
         },
         {
@@ -3536,529 +2948,25 @@
   ],
   "potential": [
     {
-      "name": "板块880045",
-      "code": "BK0045",
-      "index_code": "880045",
-      "pct_chg": 17.26,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 18.3,
-              "rs5": 48.77,
-              "rs10": -23.05
-            },
-            "trend_up": false,
-            "reason": "RS5=+48.8% RS3=+18.3% RS10=-23.1% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 17.26,
-            "returns": {
-              "ret3": 17.96,
-              "ret5": 48.12,
-              "ret10": -25.94
-            },
-            "ma_bullish": true,
-            "reason": "今日+17.26% 5日+48.12% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.84,
-            "turnover": 0,
-            "reason": "成交额比=0.84x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881165",
-      "code": "BK1165",
-      "index_code": "881165",
-      "pct_chg": 4.67,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 3.46,
-              "rs5": 5.08,
-              "rs10": 7.59
-            },
-            "trend_up": false,
-            "reason": "RS5=+5.1% RS3=+3.5% RS10=+7.6% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 17,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 4.67,
-            "returns": {
-              "ret3": 3.13,
-              "ret5": 4.43,
-              "ret10": 4.7
-            },
-            "ma_bullish": false,
-            "reason": "今日+4.67% 5日+4.43% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 10,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 2.29,
-            "turnover": 0,
-            "reason": "成交额比=2.29x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880754",
-      "code": "BK0754",
-      "index_code": "880754",
-      "pct_chg": 3.16,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 4.95,
-              "rs5": 10.93,
-              "rs10": 17.11
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.9% RS3=+5.0% RS10=+17.1% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 25,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.16,
-            "returns": {
-              "ret3": 4.62,
-              "ret5": 10.27,
-              "ret10": 14.22
-            },
-            "ma_bullish": true,
-            "reason": "今日+3.16% 5日+10.27% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.92,
-            "turnover": 0,
-            "reason": "成交额比=0.92x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880303",
-      "code": "BK0303",
-      "index_code": "880303",
-      "pct_chg": 2.65,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.51,
-              "rs5": 10.3,
-              "rs10": 10.8
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.3% RS3=+6.5% RS10=+10.8% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 19,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 2.65,
-            "returns": {
-              "ret3": 6.18,
-              "ret5": 9.64,
-              "ret10": 7.91
-            },
-            "ma_bullish": false,
-            "reason": "今日+2.65% 5日+9.64% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.52,
-            "turnover": 0,
-            "reason": "成交额比=1.52x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881005",
-      "code": "BK1005",
-      "index_code": "881005",
-      "pct_chg": 2.65,
-      "total_score": 53,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 6.51,
-              "rs5": 10.29,
-              "rs10": 10.8
-            },
-            "trend_up": false,
-            "reason": "RS5=+10.3% RS3=+6.5% RS10=+10.8% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 19,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 2.65,
-            "returns": {
-              "ret3": 6.18,
-              "ret5": 9.64,
-              "ret10": 7.91
-            },
-            "ma_bullish": false,
-            "reason": "今日+2.65% 5日+9.64% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 8,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.52,
-            "turnover": 0,
-            "reason": "成交额比=1.52x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880075",
-      "code": "BK0075",
-      "index_code": "880075",
-      "pct_chg": 9.47,
-      "total_score": 51,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 402.22,
-              "rs5": 505.2,
-              "rs10": -3.12
-            },
-            "trend_up": false,
-            "reason": "RS5=+505.2% RS3=+402.2% RS10=-3.1% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 21,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 9.47,
-            "returns": {
-              "ret3": 401.89,
-              "ret5": 504.55,
-              "ret10": -6.01
-            },
-            "ma_bullish": false,
-            "reason": "今日+9.47% 5日+504.55% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 4,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.07,
-            "turnover": 0,
-            "reason": "成交额比=1.07x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
       "name": "板块880006",
       "code": "BK0006",
       "index_code": "880006",
-      "pct_chg": 18.52,
-      "total_score": 49,
+      "pct_chg": 306.25,
+      "total_score": 53,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 39.46,
-              "rs5": 167.32,
-              "rs10": -47.88
+              "rs3": 283.83,
+              "rs5": 142.79,
+              "rs10": 106.84
             },
-            "trend_up": false,
-            "reason": "RS5=+167.3% RS3=+39.5% RS10=-47.9% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+142.8% RS3=+283.8% RS10=+106.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -4067,14 +2975,14 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 18.52,
+            "pct_chg": 306.25,
             "returns": {
-              "ret3": 39.13,
-              "ret5": 166.67,
-              "ret10": -50.77
+              "ret3": 282.35,
+              "ret5": 140.74,
+              "ret10": 103.12
             },
             "ma_bullish": false,
-            "reason": "今日+18.52% 5日+166.67% (+5资金重分配)"
+            "reason": "今日+306.25% 5日+140.74% (+5资金重分配)"
           }
         },
         {
@@ -4127,22 +3035,22 @@
       "name": "板块880016",
       "code": "BK0016",
       "index_code": "880016",
-      "pct_chg": 18.52,
-      "total_score": 49,
+      "pct_chg": 306.25,
+      "total_score": 53,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 45.79,
-              "rs5": 167.32,
-              "rs10": -47.88
+              "rs3": 283.83,
+              "rs5": 142.79,
+              "rs10": 106.84
             },
-            "trend_up": false,
-            "reason": "RS5=+167.3% RS3=+45.8% RS10=-47.9% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+142.8% RS3=+283.8% RS10=+106.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -4151,14 +3059,182 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 18.52,
+            "pct_chg": 306.25,
             "returns": {
-              "ret3": 45.45,
-              "ret5": 166.67,
-              "ret10": -50.77
+              "ret3": 282.35,
+              "ret5": 140.74,
+              "ret10": 103.12
             },
             "ma_bullish": false,
-            "reason": "今日+18.52% 5日+166.67% (+5资金重分配)"
+            "reason": "今日+306.25% 5日+140.74% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880035",
+      "code": "BK0035",
+      "index_code": "880035",
+      "pct_chg": 206.55,
+      "total_score": 53,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 113.29,
+              "rs5": 16.39,
+              "rs10": -3.05
+            },
+            "trend_up": true,
+            "reason": "RS5=+16.4% RS3=+113.3% RS10=-3.0% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 206.55,
+            "returns": {
+              "ret3": 111.81,
+              "ret5": 14.35,
+              "ret10": -6.76
+            },
+            "ma_bullish": false,
+            "reason": "今日+206.55% 5日+14.35% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.98,
+            "turnover": 0,
+            "reason": "成交额比=0.98x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881339",
+      "code": "BK1339",
+      "index_code": "881339",
+      "pct_chg": 4.43,
+      "total_score": 53,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 9.81,
+              "rs5": 16.09,
+              "rs10": 38.73
+            },
+            "trend_up": false,
+            "reason": "RS5=+16.1% RS3=+9.8% RS10=+38.7% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 25,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 4.43,
+            "returns": {
+              "ret3": 8.33,
+              "ret5": 14.05,
+              "ret10": 35.02
+            },
+            "ma_bullish": true,
+            "reason": "今日+4.43% 5日+14.05% 均线多头 (+5资金重分配)"
           }
         },
         {
@@ -4208,11 +3284,11 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881461",
-      "code": "BK1461",
-      "index_code": "881461",
-      "pct_chg": 2.87,
-      "total_score": 49,
+      "name": "板块881320",
+      "code": "BK1320",
+      "index_code": "881320",
+      "pct_chg": 6.03,
+      "total_score": 51,
       "details": [
         {
           "criterion": "rs",
@@ -4221,12 +3297,12 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": -0.97,
-              "rs5": 7.86,
-              "rs10": 21.46
+              "rs3": 5.52,
+              "rs5": 12.09,
+              "rs10": 4.77
             },
             "trend_up": false,
-            "reason": "RS5=+7.9% RS3=-1.0% RS10=+21.5% (+5资金重分配)"
+            "reason": "RS5=+12.1% RS3=+5.5% RS10=+4.8% (+5资金重分配)"
           }
         },
         {
@@ -4235,25 +3311,25 @@
           "score": 21,
           "weight": 25,
           "detail": {
-            "pct_chg": 2.87,
+            "pct_chg": 6.03,
             "returns": {
-              "ret3": -1.3,
-              "ret5": 7.21,
-              "ret10": 18.57
+              "ret3": 4.05,
+              "ret5": 10.04,
+              "ret10": 1.06
             },
-            "ma_bullish": true,
-            "reason": "今日+2.87% 5日+7.21% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+6.03% 5日+10.04% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 2,
+          "score": 4,
           "weight": 15,
           "detail": {
-            "amount_ratio": 0.94,
+            "amount_ratio": 1.05,
             "turnover": 0,
-            "reason": "成交额比=0.94x 换手=0.0%"
+            "reason": "成交额比=1.05x 换手=0.0%"
           }
         },
         {
@@ -4292,125 +3368,41 @@
       "net_inflow": 0
     },
     {
-      "name": "板块880307",
-      "code": "BK0307",
-      "index_code": "880307",
-      "pct_chg": 2.77,
-      "total_score": 49,
+      "name": "钙钛矿电池",
+      "code": "BK1094",
+      "index_code": "881094",
+      "pct_chg": 4.34,
+      "total_score": 51,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": -1.12,
-              "rs5": 7.64,
-              "rs10": 21.16
+              "rs3": 5.56,
+              "rs5": 5.33,
+              "rs10": 0.75
             },
-            "trend_up": false,
-            "reason": "RS5=+7.6% RS3=-1.1% RS10=+21.2% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+5.3% RS3=+5.6% RS10=+0.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
           "criterion": "momentum",
           "desc": "行业动量",
-          "score": 21,
+          "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 2.77,
+            "pct_chg": 4.34,
             "returns": {
-              "ret3": -1.45,
-              "ret5": 6.99,
-              "ret10": 18.27
+              "ret3": 4.08,
+              "ret5": 3.28,
+              "ret10": -2.97
             },
-            "ma_bullish": true,
-            "reason": "今日+2.77% 5日+6.99% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 2,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 0.94,
-            "turnover": 0,
-            "reason": "成交额比=0.94x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块880774",
-      "code": "BK0774",
-      "index_code": "880774",
-      "pct_chg": 1.63,
-      "total_score": 49,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 5.99,
-              "rs5": 5.73,
-              "rs10": 15.23
-            },
-            "trend_up": false,
-            "reason": "RS5=+5.7% RS3=+6.0% RS10=+15.2% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 19,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 1.63,
-            "returns": {
-              "ret3": 5.66,
-              "ret5": 5.08,
-              "ret10": 12.34
-            },
-            "ma_bullish": true,
-            "reason": "今日+1.63% 5日+5.08% 均线多头 (+5资金重分配)"
+            "ma_bullish": false,
+            "reason": "今日+4.34% 5日+3.28% (+5资金重分配)"
           }
         },
         {
@@ -4460,25 +3452,25 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881110",
-      "code": "BK1110",
-      "index_code": "881110",
-      "pct_chg": 1.42,
+      "name": "板块880005",
+      "code": "BK0005",
+      "index_code": "880005",
+      "pct_chg": 89.46,
       "total_score": 49,
       "details": [
         {
           "criterion": "rs",
           "desc": "RS相对强度",
-          "score": 26,
+          "score": 30,
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 5.15,
-              "rs5": 8.81,
-              "rs10": 0.73
+              "rs3": 85.2,
+              "rs5": 6.2,
+              "rs10": -9.81
             },
-            "trend_up": false,
-            "reason": "RS5=+8.8% RS3=+5.1% RS10=+0.7% (+5资金重分配)"
+            "trend_up": true,
+            "reason": "RS5=+6.2% RS3=+85.2% RS10=-9.8% 趋势↑ (+5资金重分配)"
           }
         },
         {
@@ -4487,25 +3479,25 @@
           "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.42,
+            "pct_chg": 89.46,
             "returns": {
-              "ret3": 4.82,
-              "ret5": 8.15,
-              "ret10": -2.16
+              "ret3": 83.72,
+              "ret5": 4.16,
+              "ret10": -13.52
             },
             "ma_bullish": false,
-            "reason": "今日+1.42% 5日+8.15% (+5资金重分配)"
+            "reason": "今日+89.46% 5日+4.16% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 6,
+          "score": 2,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.21,
+            "amount_ratio": 0.95,
             "turnover": 0,
-            "reason": "成交额比=1.21x 换手=0.0%"
+            "reason": "成交额比=0.95x 换手=0.0%"
           }
         },
         {
@@ -4544,10 +3536,178 @@
       "net_inflow": 0
     },
     {
-      "name": "板块880863",
-      "code": "BK0863",
-      "index_code": "880863",
-      "pct_chg": 1.37,
+      "name": "板块880004",
+      "code": "BK0004",
+      "index_code": "880004",
+      "pct_chg": 9.26,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 23.95,
+              "rs5": 6.78,
+              "rs10": -2.33
+            },
+            "trend_up": true,
+            "reason": "RS5=+6.8% RS3=+23.9% RS10=-2.3% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 17,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 9.26,
+            "returns": {
+              "ret3": 22.48,
+              "ret5": 4.73,
+              "ret10": -6.04
+            },
+            "ma_bullish": false,
+            "reason": "今日+9.26% 5日+4.73% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.95,
+            "turnover": 0,
+            "reason": "成交额比=0.95x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880014",
+      "code": "BK0014",
+      "index_code": "880014",
+      "pct_chg": 8.69,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 30,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 22.61,
+              "rs5": 5.8,
+              "rs10": 3.4
+            },
+            "trend_up": true,
+            "reason": "RS5=+5.8% RS3=+22.6% RS10=+3.4% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 17,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 8.69,
+            "returns": {
+              "ret3": 21.14,
+              "ret5": 3.75,
+              "ret10": -0.32
+            },
+            "ma_bullish": false,
+            "reason": "今日+8.69% 5日+3.75% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880844",
+      "code": "BK0844",
+      "index_code": "880844",
+      "pct_chg": 7.09,
       "total_score": 49,
       "details": [
         {
@@ -4557,12 +3717,180 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 6.64,
-              "rs5": 8.58,
-              "rs10": 19.86
+              "rs3": 6.67,
+              "rs5": 6.1,
+              "rs10": 13.52
             },
             "trend_up": false,
-            "reason": "RS5=+8.6% RS3=+6.6% RS10=+19.9% (+5资金重分配)"
+            "reason": "RS5=+6.1% RS3=+6.7% RS10=+13.5% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 7.09,
+            "returns": {
+              "ret3": 5.19,
+              "ret5": 4.05,
+              "ret10": 9.81
+            },
+            "ma_bullish": true,
+            "reason": "今日+7.09% 5日+4.05% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.78,
+            "turnover": 0,
+            "reason": "成交额比=0.78x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881335",
+      "code": "BK1335",
+      "index_code": "881335",
+      "pct_chg": 5.89,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 2.47,
+              "rs5": 6.91,
+              "rs10": 23.59
+            },
+            "trend_up": false,
+            "reason": "RS5=+6.9% RS3=+2.5% RS10=+23.6% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 21,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.89,
+            "returns": {
+              "ret3": 1.0,
+              "ret5": 4.87,
+              "ret10": 19.87
+            },
+            "ma_bullish": true,
+            "reason": "今日+5.89% 5日+4.87% 均线多头 (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "动力电池回收",
+      "code": "BK1052",
+      "index_code": "881052",
+      "pct_chg": 4.64,
+      "total_score": 49,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 6.38,
+              "rs5": 9.76,
+              "rs10": -0.31
+            },
+            "trend_up": false,
+            "reason": "RS5=+9.8% RS3=+6.4% RS10=-0.3% (+5资金重分配)"
           }
         },
         {
@@ -4571,182 +3899,14 @@
           "score": 19,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.37,
+            "pct_chg": 4.64,
             "returns": {
-              "ret3": 6.31,
-              "ret5": 7.93,
-              "ret10": 16.97
-            },
-            "ma_bullish": true,
-            "reason": "今日+1.37% 5日+7.93% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 4,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.15,
-            "turnover": 0,
-            "reason": "成交额比=1.15x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881064",
-      "code": "BK1064",
-      "index_code": "881064",
-      "pct_chg": 3.81,
-      "total_score": 48,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 23,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 4.14,
-              "rs5": 3.56,
-              "rs10": 2.59
-            },
-            "trend_up": true,
-            "reason": "RS5=+3.6% RS3=+4.1% RS10=+2.6% 趋势↑ (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 15,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.81,
-            "returns": {
-              "ret3": 3.81,
-              "ret5": 2.91,
-              "ret10": -0.3
+              "ret3": 4.9,
+              "ret5": 7.71,
+              "ret10": -4.02
             },
             "ma_bullish": false,
-            "reason": "今日+3.81% 5日+2.91% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 10,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 2.23,
-            "turnover": 0,
-            "reason": "成交额比=2.23x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881033",
-      "code": "BK1033",
-      "index_code": "881033",
-      "pct_chg": 3.45,
-      "total_score": 47,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 3.31,
-              "rs5": 5.23,
-              "rs10": -5.44
-            },
-            "trend_up": false,
-            "reason": "RS5=+5.2% RS3=+3.3% RS10=-5.4% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 17,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 3.45,
-            "returns": {
-              "ret3": 2.98,
-              "ret5": 4.58,
-              "ret10": -8.33
-            },
-            "ma_bullish": false,
-            "reason": "今日+3.45% 5日+4.58% (+5资金重分配)"
+            "reason": "今日+4.64% 5日+7.71% (+5资金重分配)"
           }
         },
         {
@@ -4796,11 +3956,11 @@
       "net_inflow": 0
     },
     {
-      "name": "板块881084",
-      "code": "BK1084",
-      "index_code": "881084",
-      "pct_chg": 1.98,
-      "total_score": 47,
+      "name": "钒电池",
+      "code": "BK1095",
+      "index_code": "881095",
+      "pct_chg": 2.78,
+      "total_score": 49,
       "details": [
         {
           "criterion": "rs",
@@ -4809,12 +3969,12 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 4.75,
-              "rs5": 5.51,
-              "rs10": 14.16
+              "rs3": 4.87,
+              "rs5": 8.93,
+              "rs10": -4.22
             },
             "trend_up": false,
-            "reason": "RS5=+5.5% RS3=+4.8% RS10=+14.2% (+5资金重分配)"
+            "reason": "RS5=+8.9% RS3=+4.9% RS10=-4.2% (+5资金重分配)"
           }
         },
         {
@@ -4823,109 +3983,25 @@
           "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.98,
+            "pct_chg": 2.78,
             "returns": {
-              "ret3": 4.41,
-              "ret5": 4.86,
-              "ret10": 11.27
-            },
-            "ma_bullish": true,
-            "reason": "今日+1.98% 5日+4.86% 均线多头 (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "activity",
-          "desc": "成交额活跃度",
-          "score": 4,
-          "weight": 15,
-          "detail": {
-            "amount_ratio": 1.13,
-            "turnover": 0,
-            "reason": "成交额比=1.13x 换手=0.0%"
-          }
-        },
-        {
-          "criterion": "limit_up",
-          "desc": "涨停板占比",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "breadth",
-          "desc": "内部普涨度",
-          "score": 0,
-          "weight": 15,
-          "detail": {
-            "reason": "无涨跌家数数据"
-          }
-        },
-        {
-          "criterion": "capital_flow",
-          "desc": "资金集中度",
-          "score": 0,
-          "weight": 10,
-          "detail": {
-            "reason": "资金流向数据不可用",
-            "available": false
-          }
-        }
-      ],
-      "category": "potential",
-      "up_count": 0,
-      "down_count": 0,
-      "amount": 0,
-      "net_inflow": 0
-    },
-    {
-      "name": "板块881339",
-      "code": "BK1339",
-      "index_code": "881339",
-      "pct_chg": 1.17,
-      "total_score": 47,
-      "details": [
-        {
-          "criterion": "rs",
-          "desc": "RS相对强度",
-          "score": 26,
-          "weight": 30,
-          "detail": {
-            "rs_values": {
-              "rs3": 11.29,
-              "rs5": 21.25,
-              "rs10": 11.1
-            },
-            "trend_up": false,
-            "reason": "RS5=+21.2% RS3=+11.3% RS10=+11.1% (+5资金重分配)"
-          }
-        },
-        {
-          "criterion": "momentum",
-          "desc": "行业动量",
-          "score": 17,
-          "weight": 25,
-          "detail": {
-            "pct_chg": 1.17,
-            "returns": {
-              "ret3": 10.96,
-              "ret5": 20.6,
-              "ret10": 8.2
+              "ret3": 3.4,
+              "ret5": 6.88,
+              "ret10": -7.93
             },
             "ma_bullish": false,
-            "reason": "今日+1.17% 5日+20.60% (+5资金重分配)"
+            "reason": "今日+2.78% 5日+6.88% (+5资金重分配)"
           }
         },
         {
           "criterion": "activity",
           "desc": "成交额活跃度",
-          "score": 4,
+          "score": 6,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.16,
+            "amount_ratio": 1.29,
             "turnover": 0,
-            "reason": "成交额比=1.16x 换手=0.0%"
+            "reason": "成交额比=1.29x 换手=0.0%"
           }
         },
         {
@@ -4964,10 +4040,178 @@
       "net_inflow": 0
     },
     {
-      "name": "板块880752",
-      "code": "BK0752",
-      "index_code": "880752",
-      "pct_chg": 1.57,
+      "name": "医疗器械",
+      "code": "BK1041",
+      "index_code": "881041",
+      "pct_chg": 5.27,
+      "total_score": 47,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 2.81,
+              "rs5": 8.82,
+              "rs10": 1.99
+            },
+            "trend_up": false,
+            "reason": "RS5=+8.8% RS3=+2.8% RS10=+2.0% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 19,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.27,
+            "returns": {
+              "ret3": 1.33,
+              "ret5": 6.78,
+              "ret10": -1.72
+            },
+            "ma_bullish": false,
+            "reason": "今日+5.27% 5日+6.78% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.93,
+            "turnover": 0,
+            "reason": "成交额比=0.93x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881341",
+      "code": "BK1341",
+      "index_code": "881341",
+      "pct_chg": 3.1,
+      "total_score": 47,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.29,
+              "rs5": 8.35,
+              "rs10": 8.84
+            },
+            "trend_up": false,
+            "reason": "RS5=+8.3% RS3=+5.3% RS10=+8.8% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 19,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 3.1,
+            "returns": {
+              "ret3": 3.82,
+              "ret5": 6.31,
+              "ret10": 5.12
+            },
+            "ma_bullish": false,
+            "reason": "今日+3.10% 5日+6.31% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.94,
+            "turnover": 0,
+            "reason": "成交额比=0.94x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块881321",
+      "code": "BK1321",
+      "index_code": "881321",
+      "pct_chg": 3.18,
       "total_score": 45,
       "details": [
         {
@@ -4977,28 +4221,196 @@
           "weight": 30,
           "detail": {
             "rs_values": {
-              "rs3": 4.42,
-              "rs5": 5.54,
-              "rs10": 2.86
+              "rs3": 1.62,
+              "rs5": 5.31,
+              "rs10": -5.86
             },
             "trend_up": false,
-            "reason": "RS5=+5.5% RS3=+4.4% RS10=+2.9% (+5资金重分配)"
+            "reason": "RS5=+5.3% RS3=+1.6% RS10=-5.9% (+5资金重分配)"
           }
         },
         {
           "criterion": "momentum",
           "desc": "行业动量",
-          "score": 13,
+          "score": 17,
           "weight": 25,
           "detail": {
-            "pct_chg": 1.57,
+            "pct_chg": 3.18,
             "returns": {
-              "ret3": 4.09,
-              "ret5": 4.89,
-              "ret10": -0.03
+              "ret3": 0.14,
+              "ret5": 3.27,
+              "ret10": -9.57
             },
             "ma_bullish": false,
-            "reason": "今日+1.57% 5日+4.89% (+5资金重分配)"
+            "reason": "今日+3.18% 5日+3.27% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.99,
+            "turnover": 0,
+            "reason": "成交额比=0.99x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "AI制药（医疗）",
+      "code": "BK1170",
+      "index_code": "881170",
+      "pct_chg": 2.48,
+      "total_score": 45,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 6.25,
+              "rs5": 7.46,
+              "rs10": 6.47
+            },
+            "trend_up": false,
+            "reason": "RS5=+7.5% RS3=+6.2% RS10=+6.5% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 17,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 2.48,
+            "returns": {
+              "ret3": 4.78,
+              "ret5": 5.41,
+              "ret10": 2.75
+            },
+            "ma_bullish": false,
+            "reason": "今日+2.48% 5日+5.41% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.7,
+            "turnover": 0,
+            "reason": "成交额比=0.70x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "户外露营",
+      "code": "BK1079",
+      "index_code": "881079",
+      "pct_chg": 5.76,
+      "total_score": 44,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 4.35,
+              "rs5": 3.0,
+              "rs10": -5.5
+            },
+            "trend_up": true,
+            "reason": "RS5=+3.0% RS3=+4.3% RS10=-5.5% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 5.76,
+            "returns": {
+              "ret3": 2.88,
+              "ret5": 0.95,
+              "ret10": -9.21
+            },
+            "ma_bullish": false,
+            "reason": "今日+5.76% 5日+0.95% (+5资金重分配)"
           }
         },
         {
@@ -5007,9 +4419,177 @@
           "score": 6,
           "weight": 15,
           "detail": {
-            "amount_ratio": 1.42,
+            "amount_ratio": 1.39,
             "turnover": 0,
-            "reason": "成交额比=1.42x 换手=0.0%"
+            "reason": "成交额比=1.39x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880792",
+      "code": "BK0792",
+      "index_code": "880792",
+      "pct_chg": 2.58,
+      "total_score": 43,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 26,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 2.56,
+              "rs5": 5.46,
+              "rs10": 12.24
+            },
+            "trend_up": false,
+            "reason": "RS5=+5.5% RS3=+2.6% RS10=+12.2% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 2.58,
+            "returns": {
+              "ret3": 1.09,
+              "ret5": 3.41,
+              "ret10": 8.52
+            },
+            "ma_bullish": false,
+            "reason": "今日+2.58% 5日+3.41% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 2,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 0.95,
+            "turnover": 0,
+            "reason": "成交额比=0.95x 换手=0.0%"
+          }
+        },
+        {
+          "criterion": "limit_up",
+          "desc": "涨停板占比",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "breadth",
+          "desc": "内部普涨度",
+          "score": 0,
+          "weight": 15,
+          "detail": {
+            "reason": "无涨跌家数数据"
+          }
+        },
+        {
+          "criterion": "capital_flow",
+          "desc": "资金集中度",
+          "score": 0,
+          "weight": 10,
+          "detail": {
+            "reason": "资金流向数据不可用",
+            "available": false
+          }
+        }
+      ],
+      "category": "potential",
+      "up_count": 0,
+      "down_count": 0,
+      "amount": 0,
+      "net_inflow": 0
+    },
+    {
+      "name": "板块880347",
+      "code": "BK0347",
+      "index_code": "880347",
+      "pct_chg": 4.16,
+      "total_score": 42,
+      "details": [
+        {
+          "criterion": "rs",
+          "desc": "RS相对强度",
+          "score": 23,
+          "weight": 30,
+          "detail": {
+            "rs_values": {
+              "rs3": 5.26,
+              "rs5": 4.92,
+              "rs10": 0.4
+            },
+            "trend_up": true,
+            "reason": "RS5=+4.9% RS3=+5.3% RS10=+0.4% 趋势↑ (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "momentum",
+          "desc": "行业动量",
+          "score": 15,
+          "weight": 25,
+          "detail": {
+            "pct_chg": 4.16,
+            "returns": {
+              "ret3": 3.78,
+              "ret5": 2.88,
+              "ret10": -3.31
+            },
+            "ma_bullish": false,
+            "reason": "今日+4.16% 5日+2.88% (+5资金重分配)"
+          }
+        },
+        {
+          "criterion": "activity",
+          "desc": "成交额活跃度",
+          "score": 4,
+          "weight": 15,
+          "detail": {
+            "amount_ratio": 1.05,
+            "turnover": 0,
+            "reason": "成交额比=1.05x 换手=0.0%"
           }
         },
         {

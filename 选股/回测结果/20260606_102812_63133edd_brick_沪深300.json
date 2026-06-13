@@ -1,0 +1,37 @@
+{
+  "task_id": "63133edd",
+  "strategy_name": "brick",
+  "pool_name": "沪深300",
+  "date_range": {
+    "start": "2025-12-08",
+    "end": "2026-06-05"
+  },
+  "total_rounds": 117,
+  "total_trades": 288,
+  "metrics": {
+    "initial_capital": 10000.0,
+    "final_nav": 12799.0,
+    "total_return_pct": 27.99,
+    "total_pnl": 2799.0,
+    "total_trades": 288,
+    "avg_return_pct": 1.07,
+    "win_rate": 43.1,
+    "wins": 124,
+    "losses": 164,
+    "max_return_pct": 29.65,
+    "min_return_pct": -23.33,
+    "nav_sharpe": 1.9726,
+    "nav_max_drawdown": 8.91,
+    "stop_loss_count": 48
+  },
+  "config": {
+    "strategy_name": "brick",
+    "pool_name": "沪深300",
+    "top_n": 10,
+    "min_score": 25,
+    "holding_days": 3,
+    "initial_capital": 10000.0
+  },
+  "elapsed": 125.0,
+  "saved_at": "2026-06-06T10:28:12.018716"
+}
