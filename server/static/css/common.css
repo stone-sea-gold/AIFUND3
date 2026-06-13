@@ -298,9 +298,9 @@ tbody tr:last-child td { border-bottom:none; }
 .text-center { text-align:center; }
 .truncate { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-/* ── PnL Colors ── */
-.pnl-up { color:var(--accent); font-weight:600; }
-.pnl-down { color:var(--red); font-weight:600; }
+/* ── PnL Colors (A-share convention: red=up, green=down) ── */
+.pnl-up { color:var(--red); font-weight:600; }
+.pnl-down { color:var(--accent); font-weight:600; }
 
 /* ── Score Colors ── */
 .score-high { color:var(--accent); font-weight:600; }

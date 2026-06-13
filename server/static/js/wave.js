@@ -422,7 +422,7 @@ async function startScan() {
   var resultsDiv = document.getElementById('ss-results');
 
   if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
-  resultsDiv.style.display = 'none';
+  resultsDiv.classList.add('hidden');
 
   var params = new URLSearchParams({
     pool: document.getElementById('ss-pool').value,
@@ -434,8 +434,8 @@ async function startScan() {
 
   btn.style.display = 'none';
   var stopBtn = document.getElementById('ss-stop-btn');
-  stopBtn.style.display = 'inline-flex'; stopBtn.disabled = false; stopBtn.textContent = '停止扫描';
-  progress.style.display = 'block'; progressFill.style.width = '0%'; progressFill.className = 'progress-fill';
+  stopBtn.classList.remove('hidden'); stopBtn.disabled = false; stopBtn.textContent = '停止扫描';
+  progress.classList.remove('hidden'); progressFill.style.width = '0%'; progressFill.className = 'progress-fill';
   progressText.innerHTML = '提交扫描任务...';
 
   try {
@@ -444,7 +444,7 @@ async function startScan() {
     if (!data.task_id) throw new Error(data.error || '提交失败');
     pollTask(data.task_id);
   } catch(e) {
-    resetScanButtons(); progress.style.display = 'none';
+    resetScanButtons(); progress.classList.add('hidden');
     showToast('提交失败: ' + e.message);
   }
 }
@@ -453,7 +453,7 @@ function resetScanButtons() {
   var btn = document.getElementById('ss-btn');
   var stopBtn = document.getElementById('ss-stop-btn');
   btn.style.display = 'inline-flex'; btn.disabled = false; btn.textContent = '开始扫描';
-  stopBtn.style.display = 'none'; stopBtn.disabled = true;
+  stopBtn.classList.add('hidden'); stopBtn.disabled = true;
 }
 
 async function stopScan() {
@@ -512,12 +512,12 @@ async function fetchResult(taskId) {
     var resp = await fetch('/api/scan/' + taskId + '/result');
     var data = await resp.json();
     if (!data.results || data.results.length === 0) {
-      resultsDiv.style.display = 'block';
+      resultsDiv.classList.remove('hidden');
       summary.textContent = '— 无符合条件的标的';
       tableDiv.innerHTML = '<div class="empty-state"><div class="empty-text">当前市场条件下，暂无触发买入信号的标的</div></div>';
       loadDataStatus(); return;
     }
-    resultsDiv.style.display = 'block';
+    resultsDiv.classList.remove('hidden');
     summary.textContent = '— 共 ' + data.count + ' 只';
     var html = '<div class="table-wrap"><table><thead><tr><th>#</th><th>股票</th><th>代码</th><th>行业</th><th class="text-right">得分</th><th class="text-right">现价</th><th class="text-right">涨跌</th><th>核心信号</th></tr></thead><tbody>';
     data.results.forEach(function(r, i) {
@@ -687,9 +687,9 @@ function sector_renderCard(s) {
   var cat = s.category || 'neutral';
   var catClass = cat === 'mainline' ? 'sector-mainline' : (cat === 'potential' ? 'sector-potential' : (cat === 'fading' ? 'sector-fading' : ''));
   var pctStr = (s.pct_chg >= 0 ? '+' : '') + (s.pct_chg || 0).toFixed(2) + '%';
-  var pctColor = s.pct_chg >= 0 ? 'var(--accent)' : 'var(--red)';
+  var pctColor = s.pct_chg >= 0 ? 'var(--red)' : 'var(--accent)';
   var upDown = '';
-  if (s.up_count || s.down_count) upDown = '<span class="text-accent">&#8593;' + (s.up_count||0) + '</span> <span class="text-red">&#8595;' + (s.down_count||0) + '</span>';
+  if (s.up_count || s.down_count) upDown = '<span class="text-red">&#8593;' + (s.up_count||0) + '</span> <span class="text-accent">&#8595;' + (s.down_count||0) + '</span>';
   var details = s.details || [];
   var detailRows = '';
   for (var i = 0; i < details.length; i++) { var d = details[i]; detailRows += '<div class="flex justify-between text-xs"><span>' + d.desc + '</span><span class="' + sector_scoreClass(d.score) + '">' + d.score + '/' + d.weight + '</span></div>'; }
@@ -709,7 +709,7 @@ function sector_renderTable(sectors, limit) {
   for (var i = 0; i < list.length; i++) {
     var s = list[i];
     var pctStr = (s.pct_chg >= 0 ? '+' : '') + (s.pct_chg || 0).toFixed(2) + '%';
-    var pctColor = s.pct_chg >= 0 ? 'var(--accent)' : 'var(--red)';
+    var pctColor = s.pct_chg >= 0 ? 'var(--red)' : 'var(--accent)';
     var details = s.details || [];
     var scores = {};
     for (var j = 0; j < details.length; j++) scores[details[j].criterion] = details[j].score;
