@@ -568,7 +568,7 @@ async function testStock() {
   var strategy = document.getElementById('ss-test-strategy').value;
   var resultDiv = document.getElementById('ss-test-result');
   if (!code) { showToast('请输入股票代码'); return; }
-  resultDiv.style.display = 'block';
+  resultDiv.classList.remove('hidden');
   resultDiv.innerHTML = '<div class="text-muted">正在分析...</div>';
   try {
     var resp = await fetch('/api/scan/test/' + code + '?strategy=' + strategy, { method:'POST' });
@@ -599,13 +599,13 @@ async function loadTracker() {
     var grouped = data.grouped || {};
     var entries = Object.values(grouped);
     var allEntries = entries.reduce(function(a, g) { return a.concat(g.entries || []); }, []);
-    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; columnsDiv.style.display = 'none'; refreshInfo.textContent = '上次刷新: —'; return; }
-    emptyDiv.style.display = 'none'; columnsDiv.style.display = 'grid';
+    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; columnsDiv.classList.add('hidden'); refreshInfo.textContent = '上次刷新: —'; return; }
+    emptyDiv.style.display = 'none'; columnsDiv.classList.remove('hidden');
     var lastRefresh = null;
     allEntries.forEach(function(e) { (e.stocks || []).forEach(function(s) { if (s.latest_date && (!lastRefresh || s.latest_date > lastRefresh)) lastRefresh = s.latest_date; }); });
     refreshInfo.textContent = lastRefresh ? '上次刷新: ' + lastRefresh : '上次刷新: 从未';
     renderTracker(grouped, allEntries);
-  } catch(e) { emptyDiv.style.display = 'block'; columnsDiv.style.display = 'none'; emptyDiv.innerHTML = '<span class="text-red">加载失败: ' + e.message + '</span>'; }
+  } catch(e) { emptyDiv.style.display = 'block'; columnsDiv.classList.add('hidden'); emptyDiv.innerHTML = '<span class="text-red">加载失败: ' + e.message + '</span>'; }
 }
 
 function renderTracker(grouped) {
@@ -662,8 +662,8 @@ async function refreshTracker() {
     loadDataStatus();
     var emptyDiv = document.getElementById('tracker-empty');
     var columnsDiv = document.getElementById('tracker-columns');
-    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; columnsDiv.style.display = 'none'; }
-    else { emptyDiv.style.display = 'none'; columnsDiv.style.display = 'grid'; }
+    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; columnsDiv.classList.add('hidden'); }
+    else { emptyDiv.style.display = 'none'; columnsDiv.classList.remove('hidden'); }
   } catch(e) { refreshInfo.textContent = '刷新失败: ' + e.message; }
   finally { btn.disabled = false; btn.textContent = '刷新全部价格'; }
 }
@@ -752,7 +752,7 @@ async function sector_loadLatest() {
     if (data.status === 'empty') { infoEl.textContent = data.message; return; }
     if (data.scan_time) infoEl.textContent = '上次分析: ' + data.scan_time;
     document.getElementById('sector-empty').style.display = 'none';
-    document.getElementById('sector-results').style.display = 'block';
+    document.getElementById('sector-results').classList.remove('hidden');
     sector_renderResults(data);
   } catch(e) { infoEl.textContent = '加载失败: ' + e.message; }
 }
@@ -768,7 +768,7 @@ async function sector_analyze() {
     if (data.error) { infoEl.textContent = '分析失败: ' + data.error; showToast('板块分析失败: ' + data.error); return; }
     if (data.scan_time) infoEl.textContent = '上次分析: ' + data.scan_time;
     document.getElementById('sector-empty').style.display = 'none';
-    document.getElementById('sector-results').style.display = 'block';
+    document.getElementById('sector-results').classList.remove('hidden');
     sector_renderResults(data);
     showToast('板块分析完成', 'success');
   } catch(e) { infoEl.textContent = '分析失败: ' + e.message; showToast('板块分析失败: ' + e.message); }
