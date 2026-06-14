@@ -64,6 +64,16 @@ td .btn:last-child { margin-right:0; }
 .tracker-date-group { margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border-subtle); }
 .tracker-date-group:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
 
+/* ── Monitor (盯盘) ── */
+.signal-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; }
+.signal-card { border-left:3px solid var(--accent); padding:14px; }
+.signal-card .signal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.signal-card .signal-stock { font-weight:600; font-size:1.0em; }
+.signal-card .signal-meta { font-size:.82em; color:var(--text2); margin-top:4px; }
+.signal-section-title { font-size:1.05em; font-weight:600; margin:16px 0 8px; padding-bottom:8px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; gap:8px; }
+.signal-triggered { animation:pulseHighlight .6s ease; }
+@keyframes pulseHighlight { 0%{background:rgba(16,185,129,.15)} 100%{background:transparent} }
+
 /* ── Responsive ── */
 @media(max-width:768px) {
   .app-layout { flex-direction:column; }
@@ -77,4 +87,5 @@ td .btn:last-child { margin-right:0; }
   .metrics-grid { grid-template-columns:repeat(2, 1fr); }
   .sector-grid { grid-template-columns:1fr; }
   .tracker-grid { grid-template-columns:1fr; }
+  .signal-grid { grid-template-columns:1fr; }
 }

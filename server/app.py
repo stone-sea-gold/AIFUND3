@@ -40,6 +40,9 @@ from server.tracker import get_tracker
 from server.holdings_manager import get_holdings_manager
 from server.sector_monitor.sector_manager import get_sector_manager
 from server.backtest_manager import get_backtest_manager
+from server.monitor_manager import get_monitor_manager
+from server.monitor_pool import get_monitor_pool
+from server.monitor_strategy_loader import discover_monitor_strategies
 
 app = FastAPI(title="波浪交易看板")
 
@@ -412,6 +415,106 @@ def api_delete_tracker_entry(entry_id: str):
     if _tracker.delete_entry(entry_id):
         return {"status": "deleted"}
     return JSONResponse({"error": "条目不存在"}, status_code=404)
+
+
+# ── API：盯盘系统 ────────────────────────────────────────────────
+
+_monitor_mgr = get_monitor_manager()
+_monitor_pool = get_monitor_pool()
+
+
+@app.get("/api/monitor/strategies")
+def api_monitor_strategies():
+    """列出可用盯盘策略"""
+    return {"strategies": discover_monitor_strategies()}
+
+
+@app.get("/api/monitor/pool")
+def api_monitor_pool():
+    """获取盯盘目标池"""
+    targets = _monitor_pool.get_targets()
+    return {"targets": targets, "count": len(targets), "max": _monitor_pool.MAX_TARGETS}
+
+
+@app.post("/api/monitor/pool")
+def api_monitor_add_target(body: dict = Body(...)):
+    """手动添加股票到盯盘目标池"""
+    code = body.get("code", "").strip()
+    if not code:
+        return JSONResponse({"error": "股票代码不能为空"}, status_code=422)
+    name = body.get("name", code)
+    result = _monitor_pool.add_target(
+        code=code,
+        name=name,
+        score=body.get("score", 0),
+        scan_date=body.get("scan_date", ""),
+        strategy_name=body.get("strategy_name", ""),
+        industry=body.get("industry", ""),
+        concepts=body.get("concepts", []),
+        added_from="manual",
+    )
+    if result:
+        return {"status": "added", "target": result}
+    return JSONResponse({"error": "股票已存在或目标池已满"}, status_code=400)
+
+
+@app.post("/api/monitor/pool/import")
+def api_monitor_import_tracker(body: dict = Body(...)):
+    """从选股跟踪导入股票到盯盘目标池"""
+    entries = _tracker.get_entries()
+    entry_ids = body.get("entry_ids")  # None = 全部导入
+    result = _monitor_pool.import_from_tracker(entries, entry_ids)
+    return {"status": "ok", "added": result["added"], "skipped": result["skipped"]}
+
+
+@app.delete("/api/monitor/pool/{target_id}")
+def api_monitor_remove_target(target_id: str):
+    """从盯盘目标池删除"""
+    if _monitor_pool.remove_target(target_id):
+        return {"status": "removed"}
+    return JSONResponse({"error": "目标不存在"}, status_code=404)
+
+
+@app.delete("/api/monitor/pool")
+def api_monitor_clear_pool():
+    """清空盯盘目标池"""
+    _monitor_pool.clear_targets()
+    return {"status": "cleared"}
+
+
+@app.post("/api/monitor/start")
+def api_monitor_start(body: dict = Body(...)):
+    """开启盯盘任务"""
+    strategies = body.get("strategies", [])
+    if not strategies:
+        return JSONResponse({"error": "请选择至少一个策略"}, status_code=422)
+    result = _monitor_mgr.start(strategies)
+    if "error" in result:
+        return JSONResponse(result, status_code=400)
+    return result
+
+
+@app.post("/api/monitor/stop")
+def api_monitor_stop():
+    """停止盯盘任务"""
+    result = _monitor_mgr.stop()
+    if "error" in result:
+        return JSONResponse(result, status_code=400)
+    return result
+
+
+@app.get("/api/monitor/status")
+def api_monitor_status():
+    """获取盯盘任务状态和触发信号"""
+    return _monitor_mgr.get_status()
+
+
+@app.delete("/api/monitor/triggered/{signal_id}")
+def api_monitor_remove_triggered(signal_id: str):
+    """删除已触发的信号"""
+    if _monitor_mgr.remove_triggered(signal_id):
+        return {"status": "removed"}
+    return JSONResponse({"error": "信号不存在"}, status_code=404)
 
 
 # ── API：持仓管理 ────────────────────────────────────────────────

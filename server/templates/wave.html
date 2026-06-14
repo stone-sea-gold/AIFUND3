@@ -37,7 +37,10 @@
     <span class="link-icon">&#9776;</span> 选股跟踪
   </a>
   <a class="sidebar-link" data-section="sector" href="#">
-    <span class="link-icon">&#9650;</span> 板块主线
+    <span class="link-icon">&#9650;</span> 板块监测
+  </a>
+  <a class="sidebar-link" data-section="monitor" href="#">
+    <span class="link-icon">&#9673;</span> 盯盘助手
   </a>
 </aside>
 
@@ -207,6 +210,70 @@
 
 </div><!-- /section-sector -->
 
+<!-- ════════ Section: Monitor ════════ -->
+<div id="section-monitor" class="section">
+
+  <div class="section-header">
+    <h1>盯盘</h1>
+    <p>实时监控目标股票的买入信号</p>
+  </div>
+
+  <!-- 控制栏 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="flex items-center justify-between gap-4" style="flex-wrap:wrap">
+      <div class="form-group" style="min-width:200px;flex:1">
+        <label class="form-label">选择策略（可多选）</label>
+        <select id="monitor-strategy-select" class="form-select" multiple style="min-height:60px"></select>
+      </div>
+      <div class="flex gap-2 items-end" style="margin-top:auto">
+        <button id="monitor-start-btn" class="btn btn-primary" onclick="monitorStart()">开启盯盘</button>
+        <button id="monitor-stop-btn" class="btn btn-danger hidden" onclick="monitorStop()">停止盯盘</button>
+      </div>
+      <div id="monitor-info" class="data-status" style="min-width:180px"></div>
+    </div>
+  </div>
+
+  <!-- 导入选择面板（独立区块，在目标池卡片上方） -->
+  <div id="monitor-import-area" class="card hidden" style="margin-bottom:12px;background:var(--bg-subtle)"></div>
+
+  <!-- 目标池 -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-header">
+      <span>目标池 (<span id="monitor-pool-count">0</span>/100)</span>
+      <div class="flex gap-2">
+        <button class="btn btn-sm btn-secondary" id="monitor-import-btn" onclick="monitorImportFromTracker()">从选股跟踪导入</button>
+        <button class="btn btn-sm btn-secondary" onclick="monitorShowAddForm()">手动添加</button>
+        <button class="btn btn-sm btn-ghost" onclick="monitorClearPool()">清空</button>
+      </div>
+    </div>
+    <div id="monitor-add-area"></div>
+    <div id="monitor-pool-empty" class="empty-state">
+      <p class="empty-text">暂无盯盘目标</p>
+      <p class="empty-hint">从选股跟踪导入或手动添加股票</p>
+    </div>
+    <div id="monitor-pool-content" class="hidden">
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>代码</th><th>名称</th><th>选股得分</th><th>行业</th><th>来源</th><th>操作</th>
+          </tr></thead>
+          <tbody id="monitor-pool-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 触发信号栏 -->
+  <div id="monitor-signals-area">
+    <div id="monitor-signals-empty" class="empty-state">
+      <p class="empty-text">暂无触发信号</p>
+      <p class="empty-hint">开启盯盘后，触发的买入信号将显示在此处</p>
+    </div>
+    <div id="monitor-signals-content" class="hidden"></div>
+  </div>
+
+</div><!-- /section-monitor -->
+
 </main>
 </div><!-- /app-layout -->
 
@@ -223,6 +290,6 @@
 </div>
 
 <script src="/static/js/common.js"></script>
-<script src="/static/js/wave.js"></script>
+<script src="/static/js/wave.js?v=4"></script>
 </body>
 </html>

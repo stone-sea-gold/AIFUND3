@@ -12,6 +12,7 @@ document.querySelectorAll('.sidebar-link').forEach(function(link) {
     if (section === 'tracker') loadTracker();
     if (section === 'dashboard') loadDashboard();
     if (section === 'sector') sector_loadLatest();
+    if (section === 'monitor') loadMonitor();
   });
 });
 
@@ -796,6 +797,416 @@ async function sector_toggleStocks(card) {
     html += '</tbody></table></div>';
     stocksDiv.innerHTML = html;
   } catch(e) { stocksDiv.innerHTML = '<div class="text-xs text-red">加载失败: ' + e.message + '</div>'; }
+}
+
+// ═══════════════════════════════════════════════════════════
+// Monitor (盯盘)
+// ═══════════════════════════════════════════════════════════
+
+var _monitorPollTimer = null;
+var _monitorStrategies = [];
+var _prevTriggeredIds = {};
+
+async function loadMonitor() {
+  await monitorLoadStrategies();
+  await monitorLoadPool();
+  await monitorLoadStatus();
+}
+
+async function monitorLoadStrategies() {
+  try {
+    var resp = await fetch('/api/monitor/strategies');
+    var data = await resp.json();
+    _monitorStrategies = data.strategies || [];
+    var sel = document.getElementById('monitor-strategy-select');
+    sel.innerHTML = '';
+    _monitorStrategies.forEach(function(s) {
+      var opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.strategy_name + ' (' + s.signal_count + '个信号)';
+      sel.appendChild(opt);
+    });
+  } catch(e) {
+    console.error('load monitor strategies error:', e);
+  }
+}
+
+async function monitorLoadPool() {
+  var emptyDiv = document.getElementById('monitor-pool-empty');
+  var contentDiv = document.getElementById('monitor-pool-content');
+  var countSpan = document.getElementById('monitor-pool-count');
+  try {
+    var resp = await fetch('/api/monitor/pool');
+    var data = await resp.json();
+    var targets = data.targets || [];
+    countSpan.textContent = targets.length;
+    if (targets.length === 0) {
+      emptyDiv.style.display = 'block';
+      contentDiv.classList.add('hidden');
+      return;
+    }
+    emptyDiv.style.display = 'none';
+    contentDiv.classList.remove('hidden');
+    monitorRenderPool(targets);
+  } catch(e) {
+    emptyDiv.style.display = 'block';
+    contentDiv.classList.add('hidden');
+    emptyDiv.innerHTML = '<span class="text-red">加载失败: ' + e.message + '</span>';
+  }
+}
+
+function monitorRenderPool(targets) {
+  var tbody = document.getElementById('monitor-pool-body');
+  var html = '';
+  targets.forEach(function(t) {
+    var fromLabel = t.added_from === 'tracker' ? '选股跟踪' : '手动添加';
+    html += '<tr>' +
+      '<td>' + t.code + '</td>' +
+      '<td>' + t.name + '</td>' +
+      '<td class="num">' + (t.score || '—') + '</td>' +
+      '<td>' + (t.industry || '—') + '</td>' +
+      '<td><span class="badge badge-neutral">' + fromLabel + '</span></td>' +
+      '<td><button class="btn btn-sm btn-ghost" onclick="monitorRemoveTarget(\'' + t.id + '\')">删除</button></td>' +
+      '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function monitorShowAddForm() {
+  var area = document.getElementById('monitor-add-area');
+  if (area.innerHTML.trim()) { area.innerHTML = ''; return; }
+  area.innerHTML =
+    '<div class="flex gap-2 items-end" style="padding:12px 0">' +
+    '<div class="form-group"><label class="form-label">股票代码</label>' +
+    '<input class="form-input" type="text" id="monitor-add-code" placeholder="600519" style="text-transform:uppercase;width:120px"></div>' +
+    '<div class="form-group"><label class="form-label">名称（可选）</label>' +
+    '<input class="form-input" type="text" id="monitor-add-name" placeholder="贵州茅台" style="width:120px"></div>' +
+    '<button class="btn btn-primary btn-sm" onclick="monitorAddTarget()">添加</button>' +
+    '<button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'monitor-add-area\').innerHTML=\'\'">取消</button>' +
+    '</div>';
+  document.getElementById('monitor-add-code').focus();
+}
+
+async function monitorAddTarget() {
+  var code = document.getElementById('monitor-add-code').value.trim();
+  var name = document.getElementById('monitor-add-name').value.trim() || code;
+  if (!code) { showToast('请输入股票代码', 'error'); return; }
+  try {
+    var resp = await fetch('/api/monitor/pool', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({code: code, name: name}),
+    });
+    var data = await resp.json();
+    if (resp.ok) {
+      showToast('已添加 ' + name, 'success');
+      document.getElementById('monitor-add-area').innerHTML = '';
+      await monitorLoadPool();
+    } else {
+      showToast(data.error || '添加失败', 'error');
+    }
+  } catch(e) { showToast('添加失败: ' + e.message, 'error'); }
+}
+
+async function monitorRemoveTarget(id) {
+  if (!await showConfirm('确定删除该目标？')) return;
+  try {
+    await fetch('/api/monitor/pool/' + id, {method: 'DELETE'});
+    await monitorLoadPool();
+  } catch(e) { showToast('删除失败', 'error'); }
+}
+
+async function monitorClearPool() {
+  if (!await showConfirm('确定清空全部目标池？', {danger: true})) return;
+  try {
+    await fetch('/api/monitor/pool', {method: 'DELETE'});
+    await monitorLoadPool();
+  } catch(e) { showToast('清空失败', 'error'); }
+}
+
+async function monitorImportFromTracker() {
+  var area = document.getElementById('monitor-import-area');
+  if (!area.classList.contains('hidden')) { area.classList.add('hidden'); return; }
+
+  try {
+    var trackerResp = await fetch('/api/tracker');
+    var trackerData = await trackerResp.json();
+    var grouped = trackerData.grouped || {};
+    var strategies = Object.keys(grouped);
+    if (strategies.length === 0) {
+      showToast('暂无选股跟踪数据', 'error');
+      return;
+    }
+
+    // 获取已导入的 entry_id 集合
+    var poolResp = await fetch('/api/monitor/pool');
+    var poolData = await poolResp.json();
+    var importedEntryIds = {};
+    (poolData.targets || []).forEach(function(t) {
+      if (t.entry_id) importedEntryIds[t.entry_id] = true;
+    });
+
+    // 收集所有批次，按日期降序排列
+    var batches = [];
+    strategies.forEach(function(strategy) {
+      var group = grouped[strategy];
+      (group.entries || []).forEach(function(e) {
+        batches.push({
+          id: e.id,
+          scan_date: e.scan_date,
+          strategy_name: group.strategy_name,
+          stock_count: (e.stocks || []).length,
+          imported: !!importedEntryIds[e.id],
+        });
+      });
+    });
+    batches.sort(function(a, b) { return b.scan_date.localeCompare(a.scan_date); });
+
+    var html = '<div style="font-weight:600;font-size:.9em;margin-bottom:8px">选择要导入的跟踪批次</div>';
+    batches.forEach(function(b) {
+      var label = b.scan_date + '  ' + b.strategy_name + ' — ' + b.stock_count + '只';
+      if (b.imported) {
+        html += '<label style="display:flex;align-items:center;gap:8px;padding:3px 0;font-size:.84em;color:var(--text3);cursor:default">' +
+          '<input type="checkbox" disabled style="accent-color:var(--text3)">' +
+          label + ' <span class="badge badge-neutral" style="margin-left:4px">已导入</span>' +
+          '</label>';
+      } else {
+        html += '<label style="display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;font-size:.84em">' +
+          '<input type="checkbox" class="monitor-import-cb" value="' + b.id + '" style="accent-color:var(--accent)">' +
+          label +
+          '</label>';
+      }
+    });
+
+    html += '<div class="form-actions">' +
+      '<button class="btn btn-primary btn-sm" onclick="monitorDoImport()">确认导入</button>' +
+      '<button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'monitor-import-area\').classList.add(\'hidden\')">取消</button>' +
+      '</div>';
+
+    area.innerHTML = html;
+    area.classList.remove('hidden');
+  } catch(e) { showToast('加载跟踪数据失败: ' + e.message, 'error'); }
+}
+
+async function monitorDoImport() {
+  var checked = document.querySelectorAll('.monitor-import-cb:checked');
+  var ids = Array.from(checked).map(function(cb) { return cb.value; });
+  if (ids.length === 0) { showToast('请至少选择一个批次', 'error'); return; }
+  try {
+    var resp = await fetch('/api/monitor/pool/import', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({entry_ids: ids}),
+    });
+    var data = await resp.json();
+    if (resp.ok) {
+      showToast('导入完成：新增' + data.added + '只，跳过' + data.skipped + '只', 'success');
+      document.getElementById('monitor-import-area').classList.add('hidden');
+      await monitorLoadPool();
+    } else {
+      showToast(data.error || '导入失败', 'error');
+    }
+  } catch(e) { showToast('导入失败: ' + e.message, 'error'); }
+}
+
+async function monitorStart() {
+  var sel = document.getElementById('monitor-strategy-select');
+  var selected = Array.from(sel.selectedOptions).map(function(o) { return o.value; });
+  if (selected.length === 0) { showToast('请选择至少一个策略', 'error'); return; }
+  try {
+    var resp = await fetch('/api/monitor/start', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({strategies: selected}),
+    });
+    var data = await resp.json();
+    if (resp.ok) {
+      showToast('盯盘已开启', 'success');
+      monitorUpdateButtons(true);
+      monitorStartPolling();
+    } else {
+      showToast(data.error || '开启失败', 'error');
+    }
+  } catch(e) { showToast('开启失败: ' + e.message, 'error'); }
+}
+
+async function monitorStop() {
+  if (!await showConfirm('确定停止盯盘？触发记录将被清空。')) return;
+  try {
+    await fetch('/api/monitor/stop', {method: 'POST'});
+    showToast('盯盘已停止', 'info');
+    monitorUpdateButtons(false);
+    monitorStopPolling();
+    _prevTriggeredIds = {};
+    await monitorLoadStatus();
+  } catch(e) { showToast('停止失败', 'error'); }
+}
+
+function monitorUpdateButtons(running) {
+  var startBtn = document.getElementById('monitor-start-btn');
+  var stopBtn = document.getElementById('monitor-stop-btn');
+  var sel = document.getElementById('monitor-strategy-select');
+  if (running) {
+    startBtn.classList.add('hidden');
+    stopBtn.classList.remove('hidden');
+    sel.disabled = true;
+  } else {
+    startBtn.classList.remove('hidden');
+    stopBtn.classList.add('hidden');
+    sel.disabled = false;
+  }
+}
+
+function monitorStartPolling() {
+  monitorStopPolling();
+  _monitorPollTimer = setInterval(monitorPoll, 3000);
+}
+
+function monitorStopPolling() {
+  if (_monitorPollTimer) {
+    clearInterval(_monitorPollTimer);
+    _monitorPollTimer = null;
+  }
+}
+
+async function monitorLoadStatus() {
+  try {
+    var resp = await fetch('/api/monitor/status');
+    var data = await resp.json();
+    monitorUpdateUI(data);
+    if (data.status === 'running') {
+      monitorUpdateButtons(true);
+      monitorStartPolling();
+    }
+    monitorRenderSignals(data.triggered || {});
+  } catch(e) { console.error('monitor load status error:', e); }
+}
+
+async function monitorPoll() {
+  try {
+    var resp = await fetch('/api/monitor/status');
+    var data = await resp.json();
+    monitorUpdateUI(data);
+    if (data.status !== 'running') {
+      monitorStopPolling();
+      monitorUpdateButtons(false);
+    }
+    var triggered = data.triggered || {};
+    monitorCheckNewSignals(triggered);
+    monitorRenderSignals(triggered);
+  } catch(e) { console.error('monitor poll error:', e); }
+}
+
+function monitorUpdateUI(data) {
+  var info = document.getElementById('monitor-info');
+  var stats = data.stats || {};
+  var parts = [];
+  if (data.status === 'running') {
+    parts.push('运行中');
+    if (stats.total_ticks) parts.push('轮询' + stats.total_ticks + '次');
+    if (stats.total_signals) parts.push('信号' + stats.total_signals + '个');
+    if (stats.last_tick_at) parts.push('最近: ' + stats.last_tick_at.substring(11, 19));
+  } else if (data.status === 'stopped') {
+    parts.push('已停止');
+  } else {
+    parts.push('未启动');
+  }
+  info.textContent = parts.join(' | ');
+}
+
+function monitorCheckNewSignals(triggered) {
+  var newIds = {};
+  var newSignals = [];
+  Object.keys(triggered).forEach(function(strategy) {
+    var group = triggered[strategy];
+    (group.signals || []).forEach(function(s) {
+      newIds[s.id] = true;
+      if (!_prevTriggeredIds[s.id]) {
+        newSignals.push(s);
+      }
+    });
+  });
+  _prevTriggeredIds = newIds;
+
+  if (newSignals.length > 0) {
+    monitorNotify(newSignals);
+  }
+}
+
+function monitorNotify(newSignals) {
+  if (typeof Notification === 'undefined') return;
+  if (Notification.permission === 'granted') {
+    newSignals.forEach(function(s) {
+      new Notification('盯盘信号: ' + s.stock_name, {
+        body: s.signal_name + ' [' + (s.level || '') + '] - ' + (s.strategy_display || ''),
+        tag: 'monitor-' + s.id,
+      });
+    });
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
+}
+
+function monitorRenderSignals(triggered) {
+  var emptyDiv = document.getElementById('monitor-signals-empty');
+  var contentDiv = document.getElementById('monitor-signals-content');
+  var strategies = Object.keys(triggered);
+  if (strategies.length === 0) {
+    emptyDiv.style.display = 'block';
+    contentDiv.classList.add('hidden');
+    return;
+  }
+  emptyDiv.style.display = 'none';
+  contentDiv.classList.remove('hidden');
+
+  var html = '';
+  strategies.forEach(function(strategy) {
+    var group = triggered[strategy];
+    var signals = group.signals || [];
+    html += '<div class="signal-section-title">' + (group.strategy_display || strategy) + ' <span class="badge badge-blue">' + signals.length + '</span></div>';
+    html += '<div class="signal-grid">';
+    signals.forEach(function(s) {
+      var pctClass = s.pct_chg >= 0 ? 'pnl-up' : 'pnl-down';
+      var pctText = s.pct_chg >= 0 ? '+' + s.pct_chg.toFixed(2) + '%' : s.pct_chg.toFixed(2) + '%';
+      html += '<div class="card signal-card" id="signal-' + s.id + '">' +
+        '<div class="signal-header">' +
+        '<span class="signal-stock">' + s.stock_name + ' ' + s.stock_code + '</span>' +
+        '<button class="btn btn-sm btn-ghost" onclick="monitorRemoveSignal(\'' + s.id + '\')">&#10005;</button>' +
+        '</div>' +
+        '<div class="signal-meta">' +
+        '<span class="badge badge-' + monitorLevelColor(s.level) + '">' + (s.level || '信号') + '</span> ' +
+        s.signal_name +
+        '</div>' +
+        '<div class="signal-meta">' +
+        (s.score ? '选股分: ' + s.score + ' | ' : '') +
+        (s.industry ? s.industry + ' | ' : '') +
+        '<span class="' + pctClass + '">' + pctText + '</span>' +
+        (s.price ? ' @ ' + s.price : '') +
+        '</div>' +
+        '<div class="signal-meta text-muted">' + (s.triggered_at || '') + '</div>' +
+        '</div>';
+    });
+    html += '</div>';
+  });
+  contentDiv.innerHTML = html;
+}
+
+function monitorLevelColor(level) {
+  if (!level) return 'neutral';
+  var l = level.toLowerCase();
+  if (l.indexOf('强烈') >= 0 || l.indexOf('强') >= 0) return 'red';
+  if (l.indexOf('温和') >= 0 || l.indexOf('中') >= 0) return 'amber';
+  if (l.indexOf('关注') >= 0 || l.indexOf('弱') >= 0) return 'blue';
+  return 'neutral';
+}
+
+async function monitorRemoveSignal(id) {
+  try {
+    await fetch('/api/monitor/triggered/' + id, {method: 'DELETE'});
+    delete _prevTriggeredIds[id];
+    var el = document.getElementById('signal-' + id);
+    if (el) el.remove();
+  } catch(e) { showToast('删除失败', 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════
