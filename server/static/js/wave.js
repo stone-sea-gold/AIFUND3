@@ -590,9 +590,12 @@ async function testStock() {
 // Stock Tracking
 // ═══════════════════════════════════════════════════════════
 
+var _trackerData = [];  // all entries flat list
+var _trackerSelectedId = null;
+
 async function loadTracker() {
   var emptyDiv = document.getElementById('tracker-empty');
-  var columnsDiv = document.getElementById('tracker-columns');
+  var masterDetail = document.getElementById('tracker-master-detail');
   var refreshInfo = document.getElementById('tracker-refresh-info');
   try {
     var resp = await fetch('/api/tracker');
@@ -600,51 +603,77 @@ async function loadTracker() {
     var grouped = data.grouped || {};
     var entries = Object.values(grouped);
     var allEntries = entries.reduce(function(a, g) { return a.concat(g.entries || []); }, []);
-    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; columnsDiv.classList.add('hidden'); refreshInfo.textContent = '上次刷新: —'; return; }
-    emptyDiv.style.display = 'none'; columnsDiv.classList.remove('hidden');
+    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; masterDetail.classList.add('hidden'); refreshInfo.textContent = '上次刷新: —'; return; }
+    emptyDiv.style.display = 'none'; masterDetail.classList.remove('hidden');
     var lastRefresh = null;
     allEntries.forEach(function(e) { (e.stocks || []).forEach(function(s) { if (s.latest_date && (!lastRefresh || s.latest_date > lastRefresh)) lastRefresh = s.latest_date; }); });
     refreshInfo.textContent = lastRefresh ? '上次刷新: ' + lastRefresh : '上次刷新: 从未';
-    renderTracker(grouped, allEntries);
-  } catch(e) { emptyDiv.style.display = 'block'; columnsDiv.classList.add('hidden'); emptyDiv.innerHTML = '<span class="text-red">加载失败: ' + e.message + '</span>'; }
+    // Flatten and sort by date desc
+    _trackerData = [];
+    for (var stratKey in grouped) {
+      var stratGroup = grouped[stratKey];
+      (stratGroup.entries || []).forEach(function(entry) {
+        entry._strategy_name = stratGroup.strategy_name;
+        _trackerData.push(entry);
+      });
+    }
+    _trackerData.sort(function(a, b) { return b.scan_date.localeCompare(a.scan_date); });
+    renderTrackerList();
+    // Auto-select first if nothing selected
+    if (_trackerSelectedId && !_trackerData.find(function(e) { return e.id === _trackerSelectedId; })) {
+      _trackerSelectedId = null;
+    }
+    if (!_trackerSelectedId && _trackerData.length > 0) {
+      selectTrackerEntry(_trackerData[0].id);
+    }
+  } catch(e) { emptyDiv.style.display = 'block'; masterDetail.classList.add('hidden'); emptyDiv.innerHTML = '<span class="text-red">加载失败: ' + e.message + '</span>'; }
 }
 
-function renderTracker(grouped) {
-  var columnsDiv = document.getElementById('tracker-columns');
-  var html = ''; var colIdx = 0;
-  for (var stratKey in grouped) {
-    var stratGroup = grouped[stratKey];
-    html += '<div class="card stagger-in" style="animation-delay:' + (colIdx * 0.1) + 's">';
-    html += '<h3>' + stratGroup.strategy_name + '</h3>';
-    var entries = (stratGroup.entries || []).sort(function(a,b) { return b.scan_date.localeCompare(a.scan_date); });
-    entries.forEach(function(entry) {
-      html += '<div class="tracker-date-group">';
-      html += '<div class="flex items-center justify-between mb-2"><span class="text-sm fw-600">' + entry.scan_date + '</span>';
-      html += '<span class="text-xs text-muted">' + (entry.pool_name || '') + ' Top' + (entry.top_n || '?') + '</span>';
-      html += '<button class="btn btn-ghost btn-icon" onclick="deleteTrackerEntry(\'' + entry.id + '\')" title="删除">&times;</button></div>';
-      var stocks = entry.stocks || [];
-      if (stocks.length === 0) { html += '<div class="text-sm text-muted text-center" style="padding:12px">该次扫描无结果</div>'; }
-      else {
-        html += '<div class="table-wrap"><table><thead><tr><th>#</th><th>代码</th><th>名称</th><th>行业</th><th class="text-right">得分</th><th class="text-right">被选价</th><th class="text-right">最新价</th><th class="text-right">涨跌</th></tr></thead><tbody>';
-        stocks.forEach(function(s, i) {
-          var pnlClass = s.pct_change === null ? '' : (s.pct_change >= 0 ? 'pnl-up' : 'pnl-down');
-          var pnlText = s.pct_change === null ? '—' : (s.pct_change >= 0 ? '+' : '') + s.pct_change.toFixed(2) + '%';
-          var scoreClass = s.score >= 50 ? 'score-high' : (s.score >= 30 ? 'score-mid' : 'score-low');
-          html += '<tr><td class="text-muted">' + (i+1) + '</td><td class="text-muted">' + s.code + '</td><td><strong>' + s.name + '</strong></td>';
-          html += '<td class="text-xs">' + (s.industry || '—') + '</td>';
-          html += '<td class="num ' + scoreClass + '">' + (s.score || 0) + '</td>';
-          html += '<td class="num">' + (s.scan_price ? s.scan_price.toFixed(2) : '—') + '</td>';
-          html += '<td class="num">' + (s.latest_price ? s.latest_price.toFixed(2) : '—') + '</td>';
-          html += '<td class="num ' + pnlClass + '">' + pnlText + '</td></tr>';
-        });
-        html += '</tbody></table></div>';
-      }
-      html += '</div>';
-    });
+function renderTrackerList() {
+  var listDiv = document.getElementById('tracker-list');
+  var html = '';
+  _trackerData.forEach(function(entry) {
+    var activeClass = entry.id === _trackerSelectedId ? ' active' : '';
+    var stockCount = (entry.stocks || []).length;
+    html += '<div class="tracker-list-item' + activeClass + '" onclick="selectTrackerEntry(\'' + entry.id + '\')">';
+    html += '<div class="item-strategy">' + (entry._strategy_name || '') + '</div>';
+    html += '<div class="item-meta"><span>' + entry.scan_date + '</span><span>' + (entry.pool_name || '') + ' Top' + (entry.top_n || '?') + '</span><span>' + stockCount + '只</span></div>';
     html += '</div>';
-    colIdx++;
+  });
+  listDiv.innerHTML = html;
+}
+
+function selectTrackerEntry(entryId) {
+  _trackerSelectedId = entryId;
+  renderTrackerList();  // update active state
+  var entry = _trackerData.find(function(e) { return e.id === entryId; });
+  var detailDiv = document.getElementById('tracker-detail');
+  if (!entry) { detailDiv.innerHTML = '<div class="empty-state"><div class="empty-text">未找到记录</div></div>'; return; }
+
+  var stocks = entry.stocks || [];
+  var html = '<div class="tracker-detail-header">';
+  html += '<h3>' + (entry._strategy_name || '') + '</h3>';
+  html += '<div class="detail-meta"><span>' + entry.scan_date + '</span><span>' + (entry.pool_name || '') + ' Top' + (entry.top_n || '?') + '</span>';
+  html += '<button class="btn btn-ghost btn-sm text-red" onclick="deleteTrackerEntry(\'' + entry.id + '\')">删除记录</button></div></div>';
+
+  if (stocks.length === 0) {
+    html += '<div class="empty-state"><div class="empty-text">该次扫描无结果</div></div>';
+  } else {
+    html += '<div class="table-wrap"><table><thead><tr><th>#</th><th>代码</th><th>名称</th><th>行业</th><th class="text-right">得分</th><th class="text-right">被选价</th><th class="text-right">最新价</th><th class="text-right">涨跌</th></tr></thead><tbody>';
+    stocks.forEach(function(s, i) {
+      var pnlClass = s.pct_change === null ? '' : (s.pct_change >= 0 ? 'pnl-up' : 'pnl-down');
+      var pnlText = s.pct_change === null ? '—' : (s.pct_change >= 0 ? '+' : '') + s.pct_change.toFixed(2) + '%';
+      var scoreClass = s.score >= 50 ? 'score-high' : (s.score >= 30 ? 'score-mid' : 'score-low');
+      html += '<tr><td class="text-muted">' + (i+1) + '</td><td class="text-muted">' + s.code + '</td><td><strong>' + s.name + '</strong></td>';
+      html += '<td class="text-xs">' + (s.industry || '—') + '</td>';
+      html += '<td class="num ' + scoreClass + '">' + (s.score || 0) + '</td>';
+      html += '<td class="num">' + (s.scan_price ? s.scan_price.toFixed(2) : '—') + '</td>';
+      html += '<td class="num">' + (s.latest_price ? s.latest_price.toFixed(2) : '—') + '</td>';
+      html += '<td class="num ' + pnlClass + '">' + pnlText + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
   }
-  columnsDiv.innerHTML = html;
+  detailDiv.innerHTML = html;
 }
 
 async function refreshTracker() {
@@ -656,15 +685,8 @@ async function refreshTracker() {
     var resp = await fetch('/api/tracker/refresh', { method:'POST' });
     var data = await resp.json();
     refreshInfo.textContent = '上次刷新: ' + (data.refresh_time || '刚完成');
-    var grouped = data.grouped || {};
-    var entries = Object.values(grouped);
-    var allEntries = entries.reduce(function(a, g) { return a.concat(g.entries || []); }, []);
-    renderTracker(grouped);
     loadDataStatus();
-    var emptyDiv = document.getElementById('tracker-empty');
-    var columnsDiv = document.getElementById('tracker-columns');
-    if (allEntries.length === 0) { emptyDiv.style.display = 'block'; columnsDiv.classList.add('hidden'); }
-    else { emptyDiv.style.display = 'none'; columnsDiv.classList.remove('hidden'); }
+    await loadTracker();
   } catch(e) { refreshInfo.textContent = '刷新失败: ' + e.message; }
   finally { btn.disabled = false; btn.textContent = '刷新全部价格'; }
 }

@@ -172,7 +172,12 @@
       <div class="empty-text">暂无跟踪数据</div>
       <div class="empty-hint">完成选股扫描后，结果将自动保存到这里</div>
     </div>
-    <div id="tracker-columns" class="tracker-grid hidden"></div>
+    <div id="tracker-master-detail" class="tracker-layout hidden">
+      <div id="tracker-list" class="tracker-list"></div>
+      <div id="tracker-detail" class="tracker-detail">
+        <div class="empty-state"><div class="empty-text">选择左侧记录查看详情</div></div>
+      </div>
+    </div>
   </div>
 
 </div><!-- /section-tracker -->
@@ -233,7 +238,16 @@
     </div>
   </div>
 
-  <!-- 导入选择面板（独立区块，在目标池卡片上方） -->
+  <!-- 触发信号栏 -->
+  <div id="monitor-signals-area" style="margin-bottom:16px">
+    <div id="monitor-signals-empty" class="empty-state">
+      <p class="empty-text">暂无触发信号</p>
+      <p class="empty-hint">开启盯盘后，触发的买入信号将显示在此处</p>
+    </div>
+    <div id="monitor-signals-content" class="hidden"></div>
+  </div>
+
+  <!-- 导入选择面板 -->
   <div id="monitor-import-area" class="card hidden" style="margin-bottom:12px;background:var(--bg-subtle)"></div>
 
   <!-- 目标池 -->
@@ -263,15 +277,6 @@
     </div>
   </div>
 
-  <!-- 触发信号栏 -->
-  <div id="monitor-signals-area">
-    <div id="monitor-signals-empty" class="empty-state">
-      <p class="empty-text">暂无触发信号</p>
-      <p class="empty-hint">开启盯盘后，触发的买入信号将显示在此处</p>
-    </div>
-    <div id="monitor-signals-content" class="hidden"></div>
-  </div>
-
 </div><!-- /section-monitor -->
 
 </main>
@@ -290,6 +295,6 @@
 </div>
 
 <script src="/static/js/common.js"></script>
-<script src="/static/js/wave.js?v=4"></script>
+<script src="/static/js/wave.js?v=5"></script>
 </body>
 </html>

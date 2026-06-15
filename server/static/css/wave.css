@@ -59,10 +59,30 @@ td .btn:last-child { margin-right:0; }
 /* ── Data Status Bar ── */
 .data-status { font-size:.78em; color:var(--text3); padding:8px 0; }
 
-/* ── Tracker ── */
-.tracker-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
-.tracker-date-group { margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border-subtle); }
-.tracker-date-group:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+/* ── Tracker (Master-Detail) ── */
+.tracker-layout { display:flex; gap:16px; min-height:400px; }
+.tracker-list {
+  width:280px; flex-shrink:0;
+  border:1px solid var(--border); border-radius:var(--radius-md);
+  background:var(--surface); overflow-y:auto; max-height:600px;
+}
+.tracker-list-item {
+  padding:12px 16px; border-bottom:1px solid var(--border-subtle);
+  cursor:pointer; transition:background .15s var(--ease);
+}
+.tracker-list-item:last-child { border-bottom:none; }
+.tracker-list-item:hover { background:var(--bg-subtle); }
+.tracker-list-item.active { background:var(--accent-bg); border-left:3px solid var(--accent); padding-left:13px; }
+.tracker-list-item .item-strategy { font-weight:600; font-size:.85em; color:var(--text); }
+.tracker-list-item .item-meta { font-size:.75em; color:var(--text3); margin-top:2px; display:flex; gap:8px; }
+.tracker-detail {
+  flex:1; min-width:0;
+  border:1px solid var(--border); border-radius:var(--radius-md);
+  background:var(--surface); padding:20px; overflow-x:auto;
+}
+.tracker-detail-header { margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border-subtle); }
+.tracker-detail-header h3 { margin:0 0 4px; font-size:1.05em; }
+.tracker-detail-header .detail-meta { font-size:.82em; color:var(--text2); display:flex; gap:12px; }
 
 /* ── Monitor (盯盘) ── */
 .signal-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; }
@@ -86,6 +106,7 @@ td .btn:last-child { margin-right:0; }
   .content { padding:16px; max-width:100%; }
   .metrics-grid { grid-template-columns:repeat(2, 1fr); }
   .sector-grid { grid-template-columns:1fr; }
-  .tracker-grid { grid-template-columns:1fr; }
+  .tracker-layout { flex-direction:column; }
+  .tracker-list { width:100%; max-height:300px; }
   .signal-grid { grid-template-columns:1fr; }
 }
