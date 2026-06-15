@@ -2,8 +2,18 @@
    Wave Dashboard — Main Page Logic
    ═══════════════════════════════════════════════════════════ */
 
+// ── Helper: Extract specific industry name ──
+// Input: "公用事业-电力" → Output: "电力"
+// Input: "电力" → Output: "电力"
+// Input: "" or null → Output: "—"
+function getSpecificIndustry(industry) {
+  if (!industry) return '—';
+  var parts = industry.split('-');
+  return parts.length > 1 ? parts[1].trim() : parts[0].trim();
+}
+
 // ── Sidebar Navigation ──
-document.querySelectorAll('.sidebar-link').forEach(function(link) {
+document.querySelectorAll('.sidebar-link[data-section]').forEach(function(link) {
   link.addEventListener('click', function(e) {
     e.preventDefault();
     var section = this.dataset.section;
@@ -407,11 +417,26 @@ var _pollTimer = null;
 
 async function loadPoolsAndStrategies() {
   try {
-    var resps = await Promise.all([fetch('/api/pools').then(function(r){return r.json()}), fetch('/api/strategies').then(function(r){return r.json()})]);
+    var resps = await Promise.all([
+      fetch('/api/pools').then(function(r){return r.json()}),
+      fetch('/api/strategies').then(function(r){return r.json()}),
+      fetch('/api/settings').then(function(r){return r.json()}).catch(function(){return null}),
+    ]);
+    var poolSel = document.getElementById('ss-pool');
+    if (resps[0].pools && resps[0].pools.length > 0) {
+      poolSel.innerHTML = resps[0].pools.map(function(p) { return '<option value="' + p.name + '">' + p.name + '</option>'; }).join('');
+    }
     var stratSel = document.getElementById('ss-strategy');
     if (resps[1].strategies && resps[1].strategies.length > 0) {
       stratSel.innerHTML = resps[1].strategies.map(function(s) { return '<option value="' + s.name + '">' + s.display_name + '</option>'; }).join('');
     }
+    // 从控制面板加载默认值
+    var defaults = (resps[2] && resps[2].data && resps[2].data.scan) || {};
+    if (defaults.strategy != null) stratSel.value = defaults.strategy;
+    if (defaults.pool != null) poolSel.value = defaults.pool;
+    if (defaults.top_n != null) document.getElementById('ss-top').value = defaults.top_n;
+    if (defaults.min_score != null) document.getElementById('ss-min-score').value = defaults.min_score;
+    if (defaults.delay != null) document.getElementById('ss-delay').value = defaults.delay;
   } catch(e) { console.warn('加载选项失败', e); }
 }
 
@@ -489,7 +514,7 @@ function pollTask(taskId) {
         clearInterval(_pollTimer); _pollTimer = null;
         progressFill.className = 'progress-fill done';
         progressText.innerHTML = '<strong>扫描完成</strong> 共扫描 ' + p.scanned + ' 只 · 合格 <strong>' + p.passed + '</strong> 只 · 耗时 ' + p.elapsed + 's';
-        resetScanButtons(); fetchResult(taskId);
+        resetScanButtons(); fetchResult(taskId); loadTracker();
       } else if (data.status === 'cancelled') {
         clearInterval(_pollTimer); _pollTimer = null;
         progressFill.className = 'progress-fill';
@@ -532,7 +557,7 @@ async function fetchResult(taskId) {
         '<td class="text-muted">' + (i+1) + '</td>' +
         '<td><strong>' + r.name + '</strong></td>' +
         '<td class="text-muted">' + r.code + '</td>' +
-        '<td class="text-xs">' + (r.industry || '—') + '</td>' +
+        '<td class="text-xs">' + getSpecificIndustry(r.industry) + '</td>' +
         '<td class="num ' + scoreClass + '">' + r.score + '</td>' +
         '<td class="num">' + info.close.toFixed(2) + '</td>' +
         '<td class="num ' + pnlClass + '">' + sign + info.pct_chg.toFixed(2) + '%</td>' +
@@ -665,7 +690,7 @@ function selectTrackerEntry(entryId) {
       var pnlText = s.pct_change === null ? '—' : (s.pct_change >= 0 ? '+' : '') + s.pct_change.toFixed(2) + '%';
       var scoreClass = s.score >= 50 ? 'score-high' : (s.score >= 30 ? 'score-mid' : 'score-low');
       html += '<tr><td class="text-muted">' + (i+1) + '</td><td class="text-muted">' + s.code + '</td><td><strong>' + s.name + '</strong></td>';
-      html += '<td class="text-xs">' + (s.industry || '—') + '</td>';
+      html += '<td class="text-xs">' + getSpecificIndustry(s.industry) + '</td>';
       html += '<td class="num ' + scoreClass + '">' + (s.score || 0) + '</td>';
       html += '<td class="num">' + (s.scan_price ? s.scan_price.toFixed(2) : '—') + '</td>';
       html += '<td class="num">' + (s.latest_price ? s.latest_price.toFixed(2) : '—') + '</td>';
@@ -840,13 +865,18 @@ async function monitorLoadStrategies() {
     var resp = await fetch('/api/monitor/strategies');
     var data = await resp.json();
     _monitorStrategies = data.strategies || [];
-    var sel = document.getElementById('monitor-strategy-select');
-    sel.innerHTML = '';
+    var container = document.getElementById('monitor-strategy-chips');
+    container.innerHTML = '';
     _monitorStrategies.forEach(function(s) {
-      var opt = document.createElement('option');
-      opt.value = s.name;
-      opt.textContent = s.strategy_name + ' (' + s.signal_count + '个信号)';
-      sel.appendChild(opt);
+      var chip = document.createElement('span');
+      chip.className = 'strategy-chip';
+      chip.dataset.name = s.name;
+      chip.textContent = s.strategy_name + ' (' + s.signal_count + '信号)';
+      chip.onclick = function() {
+        if (container.classList.contains('disabled')) return;
+        this.classList.toggle('active');
+      };
+      container.appendChild(chip);
     });
   } catch(e) {
     console.error('load monitor strategies error:', e);
@@ -886,7 +916,7 @@ function monitorRenderPool(targets) {
       '<td>' + t.code + '</td>' +
       '<td>' + t.name + '</td>' +
       '<td class="num">' + (t.score || '—') + '</td>' +
-      '<td>' + (t.industry || '—') + '</td>' +
+      '<td>' + getSpecificIndustry(t.industry) + '</td>' +
       '<td><span class="badge badge-neutral">' + fromLabel + '</span></td>' +
       '<td><button class="btn btn-sm btn-ghost" onclick="monitorRemoveTarget(\'' + t.id + '\')">删除</button></td>' +
       '</tr>';
@@ -1032,8 +1062,8 @@ async function monitorDoImport() {
 }
 
 async function monitorStart() {
-  var sel = document.getElementById('monitor-strategy-select');
-  var selected = Array.from(sel.selectedOptions).map(function(o) { return o.value; });
+  var chips = document.querySelectorAll('#monitor-strategy-chips .strategy-chip.active');
+  var selected = Array.from(chips).map(function(c) { return c.dataset.name; });
   if (selected.length === 0) { showToast('请选择至少一个策略', 'error'); return; }
   try {
     var resp = await fetch('/api/monitor/start', {
@@ -1067,15 +1097,15 @@ async function monitorStop() {
 function monitorUpdateButtons(running) {
   var startBtn = document.getElementById('monitor-start-btn');
   var stopBtn = document.getElementById('monitor-stop-btn');
-  var sel = document.getElementById('monitor-strategy-select');
+  var chips = document.getElementById('monitor-strategy-chips');
   if (running) {
     startBtn.classList.add('hidden');
     stopBtn.classList.remove('hidden');
-    sel.disabled = true;
+    chips.classList.add('disabled');
   } else {
     startBtn.classList.remove('hidden');
     stopBtn.classList.add('hidden');
-    sel.disabled = false;
+    chips.classList.remove('disabled');
   }
 }
 
@@ -1097,6 +1127,13 @@ async function monitorLoadStatus() {
     var data = await resp.json();
     monitorUpdateUI(data);
     if (data.status === 'running') {
+      // 恢复已选策略的高亮状态
+      var selected = data.selected_strategies || [];
+      document.querySelectorAll('#monitor-strategy-chips .strategy-chip').forEach(function(chip) {
+        if (selected.indexOf(chip.dataset.name) >= 0) {
+          chip.classList.add('active');
+        }
+      });
       monitorUpdateButtons(true);
       monitorStartPolling();
     }
@@ -1201,7 +1238,7 @@ function monitorRenderSignals(triggered) {
         '</div>' +
         '<div class="signal-meta">' +
         (s.score ? '选股分: ' + s.score + ' | ' : '') +
-        (s.industry ? s.industry + ' | ' : '') +
+        (s.industry ? getSpecificIndustry(s.industry) + ' | ' : '') +
         '<span class="' + pctClass + '">' + pctText + '</span>' +
         (s.price ? ' @ ' + s.price : '') +
         '</div>' +
