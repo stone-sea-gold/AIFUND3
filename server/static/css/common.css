@@ -142,6 +142,8 @@ a:hover { color:var(--accent-hover); }
 
 .btn-danger { background:var(--red); color:#fff; }
 .btn-danger:hover { background:var(--red-hover); }
+.btn-warning { background:var(--amber); color:#fff; }
+.btn-warning:hover { background:#d97706; }
 
 .btn-ghost { background:transparent; color:var(--text2); padding:6px 12px; }
 .btn-ghost:hover { background:var(--bg-subtle); color:var(--text); }
@@ -152,7 +154,7 @@ a:hover { color:var(--accent-hover); }
 /* ═══════════════════════════════════════════════════════════
    Form Controls
    ═══════════════════════════════════════════════════════════ */
-.form-group { display:flex; flex-direction:column; gap:4px; }
+.form-group { display:flex; flex-direction:column; gap:4px; min-width:120px; }
 .form-label { font-size:.78em; font-weight:500; color:var(--text2); }
 .form-input, .form-select {
   padding: 8px 12px; border:1px solid var(--border); border-radius:var(--radius-sm);
@@ -161,6 +163,7 @@ a:hover { color:var(--accent-hover); }
   transition: border-color .2s, box-shadow .2s;
   outline: none; width: 100%;
 }
+.form-select { cursor:pointer; appearance:auto; }
 .form-input:focus, .form-select:focus {
   border-color:var(--accent);
   box-shadow:0 0 0 3px rgba(16,185,129,0.12);

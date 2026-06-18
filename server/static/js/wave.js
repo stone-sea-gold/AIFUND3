@@ -34,7 +34,7 @@ var _holdingsStrategies = {buy:[], sell:[]};
 var _navChart = null;
 
 async function loadDashboard() {
-  await Promise.all([loadHoldings(), loadNav()]);
+  await Promise.all([loadHoldings(), loadNav(), loadDividends()]);
 }
 
 async function loadStrategies() {
@@ -96,6 +96,7 @@ function renderOpenTrades(trades) {
       '<td><span class="badge badge-blue">' + strategyLabel('buy', t.buy_strategy) + '</span></td>' +
       '<td class="flex gap-2">' +
         '<button class="btn btn-secondary btn-sm" onclick="showEditForm(\'' + t.id + '\')">编辑</button>' +
+        '<button class="btn btn-warning btn-sm" onclick="showPartialForm(\'' + t.id + '\')">减仓</button>' +
         '<button class="btn btn-danger btn-sm" onclick="showCloseForm(\'' + t.id + '\')">清仓</button>' +
         '<button class="btn btn-ghost btn-icon" onclick="deleteTrade(\'' + t.id + '\')" title="删除">&times;</button>' +
       '</td></tr>';
@@ -118,17 +119,19 @@ function renderClosedTrades(trades) {
   tbody.innerHTML = trades.map(function(t) {
     var pnlClass = t.pnl >= 0 ? 'pnl-up' : 'pnl-down';
     var pnlSign = t.pnl >= 0 ? '+' : '';
+    var divVal = t.dividend || 0;
     return '<tr>' +
       '<td><strong>' + t.stock_name + '</strong></td>' +
-      '<td class="text-muted">' + t.stock_code + '</td>' +
       '<td>' + t.buy_date + '</td>' +
       '<td class="num">' + t.cost_price.toFixed(2) + '</td>' +
       '<td>' + t.sell_date + '</td>' +
       '<td class="num">' + t.sell_price.toFixed(2) + '</td>' +
       '<td class="num ' + pnlClass + '">' + pnlSign + t.pnl.toLocaleString() + '</td>' +
       '<td class="num ' + pnlClass + '">' + pnlSign + t.pnl_pct.toFixed(2) + '%</td>' +
+      '<td class="num' + (divVal > 0 ? ' pnl-up' : '') + '">' + (divVal > 0 ? '+' + divVal.toLocaleString() : '—') + '</td>' +
       '<td><span class="badge badge-blue">' + strategyLabel('buy', t.buy_strategy) + '</span></td>' +
       '<td><span class="badge badge-amber">' + strategyLabel('sell', t.sell_strategy) + '</span></td>' +
+      '<td><button class="btn btn-secondary btn-sm" onclick="showEditClosedForm(\'' + t.id + '\')">编辑</button></td>' +
     '</tr>';
   }).join('');
 }
@@ -216,6 +219,42 @@ async function submitEdit(tradeId) {
   } catch(e) { showToast('修改失败: ' + e.message); }
 }
 
+async function showEditClosedForm(tradeId) {
+  var resp = await fetch('/api/holdings?status=closed');
+  var data = await resp.json();
+  var t = (data.trades || []).find(function(x) { return x.id === tradeId; });
+  if (!t) return;
+  var area = document.getElementById('add-trade-area');
+  area.innerHTML = '<div class="card mt-4">' +
+    '<div class="form-row">' +
+      '<div class="form-group"><label class="form-label">卖出日期</label><input class="form-input" type="date" id="ecf-date" value="' + t.sell_date + '"></div>' +
+      '<div class="form-group"><label class="form-label">卖出价格</label><input class="form-input" type="number" id="ecf-price" step="0.01" min="0" value="' + t.sell_price + '"></div>' +
+      '<div class="form-group"><label class="form-label">卖出策略</label><select class="form-select" id="ecf-strategy">' + strategyOptions('sell') + '</select></div>' +
+      '<div class="form-group"><label class="form-label">分红收入(元)</label><input class="form-input" type="number" id="ecf-dividend" step="0.01" min="0" value="' + (t.dividend || 0) + '"></div>' +
+    '</div>' +
+    '<div class="form-actions">' +
+      '<button class="btn btn-primary" onclick="submitEditClosed(\'' + tradeId + '\')">保存修改</button>' +
+      '<button class="btn btn-secondary" onclick="cancelForm();loadDashboard()">取消</button>' +
+    '</div></div>';
+  document.getElementById('ecf-strategy').value = t.sell_strategy;
+}
+
+async function submitEditClosed(tradeId) {
+  var body = {
+    sell_date: document.getElementById('ecf-date').value,
+    sell_price: document.getElementById('ecf-price').value,
+    sell_strategy: document.getElementById('ecf-strategy').value,
+    dividend: document.getElementById('ecf-dividend').value || 0,
+  };
+  try {
+    var resp = await fetch('/api/holdings/' + tradeId, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    var data = await resp.json();
+    if (data.error) { showToast(data.error); return; }
+    cancelForm(); loadDashboard(); loadDividends();
+    showToast('清仓记录修改成功', 'success');
+  } catch(e) { showToast('修改失败: ' + e.message); }
+}
+
 function showCloseForm(tradeId) {
   var area = document.getElementById('add-trade-area');
   area.innerHTML = '<div class="card mt-4">' +
@@ -223,6 +262,7 @@ function showCloseForm(tradeId) {
       '<div class="form-group"><label class="form-label">卖出日期</label><input class="form-input" type="date" id="cf-date" value="' + new Date().toISOString().slice(0,10) + '"></div>' +
       '<div class="form-group"><label class="form-label">卖出价格</label><input class="form-input" type="number" id="cf-price" step="0.01" min="0" placeholder="—"></div>' +
       '<div class="form-group"><label class="form-label">卖出策略</label><select class="form-select" id="cf-strategy">' + strategyOptions('sell') + '</select></div>' +
+      '<div class="form-group"><label class="form-label">分红收入(元)</label><input class="form-input" type="number" id="cf-dividend" step="0.01" min="0" placeholder="0"></div>' +
     '</div>' +
     '<div class="form-actions">' +
       '<button class="btn btn-danger" onclick="submitClose(\'' + tradeId + '\')">确认清仓</button>' +
@@ -235,15 +275,50 @@ async function submitClose(tradeId) {
     sell_date: document.getElementById('cf-date').value,
     sell_price: document.getElementById('cf-price').value,
     sell_strategy: document.getElementById('cf-strategy').value,
+    dividend: document.getElementById('cf-dividend').value || 0,
   };
   if (!body.sell_date || !body.sell_price) { showToast('请填写卖出日期和价格'); return; }
   try {
     var resp = await fetch('/api/holdings/' + tradeId + '/close', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     var data = await resp.json();
     if (data.error) { showToast(data.error); return; }
-    cancelForm(); loadHoldings(); loadNav();
+    cancelForm(); loadHoldings(); loadNav(); loadDividends();
     showToast('清仓操作成功', 'success');
   } catch(e) { showToast('清仓失败: ' + e.message); }
+}
+
+function showPartialForm(tradeId) {
+  var area = document.getElementById('add-trade-area');
+  area.innerHTML = '<div class="card mt-4">' +
+    '<div class="form-row">' +
+      '<div class="form-group"><label class="form-label">卖出日期</label><input class="form-input" type="date" id="pf-date" value="' + new Date().toISOString().slice(0,10) + '"></div>' +
+      '<div class="form-group"><label class="form-label">卖出价格</label><input class="form-input" type="number" id="pf-price" step="0.01" min="0" placeholder="—"></div>' +
+      '<div class="form-group"><label class="form-label">卖出策略</label><select class="form-select" id="pf-strategy">' + strategyOptions('sell') + '</select></div>' +
+      '<div class="form-group"><label class="form-label">减仓数量</label><input class="form-input" type="number" id="pf-shares" step="100" min="1" placeholder="—"></div>' +
+      '<div class="form-group"><label class="form-label">分红收入(元)</label><input class="form-input" type="number" id="pf-dividend" step="0.01" min="0" placeholder="0"></div>' +
+    '</div>' +
+    '<div class="form-actions">' +
+      '<button class="btn btn-warning" onclick="submitPartial(\'' + tradeId + '\')">确认减仓</button>' +
+      '<button class="btn btn-secondary" onclick="cancelForm()">取消</button>' +
+    '</div></div>';
+}
+
+async function submitPartial(tradeId) {
+  var body = {
+    sell_date: document.getElementById('pf-date').value,
+    sell_price: document.getElementById('pf-price').value,
+    sell_strategy: document.getElementById('pf-strategy').value,
+    reduce_shares: document.getElementById('pf-shares').value,
+    dividend: document.getElementById('pf-dividend').value || 0,
+  };
+  if (!body.sell_date || !body.sell_price || !body.reduce_shares) { showToast('请填写卖出日期、价格和减仓数量'); return; }
+  try {
+    var resp = await fetch('/api/holdings/' + tradeId + '/partial', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    var data = await resp.json();
+    if (data.error) { showToast(data.error); return; }
+    cancelForm(); loadHoldings(); loadNav(); loadDividends();
+    showToast('减仓操作成功', 'success');
+  } catch(e) { showToast('减仓失败: ' + e.message); }
 }
 
 async function deleteTrade(tradeId) {
@@ -252,6 +327,123 @@ async function deleteTrade(tradeId) {
     var resp = await fetch('/api/holdings/' + tradeId, { method:'DELETE' });
     var data = await resp.json();
     if (data.status === 'deleted') { loadHoldings(); showToast('交易记录已删除', 'success'); }
+  } catch(e) { showToast('删除失败: ' + e.message); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// Dividends
+// ═══════════════════════════════════════════════════════════
+
+async function loadDividends() {
+  try {
+    var resp = await fetch('/api/dividends');
+    var data = await resp.json();
+    renderDividends(data.dividends || []);
+  } catch(e) { console.warn('加载分红失败', e); }
+}
+
+function renderDividends(dividends) {
+  var tbody = document.getElementById('dividends-body');
+  var table = document.getElementById('dividends-table');
+  var empty = document.getElementById('dividends-empty');
+  var area = document.getElementById('dividend-area');
+
+  area.innerHTML = '<button class="btn btn-primary btn-sm" onclick="showAddDividendForm()">+ 添加分红</button>';
+
+  if (dividends.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = dividends.map(function(d) {
+    return '<tr>' +
+      '<td><strong>' + d.stock_name + '</strong></td>' +
+      '<td class="text-muted">' + d.stock_code + '</td>' +
+      '<td class="num pnl-up">+' + d.amount.toLocaleString() + '</td>' +
+      '<td>' + d.date + '</td>' +
+      '<td>' +
+        '<button class="btn btn-secondary btn-sm" onclick="showEditDividendForm(\'' + d.id + '\')">编辑</button>' +
+        '<button class="btn btn-ghost btn-icon" onclick="deleteDividend(\'' + d.id + '\')" title="删除">&times;</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function showAddDividendForm() {
+  var area = document.getElementById('dividend-area');
+  area.innerHTML = '<div class="card mt-4">' +
+    '<div class="form-row">' +
+      '<div class="form-group"><label class="form-label">股票名称</label><input class="form-input" type="text" id="df-name" placeholder="—"></div>' +
+      '<div class="form-group"><label class="form-label">股票代码</label><input class="form-input" type="text" id="df-code" placeholder="000001" style="text-transform:uppercase;"></div>' +
+      '<div class="form-group"><label class="form-label">分红金额(元)</label><input class="form-input" type="number" id="df-amount" step="0.01" min="0" placeholder="—"></div>' +
+      '<div class="form-group"><label class="form-label">分红日期</label><input class="form-input" type="date" id="df-date" value="' + new Date().toISOString().slice(0,10) + '"></div>' +
+    '</div>' +
+    '<div class="form-actions">' +
+      '<button class="btn btn-primary" onclick="submitDividend()">确认添加</button>' +
+      '<button class="btn btn-secondary" onclick="loadDividends()">取消</button>' +
+    '</div></div>';
+}
+
+async function submitDividend() {
+  var body = {
+    stock_name: document.getElementById('df-name').value.trim(),
+    stock_code: document.getElementById('df-code').value.trim(),
+    amount: document.getElementById('df-amount').value,
+    date: document.getElementById('df-date').value,
+  };
+  if (!body.stock_name || !body.stock_code || !body.amount || !body.date) { showToast('请填写所有字段'); return; }
+  try {
+    var resp = await fetch('/api/dividends', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    var data = await resp.json();
+    if (data.error) { showToast(data.error); return; }
+    loadDividends(); loadNav();
+    showToast('分红添加成功', 'success');
+  } catch(e) { showToast('添加失败: ' + e.message); }
+}
+
+async function showEditDividendForm(divId) {
+  var resp = await fetch('/api/dividends');
+  var data = await resp.json();
+  var d = (data.dividends || []).find(function(x) { return x.id === divId; });
+  if (!d) return;
+  var area = document.getElementById('dividend-area');
+  area.innerHTML = '<div class="card mt-4">' +
+    '<div class="form-row">' +
+      '<div class="form-group"><label class="form-label">股票名称</label><input class="form-input" type="text" id="edf-name" value="' + d.stock_name + '" readonly style="opacity:0.6"></div>' +
+      '<div class="form-group"><label class="form-label">股票代码</label><input class="form-input" type="text" id="edf-code" value="' + d.stock_code + '" readonly style="opacity:0.6;text-transform:uppercase;"></div>' +
+      '<div class="form-group"><label class="form-label">分红金额(元)</label><input class="form-input" type="number" id="edf-amount" step="0.01" min="0" value="' + d.amount + '"></div>' +
+      '<div class="form-group"><label class="form-label">分红日期</label><input class="form-input" type="date" id="edf-date" value="' + d.date + '"></div>' +
+    '</div>' +
+    '<div class="form-actions">' +
+      '<button class="btn btn-primary" onclick="submitEditDividend(\'' + divId + '\')">保存修改</button>' +
+      '<button class="btn btn-secondary" onclick="loadDividends()">取消</button>' +
+    '</div></div>';
+}
+
+async function submitEditDividend(divId) {
+  var body = {
+    amount: document.getElementById('edf-amount').value,
+    date: document.getElementById('edf-date').value,
+  };
+  if (!body.amount || !body.date) { showToast('请填写金额和日期'); return; }
+  try {
+    var resp = await fetch('/api/dividends/' + divId, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    var data = await resp.json();
+    if (data.error) { showToast(data.error); return; }
+    loadDividends(); loadNav();
+    showToast('分红记录修改成功', 'success');
+  } catch(e) { showToast('修改失败: ' + e.message); }
+}
+
+async function deleteDividend(divId) {
+  if (!(await showConfirm('确认删除该条分红记录？', {danger:true}))) return;
+  try {
+    var resp = await fetch('/api/dividends/' + divId, { method:'DELETE' });
+    var data = await resp.json();
+    if (data.status === 'deleted') { loadDividends(); loadNav(); showToast('分红记录已删除', 'success'); }
   } catch(e) { showToast('删除失败: ' + e.message); }
 }
 
@@ -296,11 +488,9 @@ function renderNavActions(nav) {
     return;
   }
   document.getElementById('nav-empty').style.display = 'none';
-  var hasMultiple = (nav.records || []).length > 1;
   area.innerHTML =
     '<button class="btn btn-secondary btn-sm" onclick="showAdjustForm(\'deposit\')">入金</button>' +
     '<button class="btn btn-secondary btn-sm" onclick="showAdjustForm(\'withdraw\')">出金</button>' +
-    (hasMultiple ? '<button class="btn btn-secondary btn-sm" onclick="undoNav()">撤销上一步</button>' : '') +
     '<button class="btn btn-ghost btn-sm text-red" onclick="resetNav()">重置净值</button>';
 }
 
@@ -353,16 +543,6 @@ async function submitAdjust(direction) {
   } catch(e) { showToast('操作失败: ' + e.message); }
 }
 
-async function undoNav() {
-  if (!(await showConfirm('确认撤销最后一条净值记录？'))) return;
-  try {
-    var resp = await fetch('/api/nav/undo', { method:'POST' });
-    var data = await resp.json();
-    if (data.error) { showToast(data.error); return; }
-    loadNav(); showToast('已撤销最后一条记录', 'success');
-  } catch(e) { showToast('撤销失败: ' + e.message); }
-}
-
 async function resetNav() {
   if (!(await showConfirm('确认重置所有净值记录？此操作不可恢复。', {danger:true}))) return;
   try {
@@ -378,31 +558,110 @@ function renderNavChart(nav) {
   var emptyDiv = document.getElementById('nav-empty');
   if (records.length < 1) { canvas.style.display = 'none'; emptyDiv.style.display = 'block'; return; }
   canvas.style.display = 'block'; emptyDiv.style.display = 'none';
-  var labels = records.map(function(r) { return r.date; });
-  var cumDeposit = 0, cumWithdraw = 0;
-  var values = records.map(function(r) {
-    if (r.type === 'deposit') cumDeposit += (r.amount || 0);
-    if (r.type === 'withdraw') cumWithdraw += (r.amount || 0);
-    return r.nav - cumDeposit + cumWithdraw;
+
+  // 按日期排序记录
+  var sorted = records.slice().sort(function(a,b) { return a.date.localeCompare(b.date); });
+  var initDate = sorted[0].date;
+  var today = new Date().toISOString().slice(0,10);
+
+  // 生成日期范围
+  var dates = [];
+  var d = new Date(initDate);
+  var end = new Date(today);
+  while (d <= end) {
+    dates.push(d.toISOString().slice(0,10));
+    d.setDate(d.getDate() + 1);
+  }
+
+  // 构建日期→记录列表（同日多笔）
+  var recordMap = {};
+  sorted.forEach(function(r) {
+    if (!recordMap[r.date]) recordMap[r.date] = [];
+    recordMap[r.date].push(r);
   });
+
+  // 按天计算投资净值（扣除出入金）
+  var cumDeposit = 0, cumWithdraw = 0;
+  var recordIdx = 0;
+  var dailyValues = [];
+  var dailyActualNav = [];
+  var pointRadios = [];
+  var pointColors = [];
+
+  dates.forEach(function(dateStr) {
+    // 累加该日期及之前的所有记录
+    while (recordIdx < sorted.length && sorted[recordIdx].date <= dateStr) {
+      var r = sorted[recordIdx];
+      if (r.type === 'deposit') cumDeposit += (r.amount || 0);
+      if (r.type === 'withdraw') cumWithdraw += (r.amount || 0);
+      recordIdx++;
+    }
+    // 取最近一条记录的净值
+    var lastNav = sorted[0].nav;
+    for (var i = 0; i < sorted.length; i++) {
+      if (sorted[i].date <= dateStr) lastNav = sorted[i].nav;
+    }
+    dailyActualNav.push(lastNav);
+    dailyValues.push(lastNav - cumDeposit + cumWithdraw);
+
+    // 标记有记录的日期为大圆点
+    if (recordMap[dateStr]) {
+      pointRadios.push(5);
+      pointColors.push('#10b981');
+    } else {
+      pointRadios.push(0);
+      pointColors.push('transparent');
+    }
+  });
+
   if (_navChart) _navChart.destroy();
   _navChart = new Chart(canvas, {
     type: 'line',
-    data: { labels: labels, datasets: [{
-      label: '投资净值', data: values,
+    data: { labels: dates, datasets: [{
+      label: '投资净值', data: dailyValues,
       borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)',
-      fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#10b981',
+      fill: true, tension: 0.3, pointRadius: pointRadios, pointBackgroundColor: pointColors,
     }]},
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
         callbacks: {
-          label: function(ctx) { var r = records[ctx.dataIndex]; return '投资净值: ¥' + ctx.parsed.y.toLocaleString() + '  实际净值: ¥' + r.nav.toLocaleString(); },
-          afterLabel: function(ctx) { var r = records[ctx.dataIndex]; var typeMap = {init:'初始', deposit:'入金', withdraw:'出金', close:'清仓'}; var lines = [typeMap[r.type] || r.type]; if (r.amount) lines.push((r.type==='deposit'?'+':'-') + '¥' + r.amount.toLocaleString()); if (r.pnl!==undefined&&r.pnl!==null) lines.push('盈亏: ' + (r.pnl>=0?'+':'') + r.pnl.toLocaleString()); return lines; }
+          title: function(tooltipItems) { return tooltipItems[0].label; },
+          label: function(ctx) {
+            var idx = ctx.dataIndex;
+            var actualNav = dailyActualNav[idx];
+            return '投资净值: ¥' + ctx.parsed.y.toLocaleString() + '  实际净值: ¥' + actualNav.toLocaleString();
+          },
+          afterLabel: function(ctx) {
+            var recs = recordMap[ctx.label];
+            if (!recs || recs.length === 0) return '';
+            var typeMap = {init:'初始', deposit:'入金', withdraw:'出金', close:'清仓', dividend:'分红'};
+            var lines = [];
+            recs.forEach(function(r, i) {
+              if (recs.length > 1) lines.push('— ' + (i+1) + ' —');
+              lines.push(typeMap[r.type] || r.type);
+              if (r.amount) lines.push((r.type==='deposit'?'+':'-') + '¥' + r.amount.toLocaleString());
+              if (r.pnl!==undefined&&r.pnl!==null) lines.push('盈亏: ' + (r.pnl>=0?'+':'') + r.pnl.toLocaleString());
+              if (r.dividend>0) lines.push('分红: +' + r.dividend.toLocaleString());
+              if (r.note) lines.push(r.note);
+            });
+            return lines;
+          }
         }
       }},
       scales: {
-        x: { ticks: { color:'#94a3b8', font:{size:11} }, grid: { color:'rgba(0,0,0,0.04)' } },
+        x: {
+          ticks: {
+            color:'#94a3b8', font:{size:10},
+            maxTicksLimit: 10,
+            maxRotation: 0,
+            callback: function(val, idx) {
+              var label = this.getLabelForValue(val);
+              return label.slice(5); // 只显示 MM-DD
+            }
+          },
+          grid: { color:'rgba(0,0,0,0.04)' }
+        },
         y: { ticks: { color:'#94a3b8', font:{size:11}, callback: function(v) { return '¥' + v.toLocaleString(); } }, grid: { color:'rgba(0,0,0,0.04)' } }
       }
     }
@@ -623,7 +882,7 @@ async function loadTracker() {
   var masterDetail = document.getElementById('tracker-master-detail');
   var refreshInfo = document.getElementById('tracker-refresh-info');
   try {
-    var resp = await fetch('/api/tracker');
+    var resp = await fetch('/api/tracker?_=' + Date.now());
     var data = await resp.json();
     var grouped = data.grouped || {};
     var entries = Object.values(grouped);
@@ -644,12 +903,14 @@ async function loadTracker() {
     }
     _trackerData.sort(function(a, b) { return b.scan_date.localeCompare(a.scan_date); });
     renderTrackerList();
-    // Auto-select first if nothing selected
+    // Auto-select first if nothing selected, or re-render selected entry with fresh data
     if (_trackerSelectedId && !_trackerData.find(function(e) { return e.id === _trackerSelectedId; })) {
       _trackerSelectedId = null;
     }
     if (!_trackerSelectedId && _trackerData.length > 0) {
       selectTrackerEntry(_trackerData[0].id);
+    } else if (_trackerSelectedId) {
+      selectTrackerEntry(_trackerSelectedId);
     }
   } catch(e) { emptyDiv.style.display = 'block'; masterDetail.classList.add('hidden'); emptyDiv.innerHTML = '<span class="text-red">加载失败: ' + e.message + '</span>'; }
 }
@@ -912,13 +1173,21 @@ function monitorRenderPool(targets) {
   var html = '';
   targets.forEach(function(t) {
     var fromLabel = t.added_from === 'tracker' ? '选股跟踪' : '手动添加';
+    var priceText = t.scan_price ? t.scan_price.toFixed(2) : '—';
+    var latestText = t.latest_price ? t.latest_price.toFixed(2) : '—';
+    var pctVal = t.pct_change || 0;
+    var pctText = pctVal === 0 ? '—' : (pctVal > 0 ? '+' + pctVal.toFixed(2) + '%' : pctVal.toFixed(2) + '%');
+    var pctClass = pctVal > 0 ? 'pnl-up' : (pctVal < 0 ? 'pnl-down' : '');
     html += '<tr>' +
-      '<td>' + t.code + '</td>' +
+      '<td class="text-right" style="font-family:var(--font-mono)">' + t.code + '</td>' +
       '<td>' + t.name + '</td>' +
-      '<td class="num">' + (t.score || '—') + '</td>' +
+      '<td class="text-right">' + (t.score || '—') + '</td>' +
+      '<td class="text-right">' + priceText + '</td>' +
+      '<td class="text-right">' + latestText + '</td>' +
+      '<td class="text-right ' + pctClass + '">' + pctText + '</td>' +
       '<td>' + getSpecificIndustry(t.industry) + '</td>' +
       '<td><span class="badge badge-neutral">' + fromLabel + '</span></td>' +
-      '<td><button class="btn btn-sm btn-ghost" onclick="monitorRemoveTarget(\'' + t.id + '\')">删除</button></td>' +
+      '<td class="text-center"><button class="btn btn-sm btn-ghost" onclick="monitorRemoveTarget(\'' + t.id + '\')">删除</button></td>' +
       '</tr>';
   });
   tbody.innerHTML = html;
@@ -976,12 +1245,32 @@ async function monitorClearPool() {
   } catch(e) { showToast('清空失败', 'error'); }
 }
 
+async function monitorRefreshPrices() {
+  var btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '刷新中...';
+  try {
+    var resp = await fetch('/api/monitor/pool/refresh', {method: 'POST'});
+    var data = await resp.json();
+    if (resp.ok) {
+      var info = document.getElementById('monitor-refresh-info');
+      info.textContent = '上次刷新: ' + (data.refresh_time || '—');
+      monitorRenderPool(data.targets || []);
+      showToast('刷新完成：' + data.refreshed + '只更新，' + (data.failed || 0) + '只失败', 'success');
+    } else {
+      showToast(data.error || '刷新失败', 'error');
+    }
+  } catch(e) { showToast('刷新失败: ' + e.message, 'error'); }
+  btn.disabled = false;
+  btn.textContent = '刷新全部价格';
+}
+
 async function monitorImportFromTracker() {
   var area = document.getElementById('monitor-import-area');
   if (!area.classList.contains('hidden')) { area.classList.add('hidden'); return; }
 
   try {
-    var trackerResp = await fetch('/api/tracker');
+    var trackerResp = await fetch('/api/tracker?_=' + Date.now());
     var trackerData = await trackerResp.json();
     var grouped = trackerData.grouped || {};
     var strategies = Object.keys(grouped);

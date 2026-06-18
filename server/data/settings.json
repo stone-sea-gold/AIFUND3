@@ -1,0 +1,32 @@
+{
+  "scan": {
+    "strategy": "brick",
+    "pool": "沪深主板",
+    "period": "day",
+    "count": 150,
+    "delay": 0,
+    "workers": 10,
+    "top_n": 30,
+    "min_score": 60,
+    "exclude_st": true,
+    "min_listing_days": 120,
+    "exclude_death_cross": true,
+    "exclude_below_yellow": true,
+    "use_tdx_data": true,
+    "tdx_stale_days": 2
+  },
+  "backtest": {
+    "strategy": "b1",
+    "pool": "沪深300",
+    "top_n": 10,
+    "min_score": 25,
+    "holding_days": 3,
+    "initial_capital": 100000,
+    "stop_loss_pct": 3.0,
+    "gap_up_pct": 4.0
+  },
+  "monitor": {
+    "strategies": [],
+    "max_targets": 100
+  }
+}

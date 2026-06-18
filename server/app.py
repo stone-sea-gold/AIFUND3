@@ -18,9 +18,16 @@ API 端点:
     GET  /api/reports/{date}      查看指定日期报告
 """
 
+import logging
 import os
 import sys
 from pathlib import Path
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(message)s",
+    datefmt="%H:%M:%S",
+)
 
 from fastapi import Body, FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -43,6 +50,7 @@ from server.backtest_manager import get_backtest_manager
 from server.monitor_manager import get_monitor_manager
 from server.monitor_pool import get_monitor_pool
 from server.monitor_strategy_loader import discover_monitor_strategies
+from server.settings import get_settings
 
 app = FastAPI(title="波浪交易看板")
 
@@ -482,6 +490,20 @@ def api_monitor_clear_pool():
     return {"status": "cleared"}
 
 
+@app.post("/api/monitor/pool/refresh")
+def api_monitor_refresh_prices():
+    """刷新目标池全部股票最新价格"""
+    result = _monitor_pool.refresh_prices()
+    targets = _monitor_pool.get_targets()
+    return {
+        "status": "ok",
+        "refreshed": result["refreshed"],
+        "failed": result.get("failed", 0),
+        "refresh_time": result.get("refresh_time", ""),
+        "targets": targets,
+    }
+
+
 @app.post("/api/monitor/start")
 def api_monitor_start(body: dict = Body(...)):
     """开启盯盘任务"""
@@ -549,10 +571,15 @@ def api_add_trade(body: dict = Body(...)):
 
 @app.put("/api/holdings/{trade_id}")
 def api_edit_trade(trade_id: str, body: dict = Body(...)):
-    """编辑持仓交易"""
+    """编辑持仓交易（open 或 closed 状态）"""
+    # 先尝试编辑 open 状态
     if _holdings_mgr.edit_trade(trade_id, body):
         return {"status": "ok"}
-    return JSONResponse({"error": "交易不存在或已关闭"}, status_code=400)
+    # 再尝试编辑 closed 状态
+    trade = _holdings_mgr.edit_closed_trade(trade_id, body)
+    if trade:
+        return {"status": "ok", "trade": trade}
+    return JSONResponse({"error": "交易不存在"}, status_code=400)
 
 
 @app.post("/api/holdings/{trade_id}/close")
@@ -567,9 +594,30 @@ def api_close_trade(trade_id: str, body: dict = Body(...)):
         sell_date=body["sell_date"],
         sell_price=float(body["sell_price"]),
         sell_strategy=body["sell_strategy"],
+        dividend=float(body.get("dividend", 0)),
     )
     if trade is None:
         return JSONResponse({"error": "交易不存在或已关闭"}, status_code=400)
+    return {"trade": trade}
+
+
+@app.post("/api/holdings/{trade_id}/partial")
+def api_partial_close(trade_id: str, body: dict = Body(...)):
+    """减仓"""
+    required = {"sell_date", "sell_price", "sell_strategy", "reduce_shares"}
+    missing = required - set(body.keys())
+    if missing:
+        return JSONResponse({"error": f"缺少字段: {', '.join(missing)}"}, status_code=422)
+    trade = _holdings_mgr.partial_close(
+        trade_id=trade_id,
+        sell_date=body["sell_date"],
+        sell_price=float(body["sell_price"]),
+        sell_strategy=body["sell_strategy"],
+        reduce_shares=int(body["reduce_shares"]),
+        dividend=float(body.get("dividend", 0)),
+    )
+    if trade is None:
+        return JSONResponse({"error": "交易不存在、已关闭或减仓数量无效"}, status_code=400)
     return {"trade": trade}
 
 
@@ -585,6 +633,47 @@ def api_delete_trade(trade_id: str):
 def api_get_strategies():
     """获取买入/卖出策略下拉选项"""
     return _holdings_mgr.get_strategies()
+
+
+# ── API：分红收入 ────────────────────────────────────────────────
+
+@app.get("/api/dividends")
+def api_get_dividends():
+    """获取所有分红记录"""
+    return {"dividends": _holdings_mgr.get_dividends()}
+
+
+@app.post("/api/dividends")
+def api_add_dividend(body: dict = Body(...)):
+    """手动添加分红记录"""
+    required = {"stock_name", "stock_code", "amount", "date"}
+    missing = required - set(body.keys())
+    if missing:
+        return JSONResponse({"error": f"缺少字段: {', '.join(missing)}"}, status_code=422)
+    dividend = _holdings_mgr.add_dividend(
+        stock_name=body["stock_name"],
+        stock_code=body["stock_code"],
+        amount=float(body["amount"]),
+        date=body["date"],
+    )
+    return {"dividend": dividend}
+
+
+@app.put("/api/dividends/{div_id}")
+def api_edit_dividend(div_id: str, body: dict = Body(...)):
+    """编辑分红记录"""
+    dividend = _holdings_mgr.edit_dividend_record(div_id, body)
+    if dividend:
+        return {"status": "ok", "dividend": dividend}
+    return JSONResponse({"error": "分红记录不存在"}, status_code=404)
+
+
+@app.delete("/api/dividends/{div_id}")
+def api_delete_dividend(div_id: str):
+    """删除分红记录"""
+    if _holdings_mgr.delete_dividend(div_id):
+        return {"status": "deleted"}
+    return JSONResponse({"error": "分红记录不存在"}, status_code=404)
 
 
 # ── API：账户净值 ────────────────────────────────────────────────
@@ -629,15 +718,6 @@ def api_adjust_nav(body: dict = Body(...)):
 def api_reset_nav():
     """重置净值（清空所有记录）"""
     return _holdings_mgr.reset_nav()
-
-
-@app.post("/api/nav/undo")
-def api_undo_nav():
-    """撤销最后一条净值记录"""
-    nav = _holdings_mgr.undo_nav()
-    if nav is None:
-        return JSONResponse({"error": "无记录可撤销（至少保留初始净值）"}, status_code=400)
-    return nav
 
 
 # ── 页面：回测系统 ──────────────────────────────────────────────
@@ -718,6 +798,55 @@ def api_delete_backtest_task(task_id: str):
     if _bt_mgr.delete_task(task_id):
         return {"status": "deleted"}
     return JSONResponse({"error": "任务不存在或无法删除"}, status_code=400)
+
+
+# ── 设置面板 ────────────────────────────────────────────────────
+
+@app.get("/settings", response_class=HTMLResponse)
+def settings_page():
+    """控制面板页面"""
+    template = _jinja_env.get_template("settings.html")
+    return HTMLResponse(template.render())
+
+
+@app.get("/api/settings")
+def api_get_settings():
+    """获取全部配置 + 元数据"""
+    s = get_settings()
+    return {
+        "data": s.get_all(),
+        "meta": s.get_meta(),
+    }
+
+
+@app.put("/api/settings/{section}")
+def api_update_settings(section: str, updates: dict = Body(...)):
+    """更新某个模块的配置"""
+    s = get_settings()
+    valid_sections = {"scan", "backtest", "monitor"}
+    if section not in valid_sections:
+        return JSONResponse({"error": f"无效的配置模块: {section}"}, status_code=400)
+    s.update_section(section, updates)
+    return {"ok": True, "data": s.get_section(section)}
+
+
+@app.post("/api/settings/{section}/reset")
+def api_reset_settings(section: str):
+    """重置某个模块为默认值"""
+    s = get_settings()
+    valid_sections = {"scan", "backtest", "monitor"}
+    if section not in valid_sections:
+        return JSONResponse({"error": f"无效的配置模块: {section}"}, status_code=400)
+    s.reset_section(section)
+    return {"ok": True, "data": s.get_section(section)}
+
+
+@app.post("/api/settings/reset")
+def api_reset_all_settings():
+    """重置全部为默认值"""
+    s = get_settings()
+    s.reset_all()
+    return {"ok": True, "data": s.get_all()}
 
 
 # ── API：数据源诊断 ────────────────────────────────────────────

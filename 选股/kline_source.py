@@ -340,6 +340,9 @@ def get_klines(code: str, count: int = 370, period: str = "day") -> tuple[str, l
         last_k_date = klines[-1]["date"] if klines else ""
         if _is_market_closed_now() and last_k_date != today_str:
             cached = None
+        elif len(klines) < count:
+            # 缓存数量不足，丢弃缓存重新从TDX读取
+            cached = None
         else:
             if len(klines) > count:
                 klines = klines[-count:]
@@ -464,6 +467,21 @@ def get_daily_data_status(sample_code: str = "000001") -> dict:
                     fallback_used = True
                     fallback_source = src
 
+    # 盘中：检测 TDX TCP 实时数据可用性
+    tcp_available = False
+    if is_trading_day and not market_closed:
+        try:
+            from 选股.tdx_pool import get_pool
+            pool = get_pool()
+            quotes = pool.get_quotes_batch([sample_code])
+            if quotes and len(quotes) > 0:
+                tcp_available = True
+                source = "tdx_tcp"
+                latest_date = today_str
+                fallback_used = False
+        except Exception:
+            pass
+
     expected_date = today_str if is_trading_day and market_closed else latest_date
     complete = bool(latest_date)
     if is_trading_day and market_closed:
@@ -489,6 +507,7 @@ def get_daily_data_status(sample_code: str = "000001") -> dict:
         "source": source,
         "gap_days": gap_days,
         "today": today_str,
+        "tcp_available": tcp_available,
     }
 
 

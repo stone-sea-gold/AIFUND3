@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>回测系统</title>
-<link rel="stylesheet" href="/static/css/common.css">
-<link rel="stylesheet" href="/static/css/backtest.css">
+<link rel="stylesheet" href="/static/css/common.css?v=7">
+<link rel="stylesheet" href="/static/css/backtest.css?v=7">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 </head>
 <body>
@@ -19,6 +19,7 @@
   <div class="nav-links">
     <a href="/" class="nav-link">看板</a>
     <a href="/backtest" class="nav-link active">回测系统</a>
+    <a href="/settings" class="nav-link">设置</a>
   </div>
 </nav>
 
@@ -34,7 +35,7 @@
     <h2 style="margin-top:0">回测配置</h2>
     <div class="form-row">
       <div class="form-group"><label class="form-label">策略</label><select class="form-select" id="bt-strategy"></select></div>
-      <div class="form-group"><label class="form-label">股票池</label><select class="form-select" id="bt-pool"><option value="沪深300">沪深300</option><option value="沪深主板">沪深主板</option><option value="中证500">中证500</option><option value="自选">自选</option></select></div>
+      <div class="form-group"><label class="form-label">股票池</label><select class="form-select" id="bt-pool" style="min-width:120px"><option value="">加载中...</option></select></div>
       <div class="form-group"><label class="form-label">每轮选股数</label><input class="form-input" type="number" id="bt-topn" value="10" min="1" max="50"></div>
       <div class="form-group"><label class="form-label">最低分</label><input class="form-input" type="number" id="bt-minscore" value="25" min="0" max="100"></div>
       <div class="form-group"><label class="form-label">持有天数</label><input class="form-input" type="number" id="bt-hold" value="3" min="1" max="60"></div>
@@ -108,7 +109,7 @@
   </div>
 </div>
 
-<script src="/static/js/common.js"></script>
-<script src="/static/js/backtest.js"></script>
+<script src="/static/js/common.js?v=7"></script>
+<script src="/static/js/backtest.js?v=7"></script>
 </body>
 </html>

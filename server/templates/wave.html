@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>股票交易看板</title>
-<link rel="stylesheet" href="/static/css/common.css">
-<link rel="stylesheet" href="/static/css/wave.css">
+<link rel="stylesheet" href="/static/css/common.css?v=7">
+<link rel="stylesheet" href="/static/css/wave.css?v=7">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -19,6 +19,7 @@
   <div class="nav-links">
     <a href="/" class="nav-link active">看板</a>
     <a href="/backtest" class="nav-link">回测系统</a>
+    <a href="/settings" class="nav-link">设置</a>
   </div>
 </nav>
 
@@ -27,21 +28,28 @@
 
 <!-- ── Sidebar ── -->
 <aside class="sidebar">
-  <a class="sidebar-link active" data-section="dashboard" href="#">
-    <span class="link-icon">&#9632;</span> 持仓看板
-  </a>
-  <a class="sidebar-link" data-section="stock-selection" href="#">
-    <span class="link-icon">&#9670;</span> 选股扫描
-  </a>
-  <a class="sidebar-link" data-section="tracker" href="#">
-    <span class="link-icon">&#9776;</span> 选股跟踪
-  </a>
-  <a class="sidebar-link" data-section="sector" href="#">
-    <span class="link-icon">&#9650;</span> 板块监测
-  </a>
-  <a class="sidebar-link" data-section="monitor" href="#">
-    <span class="link-icon">&#9673;</span> 盯盘助手
-  </a>
+  <div class="sidebar-nav">
+    <a class="sidebar-link active" data-section="dashboard" href="#">
+      <span class="link-icon">&#9632;</span> 持仓看板
+    </a>
+    <a class="sidebar-link" data-section="stock-selection" href="#">
+      <span class="link-icon">&#9670;</span> 选股扫描
+    </a>
+    <a class="sidebar-link" data-section="tracker" href="#">
+      <span class="link-icon">&#9776;</span> 选股跟踪
+    </a>
+    <a class="sidebar-link" data-section="sector" href="#">
+      <span class="link-icon">&#9650;</span> 板块监测
+    </a>
+    <a class="sidebar-link" data-section="monitor" href="#">
+      <span class="link-icon">&#9673;</span> 盯盘助手
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    <a class="sidebar-link sidebar-settings" href="/settings">
+      <span class="link-icon">&#9881;</span> 控制面板
+    </a>
+  </div>
 </aside>
 
 <!-- ── Content Area ── -->
@@ -83,12 +91,30 @@
     <div class="table-wrap" style="margin-top:12px">
       <table id="closed-trades-table" style="display:none">
         <thead><tr>
-          <th>股票</th><th>代码</th><th>买入日期</th><th class="text-right">成本</th><th>卖出日期</th><th class="text-right">卖出价</th><th class="text-right">盈亏</th><th class="text-right">盈亏比</th><th>买入策略</th><th>卖出策略</th>
+          <th>股票</th><th>买入日期</th><th class="text-right">成本</th><th>卖出日期</th><th class="text-right">卖出价</th><th class="text-right">盈亏</th><th class="text-right">收益</th><th class="text-right">分红</th><th>买入策略</th><th>卖出策略</th><th>操作</th>
         </tr></thead>
         <tbody id="closed-trades-body"></tbody>
       </table>
       <div id="closed-trades-empty" class="empty-state" style="padding:24px">
         <div class="empty-text">暂无已清仓记录</div>
+      </div>
+    </div>
+  </details>
+
+  <!-- Dividends -->
+  <details style="margin-top:24px">
+    <summary class="fw-600 text-accent" style="cursor:pointer;font-size:.95em">分红收入</summary>
+    <div id="dividend-area" style="margin-top:8px"></div>
+    <div class="table-wrap" style="margin-top:12px">
+      <table id="dividends-table" style="display:none">
+        <thead><tr>
+          <th>股票</th><th>代码</th><th class="text-right">分红金额</th><th>分红日期</th><th>操作</th>
+        </tr></thead>
+        <tbody id="dividends-body"></tbody>
+      </table>
+      <div id="dividends-empty" class="empty-state" style="padding:24px">
+        <div class="empty-text">暂无分红记录</div>
+        <div class="empty-hint">清仓/减仓时可填写分红，或点击上方手动添加</div>
       </div>
     </div>
   </details>
@@ -118,7 +144,7 @@
   <div class="card scan-panel">
     <div class="form-row">
       <div class="form-group"><label class="form-label">选股策略</label><select class="form-select" id="ss-strategy"><option value="b1">B1量价共振</option></select></div>
-      <div class="form-group"><label class="form-label">股票池</label><select class="form-select" id="ss-pool"><option value="沪深300">沪深300</option><option value="中证500">中证500</option><option value="沪深主板">沪深主板</option><option value="全A">全A</option><option value="自选">自选</option></select></div>
+      <div class="form-group"><label class="form-label">股票池</label><select class="form-select" id="ss-pool"></select></div>
       <div class="form-group"><label class="form-label">Top N</label><input class="form-input" type="number" id="ss-top" value="30" min="5" max="200"></div>
       <div class="form-group"><label class="form-label">最低分</label><input class="form-input" type="number" id="ss-min-score" value="25" min="0" max="100"></div>
       <div class="form-group"><label class="form-label">间隔(秒)</label><input class="form-input" type="number" id="ss-delay" value="0.15" min="0" max="2" step="0.05"></div>
@@ -228,7 +254,7 @@
     <div class="flex items-center justify-between gap-4" style="flex-wrap:wrap">
       <div class="form-group" style="min-width:200px;flex:1">
         <label class="form-label">选择策略（可多选）</label>
-        <select id="monitor-strategy-select" class="form-select" multiple style="min-height:60px"></select>
+        <div id="monitor-strategy-chips" class="strategy-chips"></div>
       </div>
       <div class="flex gap-2 items-end" style="margin-top:auto">
         <button id="monitor-start-btn" class="btn btn-primary" onclick="monitorStart()">开启盯盘</button>
@@ -253,10 +279,11 @@
   <!-- 目标池 -->
   <div class="card" style="margin-bottom:16px">
     <div class="card-header">
-      <span>目标池 (<span id="monitor-pool-count">0</span>/100)</span>
+      <span>目标池 (<span id="monitor-pool-count">0</span>/100) <span id="monitor-refresh-info" class="data-status" style="display:inline"></span></span>
       <div class="flex gap-2">
         <button class="btn btn-sm btn-secondary" id="monitor-import-btn" onclick="monitorImportFromTracker()">从选股跟踪导入</button>
         <button class="btn btn-sm btn-secondary" onclick="monitorShowAddForm()">手动添加</button>
+        <button class="btn btn-sm btn-secondary" onclick="monitorRefreshPrices()">刷新全部价格</button>
         <button class="btn btn-sm btn-ghost" onclick="monitorClearPool()">清空</button>
       </div>
     </div>
@@ -269,7 +296,7 @@
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>代码</th><th>名称</th><th>选股得分</th><th>行业</th><th>来源</th><th>操作</th>
+            <th class="text-right">代码</th><th>名称</th><th class="text-right">选股得分</th><th class="text-right">选股价格</th><th class="text-right">最新价</th><th class="text-right">涨跌</th><th>行业</th><th>来源</th><th class="text-center">操作</th>
           </tr></thead>
           <tbody id="monitor-pool-body"></tbody>
         </table>
@@ -294,7 +321,7 @@
   </div>
 </div>
 
-<script src="/static/js/common.js"></script>
-<script src="/static/js/wave.js?v=5"></script>
+<script src="/static/js/common.js?v=7"></script>
+<script src="/static/js/wave.js?v=9"></script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+{
+  "task_id": "5c333d91",
+  "strategy": "b1",
+  "pool": "沪深300",
+  "top_n": 10,
+  "min_score": 25,
+  "holding_days": 3,
+  "initial_capital": 100000.0,
+  "start_date": "2025-12-16",
+  "end_date": "2026-06-16",
+  "status": "cancelled",
+  "progress": {
+    "current_date": "加载数据 沪深300",
+    "rounds_done": 0,
+    "elapsed": 0.0
+  },
+  "error": null,
+  "created_at": "2026-06-16T22:27:34.179976",
+  "completed_at": "2026-06-16T22:27:42.780898"
+}

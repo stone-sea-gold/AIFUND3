@@ -41,7 +41,7 @@ class Tracker:
             data_dir = _PROJECT_ROOT / "选股" / "选股结果"
         self.data_dir = Path(data_dir)
         self.file_path = self.data_dir / "tracker.json"
-        self.max_entries = 7
+        self.max_entries = 15
         self._lock = threading.Lock()
 
     # ── 读取 ──────────────────────────────────────────────

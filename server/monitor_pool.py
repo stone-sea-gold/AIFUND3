@@ -50,6 +50,7 @@ class MonitorPool:
         code: str,
         name: str,
         score: float = 0,
+        scan_price: float = 0,
         scan_date: str = "",
         strategy_name: str = "",
         industry: str = "",
@@ -87,6 +88,7 @@ class MonitorPool:
                 "code": code,
                 "name": name,
                 "score": score,
+                "scan_price": scan_price,
                 "scan_date": scan_date,
                 "strategy_name": strategy_name,
                 "industry": industry,
@@ -119,6 +121,7 @@ class MonitorPool:
                 code=stock.get("code", ""),
                 name=stock.get("name", ""),
                 score=stock.get("score", 0),
+                scan_price=stock.get("scan_price", 0),
                 scan_date=stock.get("scan_date", ""),
                 strategy_name=stock.get("strategy_name", ""),
                 industry=stock.get("industry", ""),
@@ -153,6 +156,98 @@ class MonitorPool:
             self._save(data)
         return True
 
+    def refresh_prices(self) -> dict:
+        """
+        刷新目标池所有股票的最新价格。
+
+        数据源优先级: TDX TCP 批量报价（快速）→ 逐只 get_klines（降级）
+        复用 tracker.refresh_prices 的同套逻辑。
+        """
+        from datetime import date as _date
+
+        targets = self.get_targets()
+        if not targets:
+            return {"refreshed": 0, "failed": 0, "refresh_time": datetime.now().strftime("%m-%d %H:%M")}
+
+        codes = [t["code"] for t in targets if t.get("code")]
+        if not codes:
+            return {"refreshed": 0, "failed": 0, "refresh_time": datetime.now().strftime("%m-%d %H:%M")}
+
+        today_str = _date.today().strftime("%Y-%m-%d")
+        price_map = {}
+        refreshed = 0
+        failed = 0
+
+        # ── 快速路径：TDX TCP 批量报价 ──
+        tcp_ok = False
+        try:
+            from 选股.tdx_pool import get_pool
+            pool = get_pool()
+            quotes = pool.get_quotes_batch(codes)
+            if quotes:
+                tcp_ok = True
+                for q in quotes:
+                    code = q.get("code", "")
+                    if code:
+                        price_map[code] = {
+                            "price": q.get("price", 0),
+                            "pct_chg": q.get("pct_chg", 0),
+                            "date": today_str,
+                        }
+                refreshed = len(price_map)
+        except Exception:
+            pass
+
+        # ── 降级路径：逐只 get_klines ──
+        if not tcp_ok:
+            from 选股.kline_source import get_klines
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+
+            def _fetch_one(code):
+                try:
+                    _, klines = get_klines(code, count=5, period="day")
+                    if klines:
+                        last_k = klines[-1]
+                        close = round(float(last_k.get("close", 0)), 2)
+                        prev_close = round(float(last_k.get("prev_close", klines[-2].get("close", 0))), 2) if len(klines) >= 2 else 0
+                        pct = round((close - prev_close) / prev_close * 100, 2) if prev_close > 0 else 0
+                        return code, {"price": close, "pct_chg": pct, "date": last_k.get("date", "")}
+                except Exception:
+                    pass
+                return code, None
+
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {executor.submit(_fetch_one, c): c for c in codes}
+                for future in as_completed(futures):
+                    try:
+                        code, result = future.result()
+                        if result:
+                            price_map[code] = result
+                            refreshed += 1
+                        else:
+                            failed += 1
+                    except Exception:
+                        failed += 1
+
+        # ── 写回文件 ──
+        if price_map:
+            with self._lock:
+                data = self._load()
+                for t in data.get("targets", []):
+                    p = price_map.get(t["code"])
+                    if p is None:
+                        continue
+                    t["latest_price"] = p["price"]
+                    t["latest_date"] = p["date"]
+                    t["pct_change"] = p["pct_chg"]
+                self._save(data)
+
+        return {
+            "refreshed": refreshed,
+            "failed": failed,
+            "refresh_time": datetime.now().strftime("%m-%d %H:%M"),
+        }
+
     def import_from_tracker(self, tracker_entries: list[dict], entry_ids: list[str] | None = None) -> dict:
         """
         从选股跟踪条目导入股票到目标池。
@@ -176,6 +271,7 @@ class MonitorPool:
                     "code": stock.get("code", ""),
                     "name": stock.get("name", ""),
                     "score": stock.get("score", 0),
+                    "scan_price": stock.get("scan_price", 0),
                     "scan_date": scan_date,
                     "strategy_name": strategy_name,
                     "industry": stock.get("industry", ""),

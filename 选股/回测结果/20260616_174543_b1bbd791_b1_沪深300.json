@@ -1,0 +1,19 @@
+{
+  "task_id": "b1bbd791",
+  "strategy_name": "b1",
+  "pool_name": "沪深300",
+  "date_range": null,
+  "total_rounds": 0,
+  "total_trades": 0,
+  "metrics": {},
+  "config": {
+    "strategy_name": "b1",
+    "pool_name": "沪深300",
+    "top_n": 10,
+    "min_score": 25,
+    "holding_days": 3,
+    "initial_capital": 100000.0
+  },
+  "elapsed": 0.0,
+  "saved_at": "2026-06-16T17:45:43.780142"
+}

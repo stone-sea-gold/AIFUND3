@@ -9,7 +9,12 @@
   width:200px; flex-shrink:0;
   background:var(--surface); border-right:1px solid var(--border);
   padding:16px 0; position:sticky; top:56px; height:calc(100dvh - 56px); overflow-y:auto;
+  display:flex; flex-direction:column;
 }
+.sidebar-nav { flex:1; }
+.sidebar-footer { border-top:1px solid var(--border-subtle); margin-top:auto; }
+.sidebar-settings { opacity:.7; }
+.sidebar-settings:hover { opacity:1; }
 .sidebar-link {
   display:flex; align-items:center; gap:10px;
   padding:10px 20px; font-size:.85em; font-weight:500; color:var(--text2);
@@ -83,6 +88,21 @@ td .btn:last-child { margin-right:0; }
 .tracker-detail-header { margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border-subtle); }
 .tracker-detail-header h3 { margin:0 0 4px; font-size:1.05em; }
 .tracker-detail-header .detail-meta { font-size:.82em; color:var(--text2); display:flex; gap:12px; }
+
+/* ── Strategy Chips ── */
+.strategy-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.strategy-chip {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:6px 14px; border-radius:20px; font-size:.82em; font-weight:500;
+  border:1.5px solid var(--border); background:var(--surface); color:var(--text2);
+  cursor:pointer; transition:all .2s var(--ease); user-select:none;
+}
+.strategy-chip:hover { border-color:var(--accent); color:var(--accent); background:rgba(16,185,129,.06); }
+.strategy-chip.active {
+  border-color:var(--accent); background:var(--accent); color:#fff;
+  box-shadow:0 2px 8px rgba(16,185,129,.25);
+}
+.strategy-chips.disabled .strategy-chip { opacity:.5; pointer-events:none; cursor:default; }
 
 /* ── Monitor (盯盘) ── */
 .signal-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; }

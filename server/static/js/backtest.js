@@ -4,24 +4,60 @@
 
 var currentTaskId = null;
 var pollTimer = null;
+var taskListPollTimer = null;
 
 // ── Initialize ──
-(function() {
-  fetch('/api/strategies').then(function(r){return r.json()}).then(function(d) {
+function initBacktestPage() {
+  // 并行加载策略列表、股票池和控制面板默认值
+  Promise.all([
+    fetch('/api/strategies').then(function(r){return r.json()}),
+    fetch('/api/pools').then(function(r){return r.json()}),
+    fetch('/api/settings').then(function(r){return r.json()}).catch(function(){return null}),
+  ]).then(function(results) {
+    var d = results[0];
+    var p = results[1];
+    var settingsResp = results[2];
+    var defaults = (settingsResp && settingsResp.data && settingsResp.data.backtest) || {};
+
+    // 填充策略下拉
     var sel = document.getElementById('bt-strategy');
-    (d.strategies || []).forEach(function(s) {
-      var opt = document.createElement('option');
-      opt.value = s.name; opt.textContent = s.display_name;
-      sel.appendChild(opt);
-    });
-  });
+    if (sel) {
+      (d.strategies || []).forEach(function(s) {
+        var opt = document.createElement('option');
+        opt.value = s.name; opt.textContent = s.display_name;
+        sel.appendChild(opt);
+      });
+      if (defaults.strategy != null) sel.value = defaults.strategy;
+    }
+
+    // 填充股票池下拉
+    var poolSel = document.getElementById('bt-pool');
+    if (poolSel) {
+      poolSel.innerHTML = '';
+      (p.pools || []).forEach(function(pool) {
+        var opt = document.createElement('option');
+        opt.value = pool.name; opt.textContent = pool.name;
+        poolSel.appendChild(opt);
+      });
+      if (defaults.pool != null) poolSel.value = defaults.pool;
+    }
+
+    // 用控制面板默认值填充表单
+    if (defaults.top_n != null) document.getElementById('bt-topn').value = defaults.top_n;
+    if (defaults.min_score != null) document.getElementById('bt-minscore').value = defaults.min_score;
+    if (defaults.holding_days != null) document.getElementById('bt-hold').value = defaults.holding_days;
+    if (defaults.initial_capital != null) document.getElementById('bt-capital').value = defaults.initial_capital;
+  }).catch(function(e) { console.error('加载初始化数据失败:', e); });
   var now = new Date();
   var sixMonthsAgo = new Date(now);
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
   document.getElementById('bt-start').value = sixMonthsAgo.toISOString().slice(0,10);
   document.getElementById('bt-end').value = now.toISOString().slice(0,10);
   refreshTaskList();
-})();
+}
+
+// Execute immediately since script is at bottom of body
+initBacktestPage();
 
 function submitBacktest() {
   var btn = document.getElementById('btn-run');
@@ -39,11 +75,16 @@ function submitBacktest() {
   fetch('/api/backtest', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) })
   .then(function(r){return r.json()}).then(function(d) {
     currentTaskId = d.task_id;
+    // 提交成功，按钮恢复可点击，显示"回测中"，点击可跳转到进度区
+    btn.disabled = false; btn.textContent = '回测中...';
+    btn.onclick = function() { document.getElementById('progress-section').scrollIntoView({behavior:'smooth'}); };
     document.getElementById('progress-section').classList.remove('hidden');
     document.getElementById('result-section').classList.add('hidden');
+    refreshTaskList();
     pollProgress();
   }).catch(function(e) {
     showToast('提交失败: ' + e); btn.disabled = false; btn.textContent = '开始回测';
+    btn.onclick = submitBacktest;
   });
 }
 
@@ -56,14 +97,14 @@ function pollProgress() {
     if (d.status === 'completed') {
       fill.style.width = '100%'; fill.className = 'progress-fill done';
       text.innerHTML = '<strong>回测完成</strong>';
-      document.getElementById('btn-run').disabled = false; document.getElementById('btn-run').textContent = '开始回测';
+      _resetRunBtn();
       renderResult(d.result); refreshTaskList();
       showToast('回测完成', 'success'); return;
     }
     if (d.status === 'failed') {
       fill.className = 'progress-fill fail';
       text.innerHTML = '<strong>回测失败:</strong> ' + (d.error || '未知错误');
-      document.getElementById('btn-run').disabled = false; document.getElementById('btn-run').textContent = '开始回测';
+      _resetRunBtn();
       refreshTaskList();
       showToast('回测失败: ' + (d.error || '未知错误')); return;
     }
@@ -142,20 +183,43 @@ function refreshTaskList() {
   fetch('/api/backtest/tasks').then(function(r){return r.json()}).then(function(d) {
     var list = document.getElementById('task-list');
     var tasks = d.tasks || [];
-    if (!tasks.length) { list.innerHTML = '<div class="text-sm text-muted text-center" style="padding:24px">暂无回测记录</div>'; return; }
+    if (!tasks.length) { list.innerHTML = '<div class="text-sm text-muted text-center" style="padding:24px">暂无回测记录</div>'; _stopTaskListPoll(); return; }
+    var hasRunning = false;
     list.innerHTML = tasks.map(function(t) {
+      if (t.status === 'running' || t.status === 'pending') hasRunning = true;
       var statusClass = 'status-' + t.status;
       var statusText = {pending:'等待中',running:'运行中',completed:'已完成',failed:'失败',cancelled:'已中断'}[t.status] || t.status;
       var info = '<strong>' + t.strategy + '</strong> @ ' + t.pool + ' | top' + t.top_n + ' | 持有' + t.holding_days + '天';
+      if (t.start_date) info += ' | ' + t.start_date + '~' + (t.end_date||'至今');
+      // 运行中任务显示实时进度
+      var progressHtml = '';
+      if (t.status === 'running' && t.progress) {
+        var p = t.progress;
+        var phase = p.current_date || '准备中...';
+        var elapsed = p.elapsed ? (p.elapsed + 's') : '';
+        progressHtml = '<div class="task-progress"><div class="task-progress-bar"><div class="task-progress-fill running"></div></div><div class="task-progress-text">' + phase + (elapsed ? ' | ' + elapsed : '') + '</div></div>';
+      }
       if (t.status === 'completed' && t.progress) info += ' | ' + t.progress.elapsed + 's';
+      if (t.status === 'failed' && t.error) info += ' | ' + t.error;
       var isActive = currentTaskId === t.task_id;
       var activeClass = isActive ? ' active' : '';
       var clickAction = t.status === 'completed' ? ' onclick="loadTask(\'' + t.task_id + '\')"' : '';
       var actions = '';
       if (t.status === 'running') actions = ' <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();stopTask(\'' + t.task_id + '\')">停止</button>';
-      return '<div class="task-item' + activeClass + '" data-task-id="' + t.task_id + '"' + clickAction + '><div class="info">' + info + '</div><div class="flex gap-2 items-center">' + actions + '<span class="status ' + statusClass + '">' + statusText + '</span></div></div>';
+      return '<div class="task-item' + activeClass + '" data-task-id="' + t.task_id + '"' + clickAction + '><div class="info">' + info + progressHtml + '</div><div class="flex gap-2 items-center">' + actions + '<span class="status ' + statusClass + '">' + statusText + '</span></div></div>';
     }).join('');
-  });
+    // 有运行中任务时自动轮询任务列表
+    if (hasRunning) { _startTaskListPoll(); } else { _stopTaskListPoll(); }
+  }).catch(function() {});
+}
+
+function _startTaskListPoll() {
+  if (taskListPollTimer) return;
+  taskListPollTimer = setInterval(function() { refreshTaskList(); }, 3000);
+}
+
+function _stopTaskListPoll() {
+  if (taskListPollTimer) { clearInterval(taskListPollTimer); taskListPollTimer = null; }
 }
 
 async function stopTask(taskId) {
@@ -163,11 +227,18 @@ async function stopTask(taskId) {
   fetch('/api/backtest/' + taskId + '/stop', {method:'POST'}).then(function(r){return r.json()}).then(function(d) {
     if (d.status === 'stopped') {
       clearTimeout(pollTimer);
+      _stopTaskListPoll();  // 立即停止任务列表轮询
       document.getElementById('progress-section').classList.add('hidden');
-      document.getElementById('btn-run').disabled = false; document.getElementById('btn-run').textContent = '开始回测';
+      _resetRunBtn();
       refreshTaskList(); showToast('回测已停止', 'info');
     } else { showToast(d.error || '停止失败'); }
   });
+}
+
+function _resetRunBtn() {
+  var btn = document.getElementById('btn-run');
+  btn.disabled = false; btn.textContent = '开始回测';
+  btn.onclick = submitBacktest;
 }
 
 function loadTask(taskId) {

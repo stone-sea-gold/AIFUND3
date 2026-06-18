@@ -24,8 +24,6 @@ PARALLEL_WORKERS = 4         # 并发抓取线程数
 EXCLUDE_ST = True
 # 上市不足N天（日均线未成型）
 MIN_LISTING_DAYS = 120
-# 停牌/一字板（无成交量）
-MIN_VOLUME_RATIO = 0.1       # 近20日最低日均量 / 近20日均量
 # 死叉中（白线下穿黄线）
 EXCLUDE_DEATH_CROSS = True
 # 价格跌破黄线

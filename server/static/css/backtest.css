@@ -4,6 +4,9 @@
 
 .page-container { max-width:960px; margin:0 auto; padding:24px 32px; }
 
+/* ── Form Overrides ── */
+.page-container .form-group { min-width:120px; }
+
 /* ── Metrics Grid ── */
 .bt-metrics { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin:16px 0; }
 .bt-metric { background:var(--bg-subtle); border-radius:var(--radius-md); padding:14px; text-align:center; transition:transform .2s var(--ease), box-shadow .2s var(--ease); }
@@ -28,13 +31,21 @@
 .task-item:hover { border-color:var(--text3); }
 .task-item.active { border-color:var(--accent); background:var(--accent-bg); }
 .task-item:active { transform:scale(0.998); }
-.task-item .info { font-size:.85em; }
+.task-item .info { font-size:.85em; flex:1; min-width:0; }
 .task-item .info strong { color:var(--text); }
-.task-item .status { font-size:.75em; padding:2px 8px; border-radius:20px; font-weight:600; }
+.task-item .status { font-size:.75em; padding:2px 8px; border-radius:20px; font-weight:600; white-space:nowrap; }
 .status-completed { background:var(--accent-bg); color:var(--accent); }
 .status-running { background:var(--amber-bg); color:var(--amber); }
 .status-pending { background:var(--blue-bg); color:var(--blue); }
 .status-failed { background:var(--red-bg); color:var(--red); }
+.status-cancelled { background:var(--bg-subtle); color:var(--text3); }
+
+/* ── Inline Task Progress ── */
+.task-progress { margin-top:6px; }
+.task-progress-bar { height:3px; background:var(--bg-subtle); border-radius:2px; overflow:hidden; margin-bottom:3px; }
+.task-progress-fill { height:100%; background:var(--accent); border-radius:2px; width:100%; }
+.task-progress-fill.running { animation:pulse-bar 1.8s ease-in-out infinite; }
+.task-progress-text { font-size:.72em; color:var(--text3); }
 
 /* ── Close Button ── */
 .btn-close-result { background:none; border:1px solid var(--border); color:var(--text3); border-radius:var(--radius-sm); padding:4px 12px; font-size:.78em; cursor:pointer; transition:all .2s; }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>控制面板 — 设置</title>
+<link rel="stylesheet" href="/static/css/common.css?v=7">
+<style>
+/* ── Settings Layout ── */
+.settings-layout { display:flex; min-height:calc(100dvh - 56px); }
+
+.settings-nav {
+  width:220px; flex-shrink:0;
+  background:var(--surface); border-right:1px solid var(--border);
+  padding:20px 0; position:sticky; top:56px; height:calc(100dvh - 56px); overflow-y:auto;
+}
+.settings-nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 20px; font-size:.85em; font-weight:500; color:var(--text2);
+  text-decoration:none; border-left:3px solid transparent;
+  transition:all .2s var(--ease); cursor:pointer;
+}
+.settings-nav-item:hover { color:var(--text); background:var(--bg-subtle); }
+.settings-nav-item.active { color:var(--accent); background:var(--accent-bg); border-left-color:var(--accent); }
+.settings-nav-item .nav-icon { font-size:1.1em; width:20px; text-align:center; }
+.settings-nav-item .nav-label { flex:1; }
+.settings-nav-item .nav-badge {
+  font-size:.7em; background:var(--bg-subtle); color:var(--text3);
+  padding:2px 6px; border-radius:10px;
+}
+
+.settings-body {
+  flex:1; padding:24px 32px; max-width:800px; overflow-y:auto;
+}
+
+.settings-section { margin-bottom:32px; }
+.settings-section.hidden { display:none; }
+
+.settings-section-header { margin-bottom:20px; }
+.settings-section-header h1 { font-size:1.4em; }
+.settings-section-header p { font-size:.85em; color:var(--text2); margin-top:4px; }
+
+/* ── Param Groups ── */
+.param-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:20px; margin-bottom:16px;
+}
+.param-card-title {
+  font-size:.82em; font-weight:600; color:var(--text3);
+  text-transform:uppercase; letter-spacing:.04em; margin-bottom:16px;
+}
+
+.param-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+.param-grid.three-col { grid-template-columns:1fr 1fr 1fr; }
+
+.param-item { display:flex; flex-direction:column; gap:4px; }
+.param-item.full-width { grid-column:1/-1; }
+
+.param-item label {
+  font-size:.78em; font-weight:500; color:var(--text2);
+}
+.param-item input[type="number"],
+.param-item input[type="text"],
+.param-item select {
+  padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--surface); color:var(--text);
+  font-family:var(--font-sans); font-size:.85em;
+  transition:border-color .2s, box-shadow .2s; outline:none; width:100%;
+}
+.param-item input:focus, .param-item select:focus {
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(16,185,129,0.12);
+}
+
+/* ── Toggle Switch ── */
+.toggle-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 0;
+}
+.toggle-row .toggle-label { font-size:.85em; color:var(--text); }
+.toggle-switch {
+  position:relative; width:40px; height:22px; cursor:pointer;
+}
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  background:var(--border); border-radius:11px;
+  transition:background .2s;
+}
+.toggle-slider::before {
+  content:""; position:absolute; top:2px; left:2px;
+  width:18px; height:18px; border-radius:50%;
+  background:white; box-shadow:var(--shadow-sm);
+  transition:transform .2s;
+}
+.toggle-switch input:checked + .toggle-slider { background:var(--accent); }
+.toggle-switch input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+/* ── Actions Bar ── */
+.settings-actions {
+  display:flex; gap:8px; padding:16px 0; border-top:1px solid var(--border-subtle);
+  margin-top:16px;
+}
+
+/* ── Toast ── */
+.toast {
+  position:fixed; bottom:24px; right:24px; z-index:999;
+  padding:12px 20px; border-radius:var(--radius-sm);
+  font-size:.85em; font-weight:500; color:#fff;
+  transform:translateY(80px); opacity:0;
+  transition:all .3s var(--ease);
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { background:var(--accent); }
+.toast.error { background:var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ════════ Navigation Bar ════════ -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <span class="logo-dot"></span>
+    <span>股票交易看板</span>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link">看板</a>
+    <a href="/backtest" class="nav-link">回测系统</a>
+    <a href="/settings" class="nav-link active">设置</a>
+  </div>
+</nav>
+
+<!-- ════════ Settings Layout ════════ -->
+<div class="settings-layout">
+
+<!-- ── Left Nav ── -->
+<nav class="settings-nav" id="settings-nav"></nav>
+
+<!-- ── Content ── -->
+<main class="settings-body" id="settings-body"></main>
+
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/js/settings.js?v=7"></script>
+</body>
+</html>

@@ -8,9 +8,24 @@
     engine = BacktestEngine(strategy_name="b1", pool_name="沪深300", initial_capital=100000)
     result = engine.run(start_date="2026-01-05", end_date="2026-06-01")
 """
+import logging
 import time
 import threading
 from typing import Any
+
+logger = logging.getLogger("backtest")
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+
+def _check_cancelled(cancelled: threading.Event | None):
+    """检查取消标志，已取消则抛出 BacktestCancelled 异常"""
+    if cancelled and cancelled.is_set():
+        from server.backtest_manager import BacktestCancelled
+        raise BacktestCancelled()
 
 
 class BacktestEngine:
@@ -35,12 +50,36 @@ class BacktestEngine:
         self._runner = None
         self._data_loaded = False
 
-    def _ensure_data(self):
+    def _ensure_data(self, start_date: str | None = None, cancelled: threading.Event | None = None):
         if not self._data_loaded:
             from 选股.backtest.data_provider import DataProvider
             from 选股.backtest.strategy_runner import BacktestStrategyRunner
-            print(f"[backtest] 加载数据: pool={self.pool_name}, count={self.data_count}")
-            self._provider = DataProvider.from_pool(self.pool_name, count=self.data_count)
+            count = self.data_count
+            if start_date:
+                from datetime import datetime, date
+                try:
+                    sd = datetime.strptime(start_date, "%Y-%m-%d").date()
+                    today = date.today()
+                    days_span = (today - sd).days
+                    trading_days = int(days_span * 250 / 365)
+                    needed = trading_days + 300
+                    if needed > count:
+                        count = needed
+                except ValueError:
+                    pass
+            logger.info(f"加载数据: pool={self.pool_name}, count={count}")
+            try:
+                self._provider = DataProvider.from_pool(self.pool_name, count=count, cancelled=cancelled)
+            except Exception as e:
+                logger.error(f"数据加载失败: {e}")
+                raise
+            codes = self._provider.get_codes()
+            if not codes:
+                logger.warning(f"股票池 {self.pool_name} 无可用数据")
+            else:
+                first_code = codes[0]
+                first_klines = self._provider.get_stock_info(first_code)["klines"]
+                logger.info(f"数据加载完成: {len(codes)}只股票, 首只K线数={len(first_klines)}, 首日={first_klines[0]['date'] if first_klines else 'N/A'}, 末日={first_klines[-1]['date'] if first_klines else 'N/A'}")
             self._runner = BacktestStrategyRunner(self.strategy_name, self._provider)
             self._data_loaded = True
 
@@ -59,26 +98,36 @@ class BacktestEngine:
                 progress_callback(phase, current, total, info)
 
         _progress("加载数据", 0, 0, self.pool_name)
-        self._ensure_data()
         t0 = time.time()
+        self._ensure_data(start_date, cancelled)
 
-        calendar = self._provider.get_calendar()
-        all_dates = calendar.get_dates(skip_first=skip_first)
+        try:
+            calendar = self._provider.get_calendar()
+            effective_skip = 0 if start_date else skip_first
+            all_dates = calendar.get_dates(skip_first=effective_skip)
+            logger.info(f"日历原始日期数: {len(all_dates)}, 首日: {all_dates[0] if all_dates else 'N/A'}, 末日: {all_dates[-1] if all_dates else 'N/A'}")
+            logger.info(f"skip_first={effective_skip}, start_date={start_date}, end_date={end_date}")
 
-        if start_date:
-            all_dates = [d for d in all_dates if d >= start_date]
-        if end_date:
-            all_dates = [d for d in all_dates if d <= end_date]
+            if start_date:
+                all_dates = [d for d in all_dates if d >= start_date]
+            if end_date:
+                all_dates = [d for d in all_dates if d <= end_date]
+
+            logger.info(f"过滤后日期数: {len(all_dates)}, 首日: {all_dates[0] if all_dates else 'N/A'}, 末日: {all_dates[-1] if all_dates else 'N/A'}")
+        except Exception as e:
+            logger.error(f"日历构建异常: {e}")
+            import traceback; traceback.print_exc()
+            return self._empty_result(time.time() - t0)
 
         if not all_dates:
             return self._empty_result(time.time() - t0)
 
         total = len(all_dates)
         if verbose:
-            print(f"[backtest] 开始回测: {self.strategy_name} @ {self.pool_name}")
-            print(f"          日期范围: {all_dates[0]} ~ {all_dates[-1]} ({total} 个交易日)")
-            print(f"          top_n={self.top_n}, min_score={self.min_score}, hold={self.holding_days}天")
-            print(f"          本金={self.initial_capital:,.0f}")
+            logger.info(f"开始回测: {self.strategy_name} @ {self.pool_name}")
+            logger.info(f"  日期范围: {all_dates[0]} ~ {all_dates[-1]} ({total} 个交易日)")
+            logger.info(f"  top_n={self.top_n}, min_score={self.min_score}, hold={self.holding_days}天")
+            logger.info(f"  本金={self.initial_capital:,.0f}")
 
         # ── 预构建每日行情数据（O(总K线数)，一次性遍历）──
         _progress("构建行情", 0, 0, f"{len(self._provider.get_codes())}只股票")
@@ -87,13 +136,12 @@ class BacktestEngine:
         # ── 预计算指标（每只股票只算一次）──
         _progress("预计算指标", 0, 0, f"{self.strategy_name}")
         date_index_map = self._provider.build_date_index_map()
-        self._runner.precompute(date_index_map, verbose=False)
+        self._runner.precompute(date_index_map, verbose=False, cancelled=cancelled)
 
         # ── 每日选股（只做切片+打分，不重算指标）──
         selection_by_date = {}
         for i, date in enumerate(all_dates):
-            if cancelled and cancelled.is_set():
-                break
+            _check_cancelled(cancelled)
 
             _progress("选股扫描", i + 1, total, date)
 
@@ -121,7 +169,7 @@ class BacktestEngine:
 
             if verbose and (i + 1) % 20 == 0:
                 n_sel = len(selection_by_date.get(date, []))
-                print(f"  [{i+1}/{total}] {date} → {n_sel} 只合格")
+                logger.info(f"  [{i+1}/{total}] {date} → {n_sel} 只合格")
 
         # ── 执行资金管理模拟 ──
         from 选股.backtest.portfolio import PortfolioSimulator
@@ -149,11 +197,11 @@ class BacktestEngine:
         }
 
         if verbose:
-            print(f"\n[backtest] 回测完成 ({elapsed:.0f}s)")
-            print(f"          交易日: {total} | 选股轮次: {len(selection_by_date)} | 交易: {m.get('total_trades', 0)} 笔")
-            print(f"          本金: {m.get('initial_capital', 0):,.0f} → 最终: {m.get('final_nav', 0):,.0f}")
-            print(f"          总收益: {m.get('total_return_pct', 0):+.2f}% | 夏普: {m.get('nav_sharpe', 0):.2f}")
-            print(f"          最大回撤: {m.get('nav_max_drawdown', 0):.2f}% | 止损: {m.get('stop_loss_count', 0)} 次")
+            logger.info(f"回测完成 ({elapsed:.0f}s)")
+            logger.info(f"  交易日: {total} | 选股轮次: {len(selection_by_date)} | 交易: {m.get('total_trades', 0)} 笔")
+            logger.info(f"  本金: {m.get('initial_capital', 0):,.0f} → 最终: {m.get('final_nav', 0):,.0f}")
+            logger.info(f"  总收益: {m.get('total_return_pct', 0):+.2f}% | 夏普: {m.get('nav_sharpe', 0):.2f}")
+            logger.info(f"  最大回撤: {m.get('nav_max_drawdown', 0):.2f}% | 止损: {m.get('stop_loss_count', 0)} 次")
 
         return result
 

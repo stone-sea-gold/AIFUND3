@@ -82,14 +82,28 @@ class ScanManager:
 
     def submit_scan(
         self,
-        pool_name: str = "沪深300",
-        strategy_name: str = "b1",
-        top_n: int = 30,
-        min_score: int = 25,
-        delay: float = 0.15,
-        workers: int = 4,
+        pool_name: str | None = None,
+        strategy_name: str | None = None,
+        top_n: int | None = None,
+        min_score: int | None = None,
+        delay: float | None = None,
+        workers: int | None = None,
     ) -> str:
-        """提交扫描任务，返回 task_id"""
+        """提交扫描任务，返回 task_id（参数为空时取控制面板默认值）"""
+        from server.settings import get_settings
+        s = get_settings()
+        if pool_name is None:
+            pool_name = s.get("scan", "pool")
+        if strategy_name is None:
+            strategy_name = s.get("scan", "strategy")
+        if top_n is None:
+            top_n = s.get("scan", "top_n")
+        if min_score is None:
+            min_score = s.get("scan", "min_score")
+        if delay is None:
+            delay = s.get("scan", "delay")
+        if workers is None:
+            workers = s.get("scan", "workers")
         task_id = uuid.uuid4().hex[:8]
 
         task = ScanTask(task_id, pool_name, strategy_name,

@@ -26,22 +26,27 @@ class BacktestStrategyRunner:
         return load_strategy(name)
 
     def precompute(self, date_index_map: dict[str, dict[str, int]] | None = None,
-                   verbose: bool = True) -> int:
+                   verbose: bool = True, cancelled=None) -> int:
         """预计算所有股票的指标，只算一次。
 
         Args:
             date_index_map: {code: {date: index}} 由 DataProvider.build_date_index_map() 提供
             verbose: 是否打印进度
+            cancelled: threading.Event，用于取消
 
         Returns:
             成功预计算的股票数量
         """
+        from server.backtest_manager import BacktestCancelled
+
         s = self.strategy
         self._precomputed = {}
         codes = self.data_provider.get_codes()
         total = len(codes)
 
         for i, code in enumerate(codes):
+            if cancelled and cancelled.is_set():
+                raise BacktestCancelled()
             info = self.data_provider.get_stock_info(code)
             if info is None:
                 continue
@@ -51,6 +56,8 @@ class BacktestStrategyRunner:
                 continue
             try:
                 ind = s.build_indicators(klines, closes)
+            except BacktestCancelled:
+                raise
             except Exception:
                 continue
             if ind.get("_error", False):

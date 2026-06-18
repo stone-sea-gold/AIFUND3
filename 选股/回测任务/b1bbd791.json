@@ -1,0 +1,20 @@
+{
+  "task_id": "b1bbd791",
+  "strategy": "b1",
+  "pool": "沪深300",
+  "top_n": 10,
+  "min_score": 25,
+  "holding_days": 3,
+  "initial_capital": 100000.0,
+  "start_date": "2024-09-24",
+  "end_date": "2026-06-16",
+  "status": "completed",
+  "progress": {
+    "current_date": "加载数据 沪深300",
+    "rounds_done": 0,
+    "elapsed": 0.0
+  },
+  "error": null,
+  "created_at": "2026-06-16T17:45:23.114593",
+  "completed_at": "2026-06-16T17:45:43.781589"
+}

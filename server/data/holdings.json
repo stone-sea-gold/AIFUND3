@@ -120,12 +120,13 @@
       "cost_price": 7.492,
       "shares": 200,
       "buy_strategy": "other",
-      "sell_date": null,
-      "sell_price": null,
-      "sell_strategy": null,
-      "status": "open",
-      "pnl": null,
-      "pnl_pct": null,
+      "sell_date": "2026-06-15",
+      "sell_price": 7.6,
+      "sell_strategy": "stop_loss",
+      "status": "closed",
+      "pnl": 21.6,
+      "pnl_pct": 1.44,
+      "dividend": 31.0,
       "created_at": "2026-06-10T09:54:08"
     },
     {
@@ -136,13 +137,62 @@
       "cost_price": 11.057,
       "shares": 300,
       "buy_strategy": "other",
+      "sell_date": "2026-06-15",
+      "sell_price": 11.1,
+      "sell_strategy": "death_cross",
+      "status": "closed",
+      "pnl": 12.9,
+      "pnl_pct": 0.39,
+      "dividend": 86.4,
+      "created_at": "2026-06-10T09:54:49"
+    },
+    {
+      "id": "t_20260615_102704_9ab7",
+      "stock_name": "铭普光磁",
+      "stock_code": "000902",
+      "buy_date": "2026-06-15",
+      "cost_price": 33.6,
+      "shares": 100,
+      "buy_strategy": "brick_trend",
+      "sell_date": "2026-06-17",
+      "sell_price": 35.13,
+      "sell_strategy": "take_profit",
+      "status": "closed",
+      "pnl": 153.0,
+      "pnl_pct": 4.55,
+      "created_at": "2026-06-15T10:27:04"
+    },
+    {
+      "id": "t_20260617_094151_6487",
+      "stock_name": "彩虹股份",
+      "stock_code": "600707",
+      "buy_date": "2026-06-17",
+      "cost_price": 12.1,
+      "shares": 100,
+      "buy_strategy": "brick_trend",
       "sell_date": null,
       "sell_price": null,
       "sell_strategy": null,
       "status": "open",
       "pnl": null,
       "pnl_pct": null,
-      "created_at": "2026-06-10T09:54:49"
+      "created_at": "2026-06-17T09:41:51"
+    },
+    {
+      "id": "t_20260618_102703_ef81",
+      "stock_name": "镇海股份",
+      "stock_code": "603637",
+      "buy_date": "2026-06-18",
+      "cost_price": 18.93,
+      "shares": 100,
+      "buy_strategy": "brick_trend",
+      "sell_date": null,
+      "sell_price": null,
+      "sell_strategy": null,
+      "status": "open",
+      "pnl": null,
+      "pnl_pct": null,
+      "created_at": "2026-06-18T10:27:03"
     }
   ],
   "strategies": {
@@ -198,5 +248,25 @@
         "label": "其他"
       }
     ]
-  }
+  },
+  "dividends": [
+    {
+      "id": "d_20260617_164119_06a3",
+      "stock_name": "平安银行",
+      "stock_code": "000001",
+      "amount": 86.4,
+      "date": "2026-06-11",
+      "trade_id": "t_20260610_095449_f202",
+      "created_at": "2026-06-17T16:41:19"
+    },
+    {
+      "id": "d_20260617_164218_0883",
+      "stock_name": "中信银行",
+      "stock_code": "601998",
+      "amount": 31.0,
+      "date": "2026-06-09",
+      "trade_id": "t_20260610_095408_9bc8",
+      "created_at": "2026-06-17T16:42:18"
+    }
+  ]
 }

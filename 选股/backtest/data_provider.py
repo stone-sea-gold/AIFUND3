@@ -33,26 +33,31 @@ class DataProvider:
 
     @classmethod
     def from_pool(cls, pool_name: str = "沪深300", count: int = 500,
-                  use_cache: bool = True) -> "DataProvider":
+                  use_cache: bool = True, cancelled=None) -> "DataProvider":
         """从股票池构建 DataProvider"""
         from 选股.pool import get_stock_pool, filter_stocks
 
         stocks = get_stock_pool(pool_name, use_cache=use_cache)
         stocks = filter_stocks(stocks)
-        return cls._load_all_klines(stocks, count, use_cache)
+        return cls._load_all_klines(stocks, count, use_cache, cancelled)
 
     @classmethod
     def _load_all_klines(cls, stocks: list[tuple[str, str]], count: int,
-                         use_cache: bool) -> "DataProvider":
+                         use_cache: bool, cancelled=None) -> "DataProvider":
         """遍历股票列表加载K线，仅保留 >= 120 根的标的"""
+        from server.backtest_manager import BacktestCancelled
         from 选股.kline_source import get_klines
 
         stock_data: dict[str, dict[str, Any]] = {}
         total = len(stocks)
 
         for i, (code, name) in enumerate(stocks, 1):
+            if cancelled and cancelled.is_set():
+                raise BacktestCancelled()
             try:
                 fetched_name, klines = get_klines(code, count=count, period="day")
+            except BacktestCancelled:
+                raise
             except Exception:
                 continue
 
@@ -115,13 +120,13 @@ class DataProvider:
 
     def get_calendar(self, sample_code: str | None = None) -> TradingCalendar:
         """
-        用 sample_code 或第一只股票的 klines 创建 TradingCalendar。
+        创建 TradingCalendar。优先用指定股票，否则用第一只股票。
         """
         if sample_code and sample_code in self._stock_data:
             klines = self._stock_data[sample_code]["klines"]
-        else:
-            first_code = next(iter(self._stock_data))
-            klines = self._stock_data[first_code]["klines"]
+            return TradingCalendar(klines)
+        first_code = next(iter(self._stock_data))
+        klines = self._stock_data[first_code]["klines"]
         return TradingCalendar(klines)
 
     def get_full_klines(self, code: str) -> list[dict] | None:

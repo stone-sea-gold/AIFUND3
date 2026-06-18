@@ -33,7 +33,7 @@ from 选股.config import (
     STRATEGY,
     SCAN_COUNT, SCAN_PERIOD, REQUEST_DELAY,
     EXCLUDE_DEATH_CROSS, EXCLUDE_BELOW_YELLOW,
-    MIN_LISTING_DAYS, MIN_VOLUME_RATIO,
+    MIN_LISTING_DAYS,
     MIN_SCORE, TOP_N, SAVE_CACHE,
     USE_TDX_DATA,
 )
@@ -190,15 +190,9 @@ def _fetch_with_retry(code: str, max_retries: int = 1) -> tuple[str, list] | Non
 
 def _check_volume_valid(klines: list[dict]) -> bool:
     """成交量有效性检查（排除停牌/无交易）"""
-    recent = klines[-20:]
-    vols = [b["volume"] for b in recent]
-    if not vols:
+    if not klines:
         return False
-    avg_vol = sum(vols) / len(vols)
-    min_vol = min(vols)
-    if avg_vol == 0 or min_vol / avg_vol < MIN_VOLUME_RATIO:
-        return False
-    return True
+    return klines[-1]["volume"] > 0
 
 
 _criterion_klines_cache: dict[int, bool] = {}

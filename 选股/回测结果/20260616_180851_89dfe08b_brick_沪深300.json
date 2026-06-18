@@ -1,0 +1,21 @@
+{
+  "task_id": "89dfe08b",
+  "strategy_name": "brick",
+  "pool_name": "沪深300",
+  "date_range": null,
+  "total_rounds": 0,
+  "total_trades": 0,
+  "metrics": {},
+  "config": {
+    "strategy_name": "brick",
+    "pool_name": "沪深300",
+    "top_n": 10,
+    "min_score": 25,
+    "holding_days": 3,
+    "initial_capital": 100000.0
+  },
+  "elapsed": 0.0,
+  "trades": [],
+  "nav_history": [],
+  "saved_at": "2026-06-16T18:08:51.186604"
+}
